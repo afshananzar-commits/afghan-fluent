@@ -15,8 +15,28 @@ import './styles.css';
 
 const vocabHeaders = ['id','dutch','english','category','spoken','latin','script','type','confidence','status','exampleNl','exampleSpoken','notes','source'];
 const sentenceHeaders = ['id','dutch','spoken','latin','status','grammar','notes','source'];
-const vocab = vocabularyRaw.map(r => Object.fromEntries(vocabHeaders.map((h,i)=>[h,r[i] ?? ''])));
-const sentences = sentencesRaw.map(r => Object.fromEntries(sentenceHeaders.map((h,i)=>[h,r[i] ?? ''])));
+const CONTENT_CACHE_KEY = 'afghanFluentOneDriveContentV1';
+const CONTENT_STATUS_KEY = 'afghanFluentOneDriveStatusV1';
+function readJsonStorage(key, fallback=null){
+  try { return JSON.parse(localStorage.getItem(key)||'null') ?? fallback; } catch { return fallback; }
+}
+const cachedContent = typeof window!=='undefined' ? readJsonStorage(CONTENT_CACHE_KEY) : null;
+const vocabSource = cachedContent?.vocabulary?.length ? cachedContent.vocabulary : vocabularyRaw;
+const sentenceSource = cachedContent?.sentences?.length ? cachedContent.sentences : sentencesRaw;
+const vocab = vocabSource.map(r => Object.fromEntries(vocabHeaders.map((h,i)=>[h,r[i] ?? ''])));
+const sentences = sentenceSource.map(r => Object.fromEntries(sentenceHeaders.map((h,i)=>[h,r[i] ?? ''])));
+
+async function syncOneDriveContent(){
+  const response = await fetch(`/api/content?ts=${Date.now()}`, {cache:'no-store'});
+  const data = await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data?.error || 'OneDrive kon niet worden gelezen.');
+  if(!Array.isArray(data.vocabulary) || !Array.isArray(data.sentences)) throw new Error('Onverwacht gegevensformaat.');
+  const previous = readJsonStorage(CONTENT_CACHE_KEY);
+  const changed = previous?.version !== data.version;
+  localStorage.setItem(CONTENT_CACHE_KEY, JSON.stringify({version:data.version,vocabulary:data.vocabulary,sentences:data.sentences,syncedAt:data.syncedAt}));
+  localStorage.setItem(CONTENT_STATUS_KEY, JSON.stringify({state:'ready',lastSync:data.syncedAt,version:data.version,vocabularyCount:data.vocabulary.length,sentenceCount:data.sentences.length,source:'OneDrive Excel'}));
+  return {changed,data};
+}
 
 const CATEGORY = {
   home:{label:'Thuis',emoji:'🏡'}, food:{label:'Eten & drinken',emoji:'🥣'}, travel:{label:'Onderweg',emoji:'🚌'},
@@ -63,9 +83,28 @@ function speak(text, rate=.88){
 function App(){
   const [tab,setTab]=useState('today');
   const [mode,setMode]=useState(localStorage.getItem('afghanFluentMode')||'family');
+  const [contentStatus,setContentStatus]=useState(()=>readJsonStorage(CONTENT_STATUS_KEY,{state:cachedContent?'cached':'bundled',lastSync:cachedContent?.syncedAt||null,vocabularyCount:vocab.length,sentenceCount:sentences.length,source:cachedContent?'OneDrive cache':'Ingebouwde reservekopie'}));
   const setModePersist=(m)=>{setMode(m);localStorage.setItem('afghanFluentMode',m)};
   const app=useAppState();
+  const refreshContent=async()=>{
+    setContentStatus(s=>({...s,state:'syncing',error:null}));
+    try{
+      const {changed,data}=await syncOneDriveContent();
+      setContentStatus({state:'ready',lastSync:data.syncedAt,version:data.version,vocabularyCount:data.vocabulary.length,sentenceCount:data.sentences.length,source:'OneDrive Excel'});
+      if(changed) setTimeout(()=>window.location.reload(),450);
+      return true;
+    }catch(error){
+      const fallback={...contentStatus,state:'error',error:error.message||'Synchronisatie mislukt'};
+      setContentStatus(fallback);
+      localStorage.setItem(CONTENT_STATUS_KEY,JSON.stringify(fallback));
+      return false;
+    }
+  };
   const streak = app.progress.streak || 0;
+  useEffect(()=>{
+    refreshContent();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
   useEffect(()=>{
     const today=dayKey();
     if(app.progress.lastOpen!==today){
@@ -88,7 +127,7 @@ function App(){
         {tab==='sentences' && <Sentences app={app}/>} 
         {tab==='grammar' && <Grammar/>} 
         {tab==='speak' && <SpeakPractice app={app}/>} 
-        {tab==='profile' && <Profile app={app} mode={mode} setMode={setModePersist}/>} 
+        {tab==='profile' && <Profile app={app} mode={mode} setMode={setModePersist} contentStatus={contentStatus} refreshContent={refreshContent}/>} 
       </main>
       <BottomNav tab={tab} go={go}/>
     </div>
@@ -253,7 +292,7 @@ function AudioStudio(){
  return <div className="audio-studio"><div className="studio-head"><div><small>ADMIN · AUDIO STUDIO</small><h2>Uitspraak opnemen</h2><p>Opnames blijven op dit apparaat tot je ze als ZIP exporteert.</p></div><button className="export-btn" onClick={exportZip}><Download/> Download ZIP</button></div><div className="segmented studio-tabs"><button className={kind==='word'?'active':''} onClick={()=>{setKind('word');setIdx(0)}}>Woorden · 1000</button><button className={kind==='sentence'?'active':''} onClick={()=>{setKind('sentence');setIdx(0)}}>Zinnen · 400</button></div><div className="studio-search"><input value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>e.key==='Enter'&&findItem()} placeholder="Zoek een woord of zin…"/><button onClick={findItem}><Search/></button></div><section className="record-card"><div className="record-meta"><span>{idx+1} / {pool.length}</span><b>{key}</b>{saved&&<em><Check/> Opgenomen</em>}</div><h2>{item.dutch}</h2><p>{item.spoken||item.latin}</p>{recording?<button className="record-stop" onClick={stop}><Square/> Stop opname</button>:<button className="record-start" onClick={start}><Mic/> Opnemen</button>}{preview&&<audio className="audio-preview" src={preview} controls/>}<div className="record-actions"><button onClick={()=>setIdx(i=>Math.max(0,i-1))}><ChevronLeft/> Vorige</button><button onClick={skip}><SkipForward/> Skip</button><button className="approve" disabled={!rec.current?.blob} onClick={approve}><Check/> Goed & volgende</button></div>{saved&&<button className="replace-note" onClick={remove}><Trash2/> Bestaande opname verwijderen</button>}</section>{status&&<div className="studio-status">{status}</div>}</div>
 }
 
-function Profile({app,mode,setMode}){const [admin,setAdmin]=useState(false);return <div className="screen"><PageHead eyebrow="JOUW VOORTGANG" title="Profiel" sub="Alles wat je leert blijft op dit apparaat bewaard." badge={<UserRound/>}/><div className="profile-hero"><div className="big-avatar">A</div><div><h2>Afshan</h2><p>Afghan Fluent learner</p><span><Flame/> {app.progress.streak||1} dagen streak</span></div></div><div className="profile-stats"><StatCard icon={<Layers3/>} value={app.knownIds.size} label="Woorden beheerst"/><StatCard icon={<Heart/>} value={app.favorites.size} label="Favorieten"/><StatCard icon={<MessageCircle/>} value="400" label="Zinnen beschikbaar"/></div><SectionTitle title="Leerinstellingen"/><div className="settings-card"><div><div className="setting-icon"><UserRound/></div><div><b>Weergave</b><span>Kies een rustige volwassen of extra speelse kinderweergave.</span></div></div><div className="segmented"><button className={mode==='family'?'active':''} onClick={()=>setMode('family')}>Volwassen</button><button className={mode==='kids'?'active':''} onClick={()=>setMode('kids')}>Kids</button></div></div><div className="settings-card"><div><div className="setting-icon"><ShieldCheck/></div><div><b>Contentbron</b><span>Woorden en zinnen worden geladen uit de centrale woordenlijst.</span></div></div><span className="status-ok"><Check/> Actief</span></div><SectionTitle title="Beheer"/><div className="settings-card admin-entry" onClick={()=>setAdmin(a=>!a)}><div><div className="setting-icon"><Mic/></div><div><b>Admin Audio Studio</b><span>Neem officiële uitspraak op voor woorden en zinnen.</span></div></div><ChevronRight/></div>{admin&&<AudioStudio/>}</div>}
+function Profile({app,mode,setMode,contentStatus,refreshContent}){const [admin,setAdmin]=useState(false);const last=contentStatus?.lastSync?new Date(contentStatus.lastSync).toLocaleString('nl-NL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Nog niet gesynchroniseerd';return <div className="screen"><PageHead eyebrow="JOUW VOORTGANG" title="Profiel" sub="Alles wat je leert blijft op dit apparaat bewaard." badge={<UserRound/>}/><div className="profile-hero"><div className="big-avatar">A</div><div><h2>Afshan</h2><p>Afghan Fluent learner</p><span><Flame/> {app.progress.streak||1} dagen streak</span></div></div><div className="profile-stats"><StatCard icon={<Layers3/>} value={app.knownIds.size} label="Woorden beheerst"/><StatCard icon={<Heart/>} value={app.favorites.size} label="Favorieten"/><StatCard icon={<MessageCircle/>} value={contentStatus?.sentenceCount||sentences.length} label="Zinnen beschikbaar"/></div><SectionTitle title="Leerinstellingen"/><div className="settings-card"><div><div className="setting-icon"><UserRound/></div><div><b>Weergave</b><span>Kies een rustige volwassen of extra speelse kinderweergave.</span></div></div><div className="segmented"><button className={mode==='family'?'active':''} onClick={()=>setMode('family')}>Volwassen</button><button className={mode==='kids'?'active':''} onClick={()=>setMode('kids')}>Kids</button></div></div><div className="settings-card content-source-card"><div><div className="setting-icon"><RefreshCw className={contentStatus?.state==='syncing'?'spin':''}/></div><div><b>OneDrive Excel</b><span>{contentStatus?.state==='error'?`Synchronisatie mislukt · ${contentStatus.error}`:`${contentStatus?.vocabularyCount||vocab.length} woorden · ${contentStatus?.sentenceCount||sentences.length} zinnen · ${last}`}</span></div></div><button className="sync-now" onClick={refreshContent} disabled={contentStatus?.state==='syncing'}>{contentStatus?.state==='syncing'?'Bezig…':'Nu synchroniseren'}</button></div><div className="sync-note"><ShieldCheck/><span>OneDrive is de masterbron. Als synchroniseren niet lukt, gebruikt de app automatisch de laatst opgeslagen versie.</span></div><SectionTitle title="Beheer"/><div className="settings-card admin-entry" onClick={()=>setAdmin(a=>!a)}><div><div className="setting-icon"><Mic/></div><div><b>Admin Audio Studio</b><span>Neem officiële uitspraak op voor woorden en zinnen.</span></div></div><ChevronRight/></div>{admin&&<AudioStudio/>}</div>}
 function StatCard({icon,value,label}){return <div className="stat-card"><span>{icon}</span><b>{value}</b><small>{label}</small></div>}
 
 function BottomNav({tab,go}){const x=[['today',Home,'Vandaag'],['path',BookOpen,'Leerpad'],['words',Layers3,'Woorden'],['sentences',MessageCircle,'Zinnen'],['profile',UserRound,'Profiel']];return <nav className="bottom-nav">{x.map(([id,I,l])=><button key={id} className={tab===id?'active':''} onClick={()=>go(id)}><I/><span>{l}</span></button>)}</nav>}
