@@ -84,6 +84,7 @@ function App(){
   const [tab,setTab]=useState('today');
   const [mode,setMode]=useState(localStorage.getItem('afghanFluentMode')||'family');
   const [contentStatus,setContentStatus]=useState(()=>readJsonStorage(CONTENT_STATUS_KEY,{state:cachedContent?'cached':'bundled',lastSync:cachedContent?.syncedAt||null,vocabularyCount:vocab.length,sentenceCount:sentences.length,source:cachedContent?'OneDrive cache':'Ingebouwde reservekopie'}));
+  const [selectedLesson,setSelectedLesson]=useState(null);
   const setModePersist=(m)=>{setMode(m);localStorage.setItem('afghanFluentMode',m)};
   const app=useAppState();
   const refreshContent=async()=>{
@@ -122,8 +123,8 @@ function App(){
       <TopChrome mode={mode} setMode={setModePersist}/>
       <main>
         {tab==='today' && <Today app={app} go={go}/>} 
-        {tab==='path' && <LearningPath app={app} go={go}/>} 
-        {tab==='words' && <Words app={app}/>} 
+        {tab==='path' && <LearningPath app={app} go={go} openLesson={(lesson)=>{setSelectedLesson(lesson);go('words')}}/>} 
+        {tab==='words' && <Words app={app} selectedLesson={selectedLesson} clearSelectedLesson={()=>setSelectedLesson(null)}/>} 
         {tab==='sentences' && <Sentences app={app}/>} 
         {tab==='grammar' && <Grammar/>} 
         {tab==='speak' && <SpeakPractice app={app}/>} 
@@ -177,27 +178,82 @@ function Quick({title,sub,icon,onClick}){return <button className="quick-card" o
 function SectionTitle({title,action,onClick}){return <div className="section-title"><h2>{title}</h2>{action&&<button onClick={onClick}>{action}<ChevronRight/></button>}</div>}
 function LessonRow({emoji,title,meta,progress,done,locked,onClick}){return <button className={`lesson-row ${locked?'locked':''}`} onClick={onClick} disabled={locked}><span className="lesson-art">{emoji}</span><div className="lesson-main"><b>{title}</b><small>{meta}</small><div className="tiny-bar"><i style={{width:`${progress}%`}}/></div></div>{locked?<Lock/>:done?<span className="done-dot"><Check/></span>:<span className="ring-mini" style={{'--p':`${progress*3.6}deg`}}/>}</button>}
 
-function LearningPath({app,go}){
- const known=app.knownIds.size;
- const modules=[
- {e:'👋',t:'Begroeten',n:12,p:100}, {e:'👨‍👩‍👧‍👦',t:'Familie',n:20,p:Math.min(90,known*4)}, {e:'🏡',t:'Thuis',n:20,p:75},
- {e:'🥣',t:'Eten & drinken',n:20,p:40}, {e:'🚌',t:'Onderweg',n:20,p:0}, {e:'🛍️',t:'Winkelen',n:20,p:0},
- {e:'🎒',t:'School',n:20,p:0}, {e:'💛',t:'Gevoelens',n:20,p:0}
+function LearningPath({app,go,openLesson}){
+ const LESSON_SIZE=20;
+ const lessons=useMemo(()=>{
+   const chunks=[];
+   for(let i=0;i<vocab.length;i+=LESSON_SIZE){
+     const words=vocab.slice(i,i+LESSON_SIZE);
+     if(!words.length) continue;
+     const counts={};
+     words.forEach(w=>{const c=w.category||'other';counts[c]=(counts[c]||0)+1});
+     const dominant=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0]?.[0]||'other';
+     const base=labelFor(dominant);
+     const sameBefore=chunks.filter(x=>x.category===dominant).length;
+     chunks.push({
+       id:`lesson-${chunks.length+1}`,
+       number:chunks.length+1,
+       category:dominant,
+       title:sameBefore?`${base} · deel ${sameBefore+1}`:base,
+       emoji:iconFor(dominant),
+       words,
+     });
+   }
+   return chunks;
+ },[]);
+ const knownSet=app.knownIds;
+ const progressFor=(lesson)=>{
+   const known=lesson.words.filter(w=>knownSet.has(w.id)).length;
+   return {known,total:lesson.words.length,pct:Math.round(known/Math.max(1,lesson.words.length)*100)};
+ };
+ const levels=[
+   {name:'A1 · De basis',sub:'BEGINNER',from:0,to:12},
+   {name:'A2 · Dagelijks leven',sub:'BASIS',from:12,to:25},
+   {name:'B1 · Gesprekken',sub:'ZELFSTANDIG',from:25,to:38},
+   {name:'B2 · Verder spreken',sub:'GEVORDERD',from:38,to:50},
  ];
- return <div className="screen path-screen"><PageHead eyebrow="JOUW ROUTE" title="Leerpad" sub="Spreken en verstaan in kleine, haalbare stappen." badge={<><Flame/> {app.progress.streak||1}</>}/>
-  <div className="level-heading"><div><span>BEGINNER</span><h2>A1 · De basis</h2></div><div className="level-chip"><Trophy/> {Math.min(100,Math.round(known/2))}%</div></div>
-  <div className="path-list">{modules.slice(0,5).map((m,i)=><div className="path-item" key={m.t}><span className={`path-node ${m.p===100?'complete':''}`}>{m.p===100?<Check/>:i+1}</span><LessonRow emoji={m.e} title={`${i+1}. ${m.t}`} meta={`${Math.round(m.p/5)} / ${m.n}`} progress={m.p} done={m.p===100} onClick={()=>go('words')}/></div>)}</div>
-  <div className="level-divider"><span>Basis (A2)</span></div>
-  <div className="path-list">{modules.slice(5).map((m,i)=><div className="path-item" key={m.t}><span className="path-node">{i+6}</span><LessonRow emoji={m.e} title={`${i+6}. ${m.t}`} meta={`0 / ${m.n}`} progress={0} onClick={()=>go('words')}/></div>)}</div>
+ const totalKnown=lessons.reduce((n,l)=>n+progressFor(l).known,0);
+ const totalWords=lessons.reduce((n,l)=>n+l.words.length,0);
+ const overall=Math.round(totalKnown/Math.max(1,totalWords)*100);
+ return <div className="screen path-screen"><PageHead eyebrow="JOUW ROUTE" title="Leerpad" sub={`${totalWords} woorden verdeeld over ${lessons.length} lessen van ongeveer ${LESSON_SIZE} woorden.`} badge={<><Flame/> {app.progress.streak||1}</>}/>
+   <div className="level-heading"><div><span>VOLLEDIG LEERPAD</span><h2>Van basis naar vloeiender spreken</h2></div><div className="level-chip"><Trophy/> {overall}%</div></div>
+   {levels.map((level,li)=>{
+     const block=lessons.slice(level.from,Math.min(level.to,lessons.length));
+     if(!block.length)return null;
+     return <React.Fragment key={level.name}>
+       {li>0 && <div className="level-divider"><span>{level.name}</span></div>}
+       {li===0 && <div className="level-divider first-level"><span>{level.name}</span></div>}
+       <div className="path-list">{block.map((lesson)=>{
+         const p=progressFor(lesson);
+         return <div className="path-item" key={lesson.id}>
+           <span className={`path-node ${p.pct===100?'complete':''}`}>{p.pct===100?<Check/>:lesson.number}</span>
+           <LessonRow
+             emoji={lesson.emoji}
+             title={`${lesson.number}. ${lesson.title}`}
+             meta={`${p.known} / ${p.total} woorden`}
+             progress={p.pct}
+             done={p.pct===100}
+             onClick={()=>openLesson(lesson)}
+           />
+         </div>
+       })}</div>
+     </React.Fragment>
+   })}
  </div>
 }
 function PageHead({eyebrow,title,sub,badge}){return <div className="page-head"><div><span>{eyebrow}</span><h1>{title}</h1>{sub&&<p>{sub}</p>}</div>{badge&&<div className="page-badge">{badge}</div>}</div>}
 
-function Words({app}){
+function Words({app,selectedLesson,clearSelectedLesson}){
  const [query,setQuery]=useState(''); const [category,setCategory]=useState('all'); const [idx,setIdx]=useState(0); const [revealed,setRevealed]=useState(false); const [shuffle,setShuffle]=useState(false);
  const [dragX,setDragX]=useState(0); const [dragging,setDragging]=useState(false); const dragStart=useRef(null);
  const cats=useMemo(()=>Array.from(new Set(vocab.map(v=>v.category).filter(Boolean))).slice(0,18),[]);
- const filtered=useMemo(()=>{ let a=vocab.filter(v=>(category==='all'||v.category===category) && (!query||`${v.dutch} ${v.spoken} ${v.latin} ${v.english}`.toLowerCase().includes(query.toLowerCase()))); if(shuffle) a=[...a].sort((x,y)=>seeded(x.id)-seeded(y.id)); return a;},[query,category,shuffle]);
+ const filtered=useMemo(()=>{
+   const lessonIds=selectedLesson?new Set(selectedLesson.words.map(x=>x.id)):null;
+   let a=vocab.filter(v=>(!lessonIds||lessonIds.has(v.id)) && (category==='all'||v.category===category) && (!query||`${v.dutch} ${v.spoken} ${v.latin} ${v.english}`.toLowerCase().includes(query.toLowerCase())));
+   if(shuffle) a=[...a].sort((x,y)=>seeded(x.id)-seeded(y.id));
+   return a;
+ },[query,category,shuffle,selectedLesson]);
+ useEffect(()=>{setIdx(0);setRevealed(false);setCategory('all');setQuery('')},[selectedLesson]);
  useEffect(()=>{setIdx(0);setRevealed(false)},[query,category,shuffle]);
  const w=filtered[idx]||vocab[0]; const nextW=filtered[(idx+1)%Math.max(1,filtered.length)]||w; const known=app.knownIds.has(w.id); const fav=app.favorites.has(w.id);
  const [swipeExit,setSwipeExit]=useState(null);
@@ -212,6 +268,7 @@ function Words({app}){
  const endDrag=()=>{if(dragStart.current===null)return; const x=dragX; dragStart.current=null; setDragging(false); if(Math.abs(x)>85){finishSwipe(x>0?'right':'left')}else setDragX(0)};
  const toggleFav=()=>app.update(p=>{const s=new Set(p.favorites||[]);s.has(w.id)?s.delete(w.id):s.add(w.id);return {...p,favorites:[...s]}});
  return <div className="screen words-screen"><PageHead eyebrow="1000+ WOORDEN" title="Woorden" sub="Kijk, luister en herhaal. Spreken staat centraal." badge={<>{idx+1} / {filtered.length}</>}/>
+   {selectedLesson&&<div className="review-banner lesson-active-banner"><div className="seal">{selectedLesson.emoji}</div><div><b>Les {selectedLesson.number} · {selectedLesson.title}</b><span>{selectedLesson.words.length} woorden uit je leerpad</span></div><button onClick={clearSelectedLesson}><X/></button></div>}
    <div className="word-toolbar"><label><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Zoek Nederlands of fonetisch…"/></label><button className={shuffle?'active':''} onClick={()=>setShuffle(s=>!s)}><Shuffle/> <span>Mix</span></button></div>
    <div className="chips"><button className={category==='all'?'active':''} onClick={()=>setCategory('all')}>Alles</button>{cats.slice(0,8).map(c=><button key={c} className={category===c?'active':''} onClick={()=>setCategory(c)}>{iconFor(c)} {labelFor(c)}</button>)}</div>
    <div className="flash-layout">
