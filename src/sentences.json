@@ -1,1 +1,4002 @@
-[[1, "Waar ga je heen?", "goja miri", "goja miri", "VALIDATED", "question + go", null, "partner interview"], [2, "Ik ga naar huis.", "ma merom khana", "ma merom khana", "VALIDATED", "1sg go", null, "partner interview"], [3, "Wat ben je aan het doen?", "tu chi mi kuni", "tu chi mi kuni", "VALIDATED", "2sg present", null, "partner interview"], [4, "Wacht even.", "bosh yak da kaf", "bosh yak da kaf", "REVIEW_NEEDED", "imperative", "heard form needs confirmation", "partner interview"], [5, "Heb je honger?", "tu gušna asti", "tu gushna asti", "VALIDATED", "question + be", null, "partner interview"], [6, "Wil je iets eten?", "tu mikhoyi chizi non bokh ori", "tu mikhoyi chizi non bokh ori", "REVIEW_NEEDED", "want + eat", "needs segmentation", "partner interview"], [7, "Niet doen!", "nako", "nako", "VALIDATED", "negative imperative", null, "partner interview"], [8, "Kom hier.", "bia", "bia", "VALIDATED", "imperative come", null, "partner interview"], [9, "Ik kom zo.", "ma mi aium", "ma mi aium", "VALIDATED", "1sg come", null, "partner interview"], [10, "Ik weet het niet.", "ma na mifamom", "ma na mifamom", "VALIDATED", "negation", null, "partner interview"], [11, "Waar zijn de kinderen?", "shtoka goja astan", "shtoka goja astan", "VALIDATED", "plural be", null, "partner interview"], [12, "Geef dat aan mij.", "bete ba ma", "bete ba ma", "VALIDATED", "imperative give", null, "partner interview"], [13, "Ga niet weg.", "na ro", "na ro", "VALIDATED", "negative imperative", null, "partner interview"], [14, "Wanneer kom je terug?", "ki wach pas mi aji", "ki wach pas mi aji", "VALIDATED", "question + return", null, "partner interview"], [15, "Ik heb geen geld.", "ma paisa na dorom", "ma paisa na dorom", "VALIDATED", "have + negation", null, "partner interview"], [16, "Ik ben moe.", "ma monda astom", "ma monda astom", "VALIDATED", "1sg be", null, "partner interview"], [17, "Hij is thuis.", "u khana astah", "u khana astah", "VALIDATED", "3sg be", null, "partner interview"], [18, "Waar is het?", "goja astah", "goja astah", "VALIDATED", "question + be", null, "partner interview"], [19, "Waarom niet?", "chro ne", "chro ne", "VALIDATED", "question + negation", null, "partner interview"], [20, "Ik begrijp het niet.", "ma na fomidom", "ma na fomidom", "VALIDATED", "negation", null, "partner interview"], [21, "Kun je me helpen?", "mi toni kumakëm kuni", "mi toni kumakem kuni", "VALIDATED", "modal + help", null, "partner interview"], [22, "Het maakt niet uit.", "ghaira", "ghaira", "VALIDATED", "idiom", "short form", "partner interview"], [23, "Ik bel je.", "ma zang mezanometa", "ma zang mezanometa", "VALIDATED", "call", "needs segmentation", "partner interview"], [24, "Ik ga boodschappen doen.", "ma saudo mi kharam", "ma saudo mi kharam", "VALIDATED", "shopping", null, "partner interview"], [25, "Ik wil water.", "ma mi khojom au", "ma mi khojom au", "VALIDATED", "want", null, "partner interview"], [26, "Wil je water?", "tu au mikhoyi?", "tu au mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [27, "Waar is water?", "au goja ast?", "au goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [28, "Geef me water.", "au beta ma", "au beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [29, "Ik heb water niet.", "ma au na dorom", "ma au na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [30, "Heb je water?", "tu au dori?", "tu au dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [31, "Pak water.", "au begir", "au begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [32, "Breng water.", "au biyaw", "au biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [33, "Ik wil brood.", "ma non mikhoyom", "ma non mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [34, "Wil je brood?", "tu non mikhoyi?", "tu non mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [35, "Waar is brood?", "non goja ast?", "non goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [36, "Geef me brood.", "non beta ma", "non beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [37, "Ik heb brood niet.", "ma non na dorom", "ma non na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [38, "Heb je brood?", "tu non dori?", "tu non dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [39, "Pak brood.", "non begir", "non begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [40, "Breng brood.", "non biyaw", "non biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [41, "Ik wil rijst.", "ma brinj mikhoyom", "ma brinj mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [42, "Wil je rijst?", "tu brinj mikhoyi?", "tu brinj mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [43, "Waar is rijst?", "brinj goja ast?", "brinj goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [44, "Geef me rijst.", "brinj beta ma", "brinj beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [45, "Ik heb rijst niet.", "ma brinj na dorom", "ma brinj na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [46, "Heb je rijst?", "tu brinj dori?", "tu brinj dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [47, "Pak rijst.", "brinj begir", "brinj begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [48, "Breng rijst.", "brinj biyaw", "brinj biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [49, "Ik wil thee.", "ma chai mikhoyom", "ma chai mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [50, "Wil je thee?", "tu chai mikhoyi?", "tu chai mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [51, "Waar is thee?", "chai goja ast?", "chai goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [52, "Geef me thee.", "chai beta ma", "chai beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [53, "Ik heb thee niet.", "ma chai na dorom", "ma chai na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [54, "Heb je thee?", "tu chai dori?", "tu chai dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [55, "Pak thee.", "chai begir", "chai begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [56, "Breng thee.", "chai biyaw", "chai biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [57, "Ik wil koffie.", "ma qahwa mikhoyom", "ma qahwa mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [58, "Wil je koffie?", "tu qahwa mikhoyi?", "tu qahwa mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [59, "Waar is koffie?", "qahwa goja ast?", "qahwa goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [60, "Geef me koffie.", "qahwa beta ma", "qahwa beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [61, "Ik heb koffie niet.", "ma qahwa na dorom", "ma qahwa na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [62, "Heb je koffie?", "tu qahwa dori?", "tu qahwa dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [63, "Pak koffie.", "qahwa begir", "qahwa begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [64, "Breng koffie.", "qahwa biyaw", "qahwa biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [65, "Ik wil melk.", "ma shir mikhoyom", "ma shir mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [66, "Wil je melk?", "tu shir mikhoyi?", "tu shir mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [67, "Waar is melk?", "shir goja ast?", "shir goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [68, "Geef me melk.", "shir beta ma", "shir beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [69, "Ik heb melk niet.", "ma shir na dorom", "ma shir na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [70, "Heb je melk?", "tu shir dori?", "tu shir dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [71, "Pak melk.", "shir begir", "shir begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [72, "Breng melk.", "shir biyaw", "shir biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [73, "Ik wil geld.", "ma paisa mikhoyom", "ma paisa mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [74, "Wil je geld?", "tu paisa mikhoyi?", "tu paisa mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [75, "Waar is geld?", "paisa goja ast?", "paisa goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [76, "Geef me geld.", "paisa beta ma", "paisa beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [77, "Ik heb geld niet.", "ma paisa na dorom", "ma paisa na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [78, "Heb je geld?", "tu paisa dori?", "tu paisa dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [79, "Pak geld.", "paisa begir", "paisa begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [80, "Breng geld.", "paisa biyaw", "paisa biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [81, "Ik wil telefoon.", "ma telefon mikhoyom", "ma telefon mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [82, "Wil je telefoon?", "tu telefon mikhoyi?", "tu telefon mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [83, "Waar is telefoon?", "telefon goja ast?", "telefon goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [84, "Geef me telefoon.", "telefon beta ma", "telefon beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [85, "Ik heb telefoon niet.", "ma telefon na dorom", "ma telefon na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [86, "Heb je telefoon?", "tu telefon dori?", "tu telefon dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [87, "Pak telefoon.", "telefon begir", "telefon begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [88, "Breng telefoon.", "telefon biyaw", "telefon biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [89, "Ik wil sleutel.", "ma kilid mikhoyom", "ma kilid mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [90, "Wil je sleutel?", "tu kilid mikhoyi?", "tu kilid mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [91, "Waar is sleutel?", "kilid goja ast?", "kilid goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [92, "Geef me sleutel.", "kilid beta ma", "kilid beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [93, "Ik heb sleutel niet.", "ma kilid na dorom", "ma kilid na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [94, "Heb je sleutel?", "tu kilid dori?", "tu kilid dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [95, "Pak sleutel.", "kilid begir", "kilid begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [96, "Breng sleutel.", "kilid biyaw", "kilid biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [97, "Ik wil boek.", "ma ketab mikhoyom", "ma ketab mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [98, "Wil je boek?", "tu ketab mikhoyi?", "tu ketab mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [99, "Waar is boek?", "ketab goja ast?", "ketab goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [100, "Geef me boek.", "ketab beta ma", "ketab beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [101, "Ik heb boek niet.", "ma ketab na dorom", "ma ketab na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [102, "Heb je boek?", "tu ketab dori?", "tu ketab dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [103, "Pak boek.", "ketab begir", "ketab begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [104, "Breng boek.", "ketab biyaw", "ketab biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [105, "Ik wil appel.", "ma seb mikhoyom", "ma seb mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [106, "Wil je appel?", "tu seb mikhoyi?", "tu seb mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [107, "Waar is appel?", "seb goja ast?", "seb goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [108, "Geef me appel.", "seb beta ma", "seb beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [109, "Ik heb appel niet.", "ma seb na dorom", "ma seb na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [110, "Heb je appel?", "tu seb dori?", "tu seb dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [111, "Pak appel.", "seb begir", "seb begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [112, "Breng appel.", "seb biyaw", "seb biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [113, "Ik wil vlees.", "ma gosht mikhoyom", "ma gosht mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [114, "Wil je vlees?", "tu gosht mikhoyi?", "tu gosht mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [115, "Waar is vlees?", "gosht goja ast?", "gosht goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [116, "Geef me vlees.", "gosht beta ma", "gosht beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [117, "Ik heb vlees niet.", "ma gosht na dorom", "ma gosht na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [118, "Heb je vlees?", "tu gosht dori?", "tu gosht dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [119, "Pak vlees.", "gosht begir", "gosht begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [120, "Breng vlees.", "gosht biyaw", "gosht biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [121, "Ik wil kip.", "ma morgh mikhoyom", "ma morgh mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [122, "Wil je kip?", "tu morgh mikhoyi?", "tu morgh mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [123, "Waar is kip?", "morgh goja ast?", "morgh goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [124, "Geef me kip.", "morgh beta ma", "morgh beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [125, "Ik heb kip niet.", "ma morgh na dorom", "ma morgh na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [126, "Heb je kip?", "tu morgh dori?", "tu morgh dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [127, "Pak kip.", "morgh begir", "morgh begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [128, "Breng kip.", "morgh biyaw", "morgh biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [129, "Ik wil vis.", "ma moi mikhoyom", "ma moi mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [130, "Wil je vis?", "tu moi mikhoyi?", "tu moi mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [131, "Waar is vis?", "moi goja ast?", "moi goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [132, "Geef me vis.", "moi beta ma", "moi beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [133, "Ik heb vis niet.", "ma moi na dorom", "ma moi na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [134, "Heb je vis?", "tu moi dori?", "tu moi dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [135, "Pak vis.", "moi begir", "moi begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [136, "Breng vis.", "moi biyaw", "moi biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [137, "Ik wil soep.", "ma shorwa mikhoyom", "ma shorwa mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [138, "Wil je soep?", "tu shorwa mikhoyi?", "tu shorwa mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [139, "Waar is soep?", "shorwa goja ast?", "shorwa goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [140, "Geef me soep.", "shorwa beta ma", "shorwa beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [141, "Ik heb soep niet.", "ma shorwa na dorom", "ma shorwa na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [142, "Heb je soep?", "tu shorwa dori?", "tu shorwa dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [143, "Pak soep.", "shorwa begir", "shorwa begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [144, "Breng soep.", "shorwa biyaw", "shorwa biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [145, "Ik wil jas.", "ma jaket mikhoyom", "ma jaket mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [146, "Wil je jas?", "tu jaket mikhoyi?", "tu jaket mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [147, "Waar is jas?", "jaket goja ast?", "jaket goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [148, "Geef me jas.", "jaket beta ma", "jaket beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [149, "Ik heb jas niet.", "ma jaket na dorom", "ma jaket na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [150, "Heb je jas?", "tu jaket dori?", "tu jaket dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [151, "Pak jas.", "jaket begir", "jaket begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [152, "Breng jas.", "jaket biyaw", "jaket biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [153, "Ik wil schoenen.", "ma kafsh mikhoyom", "ma kafsh mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [154, "Wil je schoenen?", "tu kafsh mikhoyi?", "tu kafsh mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [155, "Waar is schoenen?", "kafsh goja ast?", "kafsh goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [156, "Geef me schoenen.", "kafsh beta ma", "kafsh beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [157, "Ik heb schoenen niet.", "ma kafsh na dorom", "ma kafsh na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [158, "Heb je schoenen?", "tu kafsh dori?", "tu kafsh dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [159, "Pak schoenen.", "kafsh begir", "kafsh begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [160, "Breng schoenen.", "kafsh biyaw", "kafsh biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [161, "Ik wil tas.", "ma khilta mikhoyom", "ma khilta mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [162, "Wil je tas?", "tu khilta mikhoyi?", "tu khilta mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [163, "Waar is tas?", "khilta goja ast?", "khilta goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [164, "Geef me tas.", "khilta beta ma", "khilta beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [165, "Ik heb tas niet.", "ma khilta na dorom", "ma khilta na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [166, "Heb je tas?", "tu khilta dori?", "tu khilta dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [167, "Pak tas.", "khilta begir", "khilta begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [168, "Breng tas.", "khilta biyaw", "khilta biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [169, "Ik wil medicijn.", "ma dawa mikhoyom", "ma dawa mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [170, "Wil je medicijn?", "tu dawa mikhoyi?", "tu dawa mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [171, "Waar is medicijn?", "dawa goja ast?", "dawa goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [172, "Geef me medicijn.", "dawa beta ma", "dawa beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [173, "Ik heb medicijn niet.", "ma dawa na dorom", "ma dawa na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [174, "Heb je medicijn?", "tu dawa dori?", "tu dawa dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [175, "Pak medicijn.", "dawa begir", "dawa begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [176, "Breng medicijn.", "dawa biyaw", "dawa biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [177, "Ik wil auto.", "ma mutar mikhoyom", "ma mutar mikhoyom", "REVIEW_NEEDED", "want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [178, "Wil je auto?", "tu mutar mikhoyi?", "tu mutar mikhoyi?", "REVIEW_NEEDED", "question + want", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [179, "Waar is auto?", "mutar goja ast?", "mutar goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [180, "Geef me auto.", "mutar beta ma", "mutar beta ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [181, "Ik heb auto niet.", "ma mutar na dorom", "ma mutar na dorom", "REVIEW_NEEDED", "have/not", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [182, "Heb je auto?", "tu mutar dori?", "tu mutar dori?", "REVIEW_NEEDED", "have/question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [183, "Pak auto.", "mutar begir", "mutar begir", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [184, "Breng auto.", "mutar biyaw", "mutar biyaw", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [185, "Ik ben in huis.", "ma dar khana astom", "ma dar khana astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [186, "Kom naar huis.", "bia khana", "bia khana", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [187, "Waar is huis?", "khana goja ast?", "khana goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [188, "Ga naar huis.", "boro khana", "boro khana", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [189, "Ben je in huis?", "tu dar khana asti?", "tu dar khana asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [190, "Ik ga naar school.", "ma merom maktab", "ma merom maktab", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [191, "Ik ben in school.", "ma dar maktab astom", "ma dar maktab astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [192, "Kom naar school.", "bia maktab", "bia maktab", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [193, "Waar is school?", "maktab goja ast?", "maktab goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [194, "Ga naar school.", "boro maktab", "boro maktab", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [195, "Ben je in school?", "tu dar maktab asti?", "tu dar maktab asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [196, "Ik ga naar werk.", "ma merom kar", "ma merom kar", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [197, "Ik ben in werk.", "ma dar kar astom", "ma dar kar astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [198, "Kom naar werk.", "bia kar", "bia kar", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [199, "Waar is werk?", "kar goja ast?", "kar goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [200, "Ga naar werk.", "boro kar", "boro kar", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [201, "Ben je in werk?", "tu dar kar asti?", "tu dar kar asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [202, "Ik ga naar winkel.", "ma merom dukan", "ma merom dukan", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [203, "Ik ben in winkel.", "ma dar dukan astom", "ma dar dukan astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [204, "Kom naar winkel.", "bia dukan", "bia dukan", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [205, "Waar is winkel?", "dukan goja ast?", "dukan goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [206, "Ga naar winkel.", "boro dukan", "boro dukan", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [207, "Ben je in winkel?", "tu dar dukan asti?", "tu dar dukan asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [208, "Ik ga naar markt.", "ma merom bazar", "ma merom bazar", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [209, "Ik ben in markt.", "ma dar bazar astom", "ma dar bazar astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [210, "Kom naar markt.", "bia bazar", "bia bazar", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [211, "Waar is markt?", "bazar goja ast?", "bazar goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [212, "Ga naar markt.", "boro bazar", "boro bazar", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [213, "Ben je in markt?", "tu dar bazar asti?", "tu dar bazar asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [214, "Ik ga naar keuken.", "ma merom ashpazkhana", "ma merom ashpazkhana", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [215, "Ik ben in keuken.", "ma dar ashpazkhana astom", "ma dar ashpazkhana astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [216, "Kom naar keuken.", "bia ashpazkhana", "bia ashpazkhana", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [217, "Waar is keuken?", "ashpazkhana goja ast?", "ashpazkhana goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [218, "Ga naar keuken.", "boro ashpazkhana", "boro ashpazkhana", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [219, "Ben je in keuken?", "tu dar ashpazkhana asti?", "tu dar ashpazkhana asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [220, "Ik ga naar kamer.", "ma merom otagh", "ma merom otagh", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [221, "Ik ben in kamer.", "ma dar otagh astom", "ma dar otagh astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [222, "Kom naar kamer.", "bia otagh", "bia otagh", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [223, "Waar is kamer?", "otagh goja ast?", "otagh goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [224, "Ga naar kamer.", "boro otagh", "boro otagh", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [225, "Ben je in kamer?", "tu dar otagh asti?", "tu dar otagh asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [226, "Ik ga naar ziekenhuis.", "ma merom shafakhana", "ma merom shafakhana", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [227, "Ik ben in ziekenhuis.", "ma dar shafakhana astom", "ma dar shafakhana astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [228, "Kom naar ziekenhuis.", "bia shafakhana", "bia shafakhana", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [229, "Waar is ziekenhuis?", "shafakhana goja ast?", "shafakhana goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [230, "Ga naar ziekenhuis.", "boro shafakhana", "boro shafakhana", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [231, "Ben je in ziekenhuis?", "tu dar shafakhana asti?", "tu dar shafakhana asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [232, "Ik ga naar buiten.", "ma merom berun", "ma merom berun", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [233, "Ik ben in buiten.", "ma dar berun astom", "ma dar berun astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [234, "Kom naar buiten.", "bia berun", "bia berun", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [235, "Waar is buiten?", "berun goja ast?", "berun goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [236, "Ga naar buiten.", "boro berun", "boro berun", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [237, "Ben je in buiten?", "tu dar berun asti?", "tu dar berun asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [238, "Ik ga naar binnen.", "ma merom dakhel", "ma merom dakhel", "REVIEW_NEEDED", "go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [239, "Ik ben in binnen.", "ma dar dakhel astom", "ma dar dakhel astom", "REVIEW_NEEDED", "be/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [240, "Kom naar binnen.", "bia dakhel", "bia dakhel", "REVIEW_NEEDED", "imperative go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [241, "Waar is binnen?", "dakhel goja ast?", "dakhel goja ast?", "REVIEW_NEEDED", "where", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [242, "Ga naar binnen.", "boro dakhel", "boro dakhel", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [243, "Ben je in binnen?", "tu dar dakhel asti?", "tu dar dakhel asti?", "REVIEW_NEEDED", "question/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [244, "Waar is mama?", "mama goja ast?", "mama goja ast?", "REVIEW_NEEDED", "where/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [245, "Roep mama.", "mama sada ko", "mama sada ko", "REVIEW_NEEDED", "imperative/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [246, "Mama is thuis.", "mama khana ast", "mama khana ast", "REVIEW_NEEDED", "be/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [247, "Kom met mama.", "ba mama bia", "ba mama bia", "REVIEW_NEEDED", "with/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [248, "Waar is papa?", "baba goja ast?", "baba goja ast?", "REVIEW_NEEDED", "where/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [249, "Roep papa.", "baba sada ko", "baba sada ko", "REVIEW_NEEDED", "imperative/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [250, "Papa is thuis.", "baba khana ast", "baba khana ast", "REVIEW_NEEDED", "be/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [251, "Kom met papa.", "ba baba bia", "ba baba bia", "REVIEW_NEEDED", "with/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [252, "Waar is moeder?", "madar goja ast?", "madar goja ast?", "REVIEW_NEEDED", "where/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [253, "Roep moeder.", "madar sada ko", "madar sada ko", "REVIEW_NEEDED", "imperative/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [254, "Moeder is thuis.", "madar khana ast", "madar khana ast", "REVIEW_NEEDED", "be/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [255, "Kom met moeder.", "ba madar bia", "ba madar bia", "REVIEW_NEEDED", "with/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [256, "Waar is vader?", "padar goja ast?", "padar goja ast?", "REVIEW_NEEDED", "where/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [257, "Roep vader.", "padar sada ko", "padar sada ko", "REVIEW_NEEDED", "imperative/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [258, "Vader is thuis.", "padar khana ast", "padar khana ast", "REVIEW_NEEDED", "be/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [259, "Kom met vader.", "ba padar bia", "ba padar bia", "REVIEW_NEEDED", "with/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [260, "Waar is broer?", "birader goja ast?", "birader goja ast?", "REVIEW_NEEDED", "where/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [261, "Roep broer.", "birader sada ko", "birader sada ko", "REVIEW_NEEDED", "imperative/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [262, "Broer is thuis.", "birader khana ast", "birader khana ast", "REVIEW_NEEDED", "be/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [263, "Kom met broer.", "ba birader bia", "ba birader bia", "REVIEW_NEEDED", "with/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [264, "Waar is zus?", "cohar goja ast?", "cohar goja ast?", "REVIEW_NEEDED", "where/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [265, "Roep zus.", "cohar sada ko", "cohar sada ko", "REVIEW_NEEDED", "imperative/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [266, "Zus is thuis.", "cohar khana ast", "cohar khana ast", "REVIEW_NEEDED", "be/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [267, "Kom met zus.", "ba cohar bia", "ba cohar bia", "REVIEW_NEEDED", "with/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [268, "Waar is vriend?", "rafiq goja ast?", "rafiq goja ast?", "REVIEW_NEEDED", "where/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [269, "Roep vriend.", "rafiq sada ko", "rafiq sada ko", "REVIEW_NEEDED", "imperative/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [270, "Vriend is thuis.", "rafiq khana ast", "rafiq khana ast", "REVIEW_NEEDED", "be/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [271, "Kom met vriend.", "ba rafiq bia", "ba rafiq bia", "REVIEW_NEEDED", "with/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [272, "Waar is kind?", "shtuk goja ast?", "shtuk goja ast?", "REVIEW_NEEDED", "where/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [273, "Roep kind.", "shtuk sada ko", "shtuk sada ko", "REVIEW_NEEDED", "imperative/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [274, "Kind is thuis.", "shtuk khana ast", "shtuk khana ast", "REVIEW_NEEDED", "be/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [275, "Kom met kind.", "ba shtuk bia", "ba shtuk bia", "REVIEW_NEEDED", "with/person", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [276, "Ga niet.", "na ro", "na ro", "REVIEW_NEEDED", "negative imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [277, "Wat doe je?", "tu chi mi kuni?", "tu chi mi kuni?", "REVIEW_NEEDED", "question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [278, "Ik kom.", "ma miayom", "ma miayom", "REVIEW_NEEDED", "come", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [279, "Nu niet.", "ale na", "ale na", "REVIEW_NEEDED", "time/negative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [280, "Heel goed.", "besyar khub", "besyar khub", "REVIEW_NEEDED", "intensifier", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [281, "Wat wil je?", "tu chi mikhoyi?", "tu chi mikhoyi?", "REVIEW_NEEDED", "question", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [282, "Geef het aan mij.", "beta ba ma", "beta ba ma", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [283, "Ik weet het.", "ma midanom", "ma midanom", "REVIEW_NEEDED", "know", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [284, "Luister.", "gosh ko", "gosh ko", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [285, "Kijk.", "negah ko", "negah ko", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [286, "Rustig.", "aram", "aram", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [287, "Snel.", "tez", "tez", "REVIEW_NEEDED", "adverb", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [288, "Langzaam.", "asta", "asta", "REVIEW_NEEDED", "adverb", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [289, "Goedemorgen.", "sobh bekhair", "sobh bekhair", "REVIEW_NEEDED", "greeting", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [290, "Goedenavond.", "shab bekhair", "shab bekhair", "REVIEW_NEEDED", "greeting", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [291, "Dank je.", "tashakur", "tashakur", "REVIEW_NEEDED", "greeting", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [292, "Alsjeblieft.", "lotfan", "lotfan", "REVIEW_NEEDED", "polite", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [293, "Sorry.", "bubakhshen", "bubakhshen", "REVIEW_NEEDED", "polite", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [294, "Ga eten.", "bokhor", "bokhor", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [295, "Wil je eten?", "mikhoyi bokhor?", "mikhoyi bokhor?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [296, "Ik wil eten.", "ma mikhoyom bokhor", "ma mikhoyom bokhor", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [297, "Niet eten.", "bokhor na", "bokhor na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [298, "Ga drinken.", "benosh", "benosh", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [299, "Wil je drinken?", "mikhoyi benosh?", "mikhoyi benosh?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [300, "Ik wil drinken.", "ma mikhoyom benosh", "ma mikhoyom benosh", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [301, "Niet drinken.", "benosh na", "benosh na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [302, "Ga slapen.", "khab ko", "khab ko", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [303, "Wil je slapen?", "mikhoyi khab ko?", "mikhoyi khab ko?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [304, "Ik wil slapen.", "ma mikhoyom khab ko", "ma mikhoyom khab ko", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [305, "Niet slapen.", "khab ko na", "khab ko na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [306, "Ga zitten.", "beshin", "beshin", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [307, "Wil je zitten?", "mikhoyi beshin?", "mikhoyi beshin?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [308, "Ik wil zitten.", "ma mikhoyom beshin", "ma mikhoyom beshin", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [309, "Niet zitten.", "beshin na", "beshin na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [310, "Ga staan.", "ista sho", "ista sho", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [311, "Wil je staan?", "mikhoyi ista sho?", "mikhoyi ista sho?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [312, "Ik wil staan.", "ma mikhoyom ista sho", "ma mikhoyom ista sho", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [313, "Niet staan.", "ista sho na", "ista sho na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [314, "Ga komen.", "bia", "bia", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [315, "Wil je komen?", "mikhoyi bia?", "mikhoyi bia?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [316, "Ik wil komen.", "ma mikhoyom bia", "ma mikhoyom bia", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [317, "Niet komen.", "bia na", "bia na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [318, "Ga gaan.", "boro", "boro", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [319, "Wil je gaan?", "mikhoyi boro?", "mikhoyi boro?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [320, "Ik wil gaan.", "ma mikhoyom boro", "ma mikhoyom boro", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [321, "Niet gaan.", "boro na", "boro na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [322, "Ga kijken.", "negah ko", "negah ko", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [323, "Wil je kijken?", "mikhoyi negah ko?", "mikhoyi negah ko?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [324, "Ik wil kijken.", "ma mikhoyom negah ko", "ma mikhoyom negah ko", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [325, "Niet kijken.", "negah ko na", "negah ko na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [326, "Ga luisteren.", "gosh ko", "gosh ko", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [327, "Wil je luisteren?", "mikhoyi gosh ko?", "mikhoyi gosh ko?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [328, "Ik wil luisteren.", "ma mikhoyom gosh ko", "ma mikhoyom gosh ko", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [329, "Niet luisteren.", "gosh ko na", "gosh ko na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [330, "Ga wachten.", "sabr ko", "sabr ko", "REVIEW_NEEDED", "imperative", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [331, "Wil je wachten?", "mikhoyi sabr ko?", "mikhoyi sabr ko?", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [332, "Ik wil wachten.", "ma mikhoyom sabr ko", "ma mikhoyom sabr ko", "REVIEW_NEEDED", "want/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [333, "Niet wachten.", "sabr ko na", "sabr ko na", "REVIEW_NEEDED", "negative/action", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [334, "Niet nu.", "ale na", "ale na", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [335, "Ik kom nu.", "ma ale miayom", "ma ale miayom", "REVIEW_NEEDED", "time/come", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [336, "Ik ga nu.", "ma ale merom", "ma ale merom", "REVIEW_NEEDED", "time/go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [337, "Tot nu.", "ta ale", "ta ale", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [338, "Niet vandaag.", "emroz na", "emroz na", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [339, "Ik kom vandaag.", "ma emroz miayom", "ma emroz miayom", "REVIEW_NEEDED", "time/come", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [340, "Ik ga vandaag.", "ma emroz merom", "ma emroz merom", "REVIEW_NEEDED", "time/go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [341, "Tot vandaag.", "ta emroz", "ta emroz", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [342, "Niet morgen.", "saba na", "saba na", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [343, "Ik kom morgen.", "ma saba miayom", "ma saba miayom", "REVIEW_NEEDED", "time/come", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [344, "Ik ga morgen.", "ma saba merom", "ma saba merom", "REVIEW_NEEDED", "time/go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [345, "Tot morgen.", "ta saba", "ta saba", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [346, "Niet later.", "bad-tar na", "bad-tar na", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [347, "Ik kom later.", "ma bad-tar miayom", "ma bad-tar miayom", "REVIEW_NEEDED", "time/come", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [348, "Ik ga later.", "ma bad-tar merom", "ma bad-tar merom", "REVIEW_NEEDED", "time/go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [349, "Tot later.", "ta bad-tar", "ta bad-tar", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [350, "Niet vanavond.", "emshab na", "emshab na", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [351, "Ik kom vanavond.", "ma emshab miayom", "ma emshab miayom", "REVIEW_NEEDED", "time/come", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [352, "Ik ga vanavond.", "ma emshab merom", "ma emshab merom", "REVIEW_NEEDED", "time/go", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [353, "Tot vanavond.", "ta emshab", "ta emshab", "REVIEW_NEEDED", "time", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [354, "Dit is mijn water.", "i au-e ma ast", "i au-e ma ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [355, "Dat is jouw water.", "u au-e tu ast", "u au-e tu ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [356, "Zet water hier.", "au inja beman", "au inja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [357, "Leg water daar.", "au unja beman", "au unja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [358, "Ik zoek water.", "ma au ra mepalom", "ma au ra mepalom", "REVIEW_NEEDED", "search", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [359, "Ik heb water nodig.", "ma ba au zarurat dorom", "ma ba au zarurat dorom", "REVIEW_NEEDED", "need", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [360, "Dit is mijn brood.", "i non-e ma ast", "i non-e ma ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [361, "Dat is jouw brood.", "u non-e tu ast", "u non-e tu ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [362, "Zet brood hier.", "non inja beman", "non inja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [363, "Leg brood daar.", "non unja beman", "non unja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [364, "Ik zoek brood.", "ma non ra mepalom", "ma non ra mepalom", "REVIEW_NEEDED", "search", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [365, "Ik heb brood nodig.", "ma ba non zarurat dorom", "ma ba non zarurat dorom", "REVIEW_NEEDED", "need", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [366, "Dit is mijn rijst.", "i brinj-e ma ast", "i brinj-e ma ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [367, "Dat is jouw rijst.", "u brinj-e tu ast", "u brinj-e tu ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [368, "Zet rijst hier.", "brinj inja beman", "brinj inja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [369, "Leg rijst daar.", "brinj unja beman", "brinj unja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [370, "Ik zoek rijst.", "ma brinj ra mepalom", "ma brinj ra mepalom", "REVIEW_NEEDED", "search", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [371, "Ik heb rijst nodig.", "ma ba brinj zarurat dorom", "ma ba brinj zarurat dorom", "REVIEW_NEEDED", "need", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [372, "Dit is mijn thee.", "i chai-e ma ast", "i chai-e ma ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [373, "Dat is jouw thee.", "u chai-e tu ast", "u chai-e tu ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [374, "Zet thee hier.", "chai inja beman", "chai inja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [375, "Leg thee daar.", "chai unja beman", "chai unja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [376, "Ik zoek thee.", "ma chai ra mepalom", "ma chai ra mepalom", "REVIEW_NEEDED", "search", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [377, "Ik heb thee nodig.", "ma ba chai zarurat dorom", "ma ba chai zarurat dorom", "REVIEW_NEEDED", "need", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [378, "Dit is mijn koffie.", "i qahwa-e ma ast", "i qahwa-e ma ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [379, "Dat is jouw koffie.", "u qahwa-e tu ast", "u qahwa-e tu ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [380, "Zet koffie hier.", "qahwa inja beman", "qahwa inja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [381, "Leg koffie daar.", "qahwa unja beman", "qahwa unja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [382, "Ik zoek koffie.", "ma qahwa ra mepalom", "ma qahwa ra mepalom", "REVIEW_NEEDED", "search", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [383, "Ik heb koffie nodig.", "ma ba qahwa zarurat dorom", "ma ba qahwa zarurat dorom", "REVIEW_NEEDED", "need", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [384, "Dit is mijn melk.", "i shir-e ma ast", "i shir-e ma ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [385, "Dat is jouw melk.", "u shir-e tu ast", "u shir-e tu ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [386, "Zet melk hier.", "shir inja beman", "shir inja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [387, "Leg melk daar.", "shir unja beman", "shir unja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [388, "Ik zoek melk.", "ma shir ra mepalom", "ma shir ra mepalom", "REVIEW_NEEDED", "search", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [389, "Ik heb melk nodig.", "ma ba shir zarurat dorom", "ma ba shir zarurat dorom", "REVIEW_NEEDED", "need", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [390, "Dit is mijn geld.", "i paisa-e ma ast", "i paisa-e ma ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [391, "Dat is jouw geld.", "u paisa-e tu ast", "u paisa-e tu ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [392, "Zet geld hier.", "paisa inja beman", "paisa inja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [393, "Leg geld daar.", "paisa unja beman", "paisa unja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [394, "Ik zoek geld.", "ma paisa ra mepalom", "ma paisa ra mepalom", "REVIEW_NEEDED", "search", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [395, "Ik heb geld nodig.", "ma ba paisa zarurat dorom", "ma ba paisa zarurat dorom", "REVIEW_NEEDED", "need", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [396, "Dit is mijn telefoon.", "i telefon-e ma ast", "i telefon-e ma ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [397, "Dat is jouw telefoon.", "u telefon-e tu ast", "u telefon-e tu ast", "REVIEW_NEEDED", "possession", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [398, "Zet telefoon hier.", "telefon inja beman", "telefon inja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [399, "Leg telefoon daar.", "telefon unja beman", "telefon unja beman", "REVIEW_NEEDED", "imperative/place", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"], [400, "Ik zoek telefoon.", "ma telefon ra mepalom", "ma telefon ra mepalom", "REVIEW_NEEDED", "search", "AI-fonetische startvorm; handmatig valideren buiten de app.", "AI draft"]]
+[
+  [
+    1,
+    "Waar ga je heen?",
+    "goja miri",
+    "goja miri",
+    "VALIDATED",
+    "question + go",
+    "",
+    "partner interview"
+  ],
+  [
+    2,
+    "Ik ga naar huis.",
+    "ma merom khana",
+    "ma merom khana",
+    "VALIDATED",
+    "1sg go",
+    "",
+    "partner interview"
+  ],
+  [
+    3,
+    "Wat ben je aan het doen?",
+    "tu chi mi kuni",
+    "tu chi mi kuni",
+    "VALIDATED",
+    "2sg present",
+    "",
+    "partner interview"
+  ],
+  [
+    4,
+    "Wacht even.",
+    "bosh yak da kaf",
+    "bosh yak da kaf",
+    "REVIEW_NEEDED",
+    "imperative",
+    "heard form needs confirmation",
+    "partner interview"
+  ],
+  [
+    5,
+    "Heb je honger?",
+    "tu gušna asti",
+    "tu gushna asti",
+    "VALIDATED",
+    "question + be",
+    "",
+    "partner interview"
+  ],
+  [
+    6,
+    "Wil je iets eten?",
+    "tu mikhoyi chizi non bokh ori",
+    "tu mikhoyi chizi non bokh ori",
+    "REVIEW_NEEDED",
+    "want + eat",
+    "needs segmentation",
+    "partner interview"
+  ],
+  [
+    7,
+    "Niet doen!",
+    "nako",
+    "nako",
+    "VALIDATED",
+    "negative imperative",
+    "",
+    "partner interview"
+  ],
+  [
+    8,
+    "Kom hier.",
+    "bia",
+    "bia",
+    "VALIDATED",
+    "imperative come",
+    "",
+    "partner interview"
+  ],
+  [
+    9,
+    "Ik kom zo.",
+    "ma mi aium",
+    "ma mi aium",
+    "VALIDATED",
+    "1sg come",
+    "",
+    "partner interview"
+  ],
+  [
+    10,
+    "Ik weet het niet.",
+    "ma na mifamom",
+    "ma na mifamom",
+    "VALIDATED",
+    "negation",
+    "",
+    "partner interview"
+  ],
+  [
+    11,
+    "Waar zijn de kinderen?",
+    "shtoka goja astan",
+    "shtoka goja astan",
+    "VALIDATED",
+    "plural be",
+    "",
+    "partner interview"
+  ],
+  [
+    12,
+    "Geef dat aan mij.",
+    "bete ba ma",
+    "bete ba ma",
+    "VALIDATED",
+    "imperative give",
+    "",
+    "partner interview"
+  ],
+  [
+    13,
+    "Ga niet weg.",
+    "na ro",
+    "na ro",
+    "VALIDATED",
+    "negative imperative",
+    "",
+    "partner interview"
+  ],
+  [
+    14,
+    "Wanneer kom je terug?",
+    "ki wach pas mi aji",
+    "ki wach pas mi aji",
+    "VALIDATED",
+    "question + return",
+    "",
+    "partner interview"
+  ],
+  [
+    15,
+    "Ik heb geen geld.",
+    "ma paisa na dorom",
+    "ma paisa na dorom",
+    "VALIDATED",
+    "have + negation",
+    "",
+    "partner interview"
+  ],
+  [
+    16,
+    "Ik ben moe.",
+    "ma monda astom",
+    "ma monda astom",
+    "VALIDATED",
+    "1sg be",
+    "",
+    "partner interview"
+  ],
+  [
+    17,
+    "Hij is thuis.",
+    "u khana astah",
+    "u khana astah",
+    "VALIDATED",
+    "3sg be",
+    "",
+    "partner interview"
+  ],
+  [
+    18,
+    "Waar is het?",
+    "goja astah",
+    "goja astah",
+    "VALIDATED",
+    "question + be",
+    "",
+    "partner interview"
+  ],
+  [
+    19,
+    "Waarom niet?",
+    "chro ne",
+    "chro ne",
+    "VALIDATED",
+    "question + negation",
+    "",
+    "partner interview"
+  ],
+  [
+    20,
+    "Ik begrijp het niet.",
+    "ma na fomidom",
+    "ma na fomidom",
+    "VALIDATED",
+    "negation",
+    "",
+    "partner interview"
+  ],
+  [
+    21,
+    "Kun je me helpen?",
+    "mi toni kumakëm kuni",
+    "mi toni kumakem kuni",
+    "VALIDATED",
+    "modal + help",
+    "",
+    "partner interview"
+  ],
+  [
+    22,
+    "Het maakt niet uit.",
+    "ghaira",
+    "ghaira",
+    "VALIDATED",
+    "idiom",
+    "short form",
+    "partner interview"
+  ],
+  [
+    23,
+    "Ik bel je.",
+    "ma zang mezanometa",
+    "ma zang mezanometa",
+    "VALIDATED",
+    "call",
+    "needs segmentation",
+    "partner interview"
+  ],
+  [
+    24,
+    "Ik ga boodschappen doen.",
+    "ma saudo mi kharam",
+    "ma saudo mi kharam",
+    "VALIDATED",
+    "shopping",
+    "",
+    "partner interview"
+  ],
+  [
+    25,
+    "Ik wil water.",
+    "ma mi khojom au",
+    "ma mi khojom au",
+    "VALIDATED",
+    "want",
+    "",
+    "partner interview"
+  ],
+  [
+    26,
+    "Wil je water?",
+    "tu au mikhoyi?",
+    "tu au mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    27,
+    "Waar is water?",
+    "au goja ast?",
+    "au goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    28,
+    "Geef me water.",
+    "au beta ma",
+    "au beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    29,
+    "Ik heb water niet.",
+    "ma au na dorom",
+    "ma au na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    30,
+    "Heb je water?",
+    "tu au dori?",
+    "tu au dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    31,
+    "Pak water.",
+    "au begir",
+    "au begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    32,
+    "Breng water.",
+    "au biyaw",
+    "au biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    33,
+    "Ik wil brood.",
+    "ma non mikhoyom",
+    "ma non mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    34,
+    "Wil je brood?",
+    "tu non mikhoyi?",
+    "tu non mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    35,
+    "Waar is brood?",
+    "non goja ast?",
+    "non goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    36,
+    "Geef me brood.",
+    "non beta ma",
+    "non beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    37,
+    "Ik heb brood niet.",
+    "ma non na dorom",
+    "ma non na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    38,
+    "Heb je brood?",
+    "tu non dori?",
+    "tu non dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    39,
+    "Pak brood.",
+    "non begir",
+    "non begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    40,
+    "Breng brood.",
+    "non biyaw",
+    "non biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    41,
+    "Ik wil rijst.",
+    "ma brinj mikhoyom",
+    "ma brinj mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    42,
+    "Wil je rijst?",
+    "tu brinj mikhoyi?",
+    "tu brinj mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    43,
+    "Waar is rijst?",
+    "brinj goja ast?",
+    "brinj goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    44,
+    "Geef me rijst.",
+    "brinj beta ma",
+    "brinj beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    45,
+    "Ik heb rijst niet.",
+    "ma brinj na dorom",
+    "ma brinj na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    46,
+    "Heb je rijst?",
+    "tu brinj dori?",
+    "tu brinj dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    47,
+    "Pak rijst.",
+    "brinj begir",
+    "brinj begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    48,
+    "Breng rijst.",
+    "brinj biyaw",
+    "brinj biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    49,
+    "Ik wil thee.",
+    "ma chai mikhoyom",
+    "ma chai mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    50,
+    "Wil je thee?",
+    "tu chai mikhoyi?",
+    "tu chai mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    51,
+    "Waar is thee?",
+    "chai goja ast?",
+    "chai goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    52,
+    "Geef me thee.",
+    "chai beta ma",
+    "chai beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    53,
+    "Ik heb thee niet.",
+    "ma chai na dorom",
+    "ma chai na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    54,
+    "Heb je thee?",
+    "tu chai dori?",
+    "tu chai dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    55,
+    "Pak thee.",
+    "chai begir",
+    "chai begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    56,
+    "Breng thee.",
+    "chai biyaw",
+    "chai biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    57,
+    "Ik wil koffie.",
+    "ma qahwa mikhoyom",
+    "ma qahwa mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    58,
+    "Wil je koffie?",
+    "tu qahwa mikhoyi?",
+    "tu qahwa mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    59,
+    "Waar is koffie?",
+    "qahwa goja ast?",
+    "qahwa goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    60,
+    "Geef me koffie.",
+    "qahwa beta ma",
+    "qahwa beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    61,
+    "Ik heb koffie niet.",
+    "ma qahwa na dorom",
+    "ma qahwa na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    62,
+    "Heb je koffie?",
+    "tu qahwa dori?",
+    "tu qahwa dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    63,
+    "Pak koffie.",
+    "qahwa begir",
+    "qahwa begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    64,
+    "Breng koffie.",
+    "qahwa biyaw",
+    "qahwa biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    65,
+    "Ik wil melk.",
+    "ma shir mikhoyom",
+    "ma shir mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    66,
+    "Wil je melk?",
+    "tu shir mikhoyi?",
+    "tu shir mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    67,
+    "Waar is melk?",
+    "shir goja ast?",
+    "shir goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    68,
+    "Geef me melk.",
+    "shir beta ma",
+    "shir beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    69,
+    "Ik heb melk niet.",
+    "ma shir na dorom",
+    "ma shir na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    70,
+    "Heb je melk?",
+    "tu shir dori?",
+    "tu shir dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    71,
+    "Pak melk.",
+    "shir begir",
+    "shir begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    72,
+    "Breng melk.",
+    "shir biyaw",
+    "shir biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    73,
+    "Ik wil geld.",
+    "ma paisa mikhoyom",
+    "ma paisa mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    74,
+    "Wil je geld?",
+    "tu paisa mikhoyi?",
+    "tu paisa mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    75,
+    "Waar is geld?",
+    "paisa goja ast?",
+    "paisa goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    76,
+    "Geef me geld.",
+    "paisa beta ma",
+    "paisa beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    77,
+    "Ik heb geld niet.",
+    "ma paisa na dorom",
+    "ma paisa na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    78,
+    "Heb je geld?",
+    "tu paisa dori?",
+    "tu paisa dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    79,
+    "Pak geld.",
+    "paisa begir",
+    "paisa begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    80,
+    "Breng geld.",
+    "paisa biyaw",
+    "paisa biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    81,
+    "Ik wil telefoon.",
+    "ma telefon mikhoyom",
+    "ma telefon mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    82,
+    "Wil je telefoon?",
+    "tu telefon mikhoyi?",
+    "tu telefon mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    83,
+    "Waar is telefoon?",
+    "telefon goja ast?",
+    "telefon goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    84,
+    "Geef me telefoon.",
+    "telefon beta ma",
+    "telefon beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    85,
+    "Ik heb telefoon niet.",
+    "ma telefon na dorom",
+    "ma telefon na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    86,
+    "Heb je telefoon?",
+    "tu telefon dori?",
+    "tu telefon dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    87,
+    "Pak telefoon.",
+    "telefon begir",
+    "telefon begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    88,
+    "Breng telefoon.",
+    "telefon biyaw",
+    "telefon biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    89,
+    "Ik wil sleutel.",
+    "ma kilid mikhoyom",
+    "ma kilid mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    90,
+    "Wil je sleutel?",
+    "tu kilid mikhoyi?",
+    "tu kilid mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    91,
+    "Waar is sleutel?",
+    "kilid goja ast?",
+    "kilid goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    92,
+    "Geef me sleutel.",
+    "kilid beta ma",
+    "kilid beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    93,
+    "Ik heb sleutel niet.",
+    "ma kilid na dorom",
+    "ma kilid na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    94,
+    "Heb je sleutel?",
+    "tu kilid dori?",
+    "tu kilid dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    95,
+    "Pak sleutel.",
+    "kilid begir",
+    "kilid begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    96,
+    "Breng sleutel.",
+    "kilid biyaw",
+    "kilid biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    97,
+    "Ik wil boek.",
+    "ma ketab mikhoyom",
+    "ma ketab mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    98,
+    "Wil je boek?",
+    "tu ketab mikhoyi?",
+    "tu ketab mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    99,
+    "Waar is boek?",
+    "ketab goja ast?",
+    "ketab goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    100,
+    "Geef me boek.",
+    "ketab beta ma",
+    "ketab beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    101,
+    "Ik heb boek niet.",
+    "ma ketab na dorom",
+    "ma ketab na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    102,
+    "Heb je boek?",
+    "tu ketab dori?",
+    "tu ketab dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    103,
+    "Pak boek.",
+    "ketab begir",
+    "ketab begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    104,
+    "Breng boek.",
+    "ketab biyaw",
+    "ketab biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    105,
+    "Ik wil appel.",
+    "ma seb mikhoyom",
+    "ma seb mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    106,
+    "Wil je appel?",
+    "tu seb mikhoyi?",
+    "tu seb mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    107,
+    "Waar is appel?",
+    "seb goja ast?",
+    "seb goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    108,
+    "Geef me appel.",
+    "seb beta ma",
+    "seb beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    109,
+    "Ik heb appel niet.",
+    "ma seb na dorom",
+    "ma seb na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    110,
+    "Heb je appel?",
+    "tu seb dori?",
+    "tu seb dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    111,
+    "Pak appel.",
+    "seb begir",
+    "seb begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    112,
+    "Breng appel.",
+    "seb biyaw",
+    "seb biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    113,
+    "Ik wil vlees.",
+    "ma gosht mikhoyom",
+    "ma gosht mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    114,
+    "Wil je vlees?",
+    "tu gosht mikhoyi?",
+    "tu gosht mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    115,
+    "Waar is vlees?",
+    "gosht goja ast?",
+    "gosht goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    116,
+    "Geef me vlees.",
+    "gosht beta ma",
+    "gosht beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    117,
+    "Ik heb vlees niet.",
+    "ma gosht na dorom",
+    "ma gosht na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    118,
+    "Heb je vlees?",
+    "tu gosht dori?",
+    "tu gosht dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    119,
+    "Pak vlees.",
+    "gosht begir",
+    "gosht begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    120,
+    "Breng vlees.",
+    "gosht biyaw",
+    "gosht biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    121,
+    "Ik wil kip.",
+    "ma morgh mikhoyom",
+    "ma morgh mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    122,
+    "Wil je kip?",
+    "tu morgh mikhoyi?",
+    "tu morgh mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    123,
+    "Waar is kip?",
+    "morgh goja ast?",
+    "morgh goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    124,
+    "Geef me kip.",
+    "morgh beta ma",
+    "morgh beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    125,
+    "Ik heb kip niet.",
+    "ma morgh na dorom",
+    "ma morgh na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    126,
+    "Heb je kip?",
+    "tu morgh dori?",
+    "tu morgh dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    127,
+    "Pak kip.",
+    "morgh begir",
+    "morgh begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    128,
+    "Breng kip.",
+    "morgh biyaw",
+    "morgh biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    129,
+    "Ik wil vis.",
+    "ma moi mikhoyom",
+    "ma moi mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    130,
+    "Wil je vis?",
+    "tu moi mikhoyi?",
+    "tu moi mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    131,
+    "Waar is vis?",
+    "moi goja ast?",
+    "moi goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    132,
+    "Geef me vis.",
+    "moi beta ma",
+    "moi beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    133,
+    "Ik heb vis niet.",
+    "ma moi na dorom",
+    "ma moi na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    134,
+    "Heb je vis?",
+    "tu moi dori?",
+    "tu moi dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    135,
+    "Pak vis.",
+    "moi begir",
+    "moi begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    136,
+    "Breng vis.",
+    "moi biyaw",
+    "moi biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    137,
+    "Ik wil soep.",
+    "ma shorwa mikhoyom",
+    "ma shorwa mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    138,
+    "Wil je soep?",
+    "tu shorwa mikhoyi?",
+    "tu shorwa mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    139,
+    "Waar is soep?",
+    "shorwa goja ast?",
+    "shorwa goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    140,
+    "Geef me soep.",
+    "shorwa beta ma",
+    "shorwa beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    141,
+    "Ik heb soep niet.",
+    "ma shorwa na dorom",
+    "ma shorwa na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    142,
+    "Heb je soep?",
+    "tu shorwa dori?",
+    "tu shorwa dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    143,
+    "Pak soep.",
+    "shorwa begir",
+    "shorwa begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    144,
+    "Breng soep.",
+    "shorwa biyaw",
+    "shorwa biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    145,
+    "Ik wil jas.",
+    "ma jaket mikhoyom",
+    "ma jaket mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    146,
+    "Wil je jas?",
+    "tu jaket mikhoyi?",
+    "tu jaket mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    147,
+    "Waar is jas?",
+    "jaket goja ast?",
+    "jaket goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    148,
+    "Geef me jas.",
+    "jaket beta ma",
+    "jaket beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    149,
+    "Ik heb jas niet.",
+    "ma jaket na dorom",
+    "ma jaket na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    150,
+    "Heb je jas?",
+    "tu jaket dori?",
+    "tu jaket dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    151,
+    "Pak jas.",
+    "jaket begir",
+    "jaket begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    152,
+    "Breng jas.",
+    "jaket biyaw",
+    "jaket biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    153,
+    "Ik wil schoenen.",
+    "ma kafsh mikhoyom",
+    "ma kafsh mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    154,
+    "Wil je schoenen?",
+    "tu kafsh mikhoyi?",
+    "tu kafsh mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    155,
+    "Waar is schoenen?",
+    "kafsh goja ast?",
+    "kafsh goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    156,
+    "Geef me schoenen.",
+    "kafsh beta ma",
+    "kafsh beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    157,
+    "Ik heb schoenen niet.",
+    "ma kafsh na dorom",
+    "ma kafsh na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    158,
+    "Heb je schoenen?",
+    "tu kafsh dori?",
+    "tu kafsh dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    159,
+    "Pak schoenen.",
+    "kafsh begir",
+    "kafsh begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    160,
+    "Breng schoenen.",
+    "kafsh biyaw",
+    "kafsh biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    161,
+    "Ik wil tas.",
+    "ma khilta mikhoyom",
+    "ma khilta mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    162,
+    "Wil je tas?",
+    "tu khilta mikhoyi?",
+    "tu khilta mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    163,
+    "Waar is tas?",
+    "khilta goja ast?",
+    "khilta goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    164,
+    "Geef me tas.",
+    "khilta beta ma",
+    "khilta beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    165,
+    "Ik heb tas niet.",
+    "ma khilta na dorom",
+    "ma khilta na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    166,
+    "Heb je tas?",
+    "tu khilta dori?",
+    "tu khilta dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    167,
+    "Pak tas.",
+    "khilta begir",
+    "khilta begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    168,
+    "Breng tas.",
+    "khilta biyaw",
+    "khilta biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    169,
+    "Ik wil medicijn.",
+    "ma dawa mikhoyom",
+    "ma dawa mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    170,
+    "Wil je medicijn?",
+    "tu dawa mikhoyi?",
+    "tu dawa mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    171,
+    "Waar is medicijn?",
+    "dawa goja ast?",
+    "dawa goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    172,
+    "Geef me medicijn.",
+    "dawa beta ma",
+    "dawa beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    173,
+    "Ik heb medicijn niet.",
+    "ma dawa na dorom",
+    "ma dawa na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    174,
+    "Heb je medicijn?",
+    "tu dawa dori?",
+    "tu dawa dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    175,
+    "Pak medicijn.",
+    "dawa begir",
+    "dawa begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    176,
+    "Breng medicijn.",
+    "dawa biyaw",
+    "dawa biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    177,
+    "Ik wil auto.",
+    "ma mutar mikhoyom",
+    "ma mutar mikhoyom",
+    "REVIEW_NEEDED",
+    "want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    178,
+    "Wil je auto?",
+    "tu mutar mikhoyi?",
+    "tu mutar mikhoyi?",
+    "REVIEW_NEEDED",
+    "question + want",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    179,
+    "Waar is auto?",
+    "mutar goja ast?",
+    "mutar goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    180,
+    "Geef me auto.",
+    "mutar beta ma",
+    "mutar beta ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    181,
+    "Ik heb auto niet.",
+    "ma mutar na dorom",
+    "ma mutar na dorom",
+    "REVIEW_NEEDED",
+    "have/not",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    182,
+    "Heb je auto?",
+    "tu mutar dori?",
+    "tu mutar dori?",
+    "REVIEW_NEEDED",
+    "have/question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    183,
+    "Pak auto.",
+    "mutar begir",
+    "mutar begir",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    184,
+    "Breng auto.",
+    "mutar biyaw",
+    "mutar biyaw",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    185,
+    "Ik ben in huis.",
+    "ma dar khana astom",
+    "ma dar khana astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    186,
+    "Kom naar huis.",
+    "bia khana",
+    "bia khana",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    187,
+    "Waar is huis?",
+    "khana goja ast?",
+    "khana goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    188,
+    "Ga naar huis.",
+    "boro khana",
+    "boro khana",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    189,
+    "Ben je in huis?",
+    "tu dar khana asti?",
+    "tu dar khana asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    190,
+    "Ik ga naar school.",
+    "ma merom maktab",
+    "ma merom maktab",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    191,
+    "Ik ben in school.",
+    "ma dar maktab astom",
+    "ma dar maktab astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    192,
+    "Kom naar school.",
+    "bia maktab",
+    "bia maktab",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    193,
+    "Waar is school?",
+    "maktab goja ast?",
+    "maktab goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    194,
+    "Ga naar school.",
+    "boro maktab",
+    "boro maktab",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    195,
+    "Ben je in school?",
+    "tu dar maktab asti?",
+    "tu dar maktab asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    196,
+    "Ik ga naar werk.",
+    "ma merom kar",
+    "ma merom kar",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    197,
+    "Ik ben in werk.",
+    "ma dar kar astom",
+    "ma dar kar astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    198,
+    "Kom naar werk.",
+    "bia kar",
+    "bia kar",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    199,
+    "Waar is werk?",
+    "kar goja ast?",
+    "kar goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    200,
+    "Ga naar werk.",
+    "boro kar",
+    "boro kar",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    201,
+    "Ben je in werk?",
+    "tu dar kar asti?",
+    "tu dar kar asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    202,
+    "Ik ga naar winkel.",
+    "ma merom dukan",
+    "ma merom dukan",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    203,
+    "Ik ben in winkel.",
+    "ma dar dukan astom",
+    "ma dar dukan astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    204,
+    "Kom naar winkel.",
+    "bia dukan",
+    "bia dukan",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    205,
+    "Waar is winkel?",
+    "dukan goja ast?",
+    "dukan goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    206,
+    "Ga naar winkel.",
+    "boro dukan",
+    "boro dukan",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    207,
+    "Ben je in winkel?",
+    "tu dar dukan asti?",
+    "tu dar dukan asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    208,
+    "Ik ga naar markt.",
+    "ma merom bazar",
+    "ma merom bazar",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    209,
+    "Ik ben in markt.",
+    "ma dar bazar astom",
+    "ma dar bazar astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    210,
+    "Kom naar markt.",
+    "bia bazar",
+    "bia bazar",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    211,
+    "Waar is markt?",
+    "bazar goja ast?",
+    "bazar goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    212,
+    "Ga naar markt.",
+    "boro bazar",
+    "boro bazar",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    213,
+    "Ben je in markt?",
+    "tu dar bazar asti?",
+    "tu dar bazar asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    214,
+    "Ik ga naar keuken.",
+    "ma merom ashpazkhana",
+    "ma merom ashpazkhana",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    215,
+    "Ik ben in keuken.",
+    "ma dar ashpazkhana astom",
+    "ma dar ashpazkhana astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    216,
+    "Kom naar keuken.",
+    "bia ashpazkhana",
+    "bia ashpazkhana",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    217,
+    "Waar is keuken?",
+    "ashpazkhana goja ast?",
+    "ashpazkhana goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    218,
+    "Ga naar keuken.",
+    "boro ashpazkhana",
+    "boro ashpazkhana",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    219,
+    "Ben je in keuken?",
+    "tu dar ashpazkhana asti?",
+    "tu dar ashpazkhana asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    220,
+    "Ik ga naar kamer.",
+    "ma merom otagh",
+    "ma merom otagh",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    221,
+    "Ik ben in kamer.",
+    "ma dar otagh astom",
+    "ma dar otagh astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    222,
+    "Kom naar kamer.",
+    "bia otagh",
+    "bia otagh",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    223,
+    "Waar is kamer?",
+    "otagh goja ast?",
+    "otagh goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    224,
+    "Ga naar kamer.",
+    "boro otagh",
+    "boro otagh",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    225,
+    "Ben je in kamer?",
+    "tu dar otagh asti?",
+    "tu dar otagh asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    226,
+    "Ik ga naar ziekenhuis.",
+    "ma merom shafakhana",
+    "ma merom shafakhana",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    227,
+    "Ik ben in ziekenhuis.",
+    "ma dar shafakhana astom",
+    "ma dar shafakhana astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    228,
+    "Kom naar ziekenhuis.",
+    "bia shafakhana",
+    "bia shafakhana",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    229,
+    "Waar is ziekenhuis?",
+    "shafakhana goja ast?",
+    "shafakhana goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    230,
+    "Ga naar ziekenhuis.",
+    "boro shafakhana",
+    "boro shafakhana",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    231,
+    "Ben je in ziekenhuis?",
+    "tu dar shafakhana asti?",
+    "tu dar shafakhana asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    232,
+    "Ik ga naar buiten.",
+    "ma merom berun",
+    "ma merom berun",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    233,
+    "Ik ben in buiten.",
+    "ma dar berun astom",
+    "ma dar berun astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    234,
+    "Kom naar buiten.",
+    "bia berun",
+    "bia berun",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    235,
+    "Waar is buiten?",
+    "berun goja ast?",
+    "berun goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    236,
+    "Ga naar buiten.",
+    "boro berun",
+    "boro berun",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    237,
+    "Ben je in buiten?",
+    "tu dar berun asti?",
+    "tu dar berun asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    238,
+    "Ik ga naar binnen.",
+    "ma merom dakhel",
+    "ma merom dakhel",
+    "REVIEW_NEEDED",
+    "go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    239,
+    "Ik ben in binnen.",
+    "ma dar dakhel astom",
+    "ma dar dakhel astom",
+    "REVIEW_NEEDED",
+    "be/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    240,
+    "Kom naar binnen.",
+    "bia dakhel",
+    "bia dakhel",
+    "REVIEW_NEEDED",
+    "imperative go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    241,
+    "Waar is binnen?",
+    "dakhel goja ast?",
+    "dakhel goja ast?",
+    "REVIEW_NEEDED",
+    "where",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    242,
+    "Ga naar binnen.",
+    "boro dakhel",
+    "boro dakhel",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    243,
+    "Ben je in binnen?",
+    "tu dar dakhel asti?",
+    "tu dar dakhel asti?",
+    "REVIEW_NEEDED",
+    "question/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    244,
+    "Waar is mama?",
+    "mama goja ast?",
+    "mama goja ast?",
+    "REVIEW_NEEDED",
+    "where/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    245,
+    "Roep mama.",
+    "mama sada ko",
+    "mama sada ko",
+    "REVIEW_NEEDED",
+    "imperative/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    246,
+    "Mama is thuis.",
+    "mama khana ast",
+    "mama khana ast",
+    "REVIEW_NEEDED",
+    "be/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    247,
+    "Kom met mama.",
+    "ba mama bia",
+    "ba mama bia",
+    "REVIEW_NEEDED",
+    "with/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    248,
+    "Waar is papa?",
+    "baba goja ast?",
+    "baba goja ast?",
+    "REVIEW_NEEDED",
+    "where/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    249,
+    "Roep papa.",
+    "baba sada ko",
+    "baba sada ko",
+    "REVIEW_NEEDED",
+    "imperative/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    250,
+    "Papa is thuis.",
+    "baba khana ast",
+    "baba khana ast",
+    "REVIEW_NEEDED",
+    "be/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    251,
+    "Kom met papa.",
+    "ba baba bia",
+    "ba baba bia",
+    "REVIEW_NEEDED",
+    "with/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    252,
+    "Waar is moeder?",
+    "madar goja ast?",
+    "madar goja ast?",
+    "REVIEW_NEEDED",
+    "where/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    253,
+    "Roep moeder.",
+    "madar sada ko",
+    "madar sada ko",
+    "REVIEW_NEEDED",
+    "imperative/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    254,
+    "Moeder is thuis.",
+    "madar khana ast",
+    "madar khana ast",
+    "REVIEW_NEEDED",
+    "be/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    255,
+    "Kom met moeder.",
+    "ba madar bia",
+    "ba madar bia",
+    "REVIEW_NEEDED",
+    "with/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    256,
+    "Waar is vader?",
+    "padar goja ast?",
+    "padar goja ast?",
+    "REVIEW_NEEDED",
+    "where/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    257,
+    "Roep vader.",
+    "padar sada ko",
+    "padar sada ko",
+    "REVIEW_NEEDED",
+    "imperative/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    258,
+    "Vader is thuis.",
+    "padar khana ast",
+    "padar khana ast",
+    "REVIEW_NEEDED",
+    "be/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    259,
+    "Kom met vader.",
+    "ba padar bia",
+    "ba padar bia",
+    "REVIEW_NEEDED",
+    "with/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    260,
+    "Waar is broer?",
+    "birader goja ast?",
+    "birader goja ast?",
+    "REVIEW_NEEDED",
+    "where/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    261,
+    "Roep broer.",
+    "birader sada ko",
+    "birader sada ko",
+    "REVIEW_NEEDED",
+    "imperative/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    262,
+    "Broer is thuis.",
+    "birader khana ast",
+    "birader khana ast",
+    "REVIEW_NEEDED",
+    "be/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    263,
+    "Kom met broer.",
+    "ba birader bia",
+    "ba birader bia",
+    "REVIEW_NEEDED",
+    "with/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    264,
+    "Waar is zus?",
+    "cohar goja ast?",
+    "cohar goja ast?",
+    "REVIEW_NEEDED",
+    "where/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    265,
+    "Roep zus.",
+    "cohar sada ko",
+    "cohar sada ko",
+    "REVIEW_NEEDED",
+    "imperative/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    266,
+    "Zus is thuis.",
+    "cohar khana ast",
+    "cohar khana ast",
+    "REVIEW_NEEDED",
+    "be/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    267,
+    "Kom met zus.",
+    "ba cohar bia",
+    "ba cohar bia",
+    "REVIEW_NEEDED",
+    "with/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    268,
+    "Waar is vriend?",
+    "rafiq goja ast?",
+    "rafiq goja ast?",
+    "REVIEW_NEEDED",
+    "where/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    269,
+    "Roep vriend.",
+    "rafiq sada ko",
+    "rafiq sada ko",
+    "REVIEW_NEEDED",
+    "imperative/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    270,
+    "Vriend is thuis.",
+    "rafiq khana ast",
+    "rafiq khana ast",
+    "REVIEW_NEEDED",
+    "be/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    271,
+    "Kom met vriend.",
+    "ba rafiq bia",
+    "ba rafiq bia",
+    "REVIEW_NEEDED",
+    "with/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    272,
+    "Waar is kind?",
+    "shtuk goja ast?",
+    "shtuk goja ast?",
+    "REVIEW_NEEDED",
+    "where/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    273,
+    "Roep kind.",
+    "shtuk sada ko",
+    "shtuk sada ko",
+    "REVIEW_NEEDED",
+    "imperative/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    274,
+    "Kind is thuis.",
+    "shtuk khana ast",
+    "shtuk khana ast",
+    "REVIEW_NEEDED",
+    "be/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    275,
+    "Kom met kind.",
+    "ba shtuk bia",
+    "ba shtuk bia",
+    "REVIEW_NEEDED",
+    "with/person",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    276,
+    "Ga niet.",
+    "na ro",
+    "na ro",
+    "REVIEW_NEEDED",
+    "negative imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    277,
+    "Wat doe je?",
+    "tu chi mi kuni?",
+    "tu chi mi kuni?",
+    "REVIEW_NEEDED",
+    "question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    278,
+    "Ik kom.",
+    "ma miayom",
+    "ma miayom",
+    "REVIEW_NEEDED",
+    "come",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    279,
+    "Nu niet.",
+    "ale na",
+    "ale na",
+    "REVIEW_NEEDED",
+    "time/negative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    280,
+    "Heel goed.",
+    "besyar khub",
+    "besyar khub",
+    "REVIEW_NEEDED",
+    "intensifier",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    281,
+    "Wat wil je?",
+    "tu chi mikhoyi?",
+    "tu chi mikhoyi?",
+    "REVIEW_NEEDED",
+    "question",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    282,
+    "Geef het aan mij.",
+    "beta ba ma",
+    "beta ba ma",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    283,
+    "Ik weet het.",
+    "ma midanom",
+    "ma midanom",
+    "REVIEW_NEEDED",
+    "know",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    284,
+    "Luister.",
+    "gosh ko",
+    "gosh ko",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    285,
+    "Kijk.",
+    "negah ko",
+    "negah ko",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    286,
+    "Rustig.",
+    "aram",
+    "aram",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    287,
+    "Snel.",
+    "tez",
+    "tez",
+    "REVIEW_NEEDED",
+    "adverb",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    288,
+    "Langzaam.",
+    "asta",
+    "asta",
+    "REVIEW_NEEDED",
+    "adverb",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    289,
+    "Goedemorgen.",
+    "sobh bekhair",
+    "sobh bekhair",
+    "REVIEW_NEEDED",
+    "greeting",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    290,
+    "Goedenavond.",
+    "shab bekhair",
+    "shab bekhair",
+    "REVIEW_NEEDED",
+    "greeting",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    291,
+    "Dank je.",
+    "tashakur",
+    "tashakur",
+    "REVIEW_NEEDED",
+    "greeting",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    292,
+    "Alsjeblieft.",
+    "lotfan",
+    "lotfan",
+    "REVIEW_NEEDED",
+    "polite",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    293,
+    "Sorry.",
+    "bubakhshen",
+    "bubakhshen",
+    "REVIEW_NEEDED",
+    "polite",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    294,
+    "Ga eten.",
+    "bokhor",
+    "bokhor",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    295,
+    "Wil je eten?",
+    "mikhoyi bokhor?",
+    "mikhoyi bokhor?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    296,
+    "Ik wil eten.",
+    "ma mikhoyom bokhor",
+    "ma mikhoyom bokhor",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    297,
+    "Niet eten.",
+    "bokhor na",
+    "bokhor na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    298,
+    "Ga drinken.",
+    "benosh",
+    "benosh",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    299,
+    "Wil je drinken?",
+    "mikhoyi benosh?",
+    "mikhoyi benosh?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    300,
+    "Ik wil drinken.",
+    "ma mikhoyom benosh",
+    "ma mikhoyom benosh",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    301,
+    "Niet drinken.",
+    "benosh na",
+    "benosh na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    302,
+    "Ga slapen.",
+    "khab ko",
+    "khab ko",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    303,
+    "Wil je slapen?",
+    "mikhoyi khab ko?",
+    "mikhoyi khab ko?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    304,
+    "Ik wil slapen.",
+    "ma mikhoyom khab ko",
+    "ma mikhoyom khab ko",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    305,
+    "Niet slapen.",
+    "khab ko na",
+    "khab ko na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    306,
+    "Ga zitten.",
+    "beshin",
+    "beshin",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    307,
+    "Wil je zitten?",
+    "mikhoyi beshin?",
+    "mikhoyi beshin?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    308,
+    "Ik wil zitten.",
+    "ma mikhoyom beshin",
+    "ma mikhoyom beshin",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    309,
+    "Niet zitten.",
+    "beshin na",
+    "beshin na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    310,
+    "Ga staan.",
+    "ista sho",
+    "ista sho",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    311,
+    "Wil je staan?",
+    "mikhoyi ista sho?",
+    "mikhoyi ista sho?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    312,
+    "Ik wil staan.",
+    "ma mikhoyom ista sho",
+    "ma mikhoyom ista sho",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    313,
+    "Niet staan.",
+    "ista sho na",
+    "ista sho na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    314,
+    "Ga komen.",
+    "bia",
+    "bia",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    315,
+    "Wil je komen?",
+    "mikhoyi bia?",
+    "mikhoyi bia?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    316,
+    "Ik wil komen.",
+    "ma mikhoyom bia",
+    "ma mikhoyom bia",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    317,
+    "Niet komen.",
+    "bia na",
+    "bia na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    318,
+    "Ga gaan.",
+    "boro",
+    "boro",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    319,
+    "Wil je gaan?",
+    "mikhoyi boro?",
+    "mikhoyi boro?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    320,
+    "Ik wil gaan.",
+    "ma mikhoyom boro",
+    "ma mikhoyom boro",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    321,
+    "Niet gaan.",
+    "boro na",
+    "boro na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    322,
+    "Ga kijken.",
+    "negah ko",
+    "negah ko",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    323,
+    "Wil je kijken?",
+    "mikhoyi negah ko?",
+    "mikhoyi negah ko?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    324,
+    "Ik wil kijken.",
+    "ma mikhoyom negah ko",
+    "ma mikhoyom negah ko",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    325,
+    "Niet kijken.",
+    "negah ko na",
+    "negah ko na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    326,
+    "Ga luisteren.",
+    "gosh ko",
+    "gosh ko",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    327,
+    "Wil je luisteren?",
+    "mikhoyi gosh ko?",
+    "mikhoyi gosh ko?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    328,
+    "Ik wil luisteren.",
+    "ma mikhoyom gosh ko",
+    "ma mikhoyom gosh ko",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    329,
+    "Niet luisteren.",
+    "gosh ko na",
+    "gosh ko na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    330,
+    "Ga wachten.",
+    "sabr ko",
+    "sabr ko",
+    "REVIEW_NEEDED",
+    "imperative",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    331,
+    "Wil je wachten?",
+    "mikhoyi sabr ko?",
+    "mikhoyi sabr ko?",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    332,
+    "Ik wil wachten.",
+    "ma mikhoyom sabr ko",
+    "ma mikhoyom sabr ko",
+    "REVIEW_NEEDED",
+    "want/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    333,
+    "Niet wachten.",
+    "sabr ko na",
+    "sabr ko na",
+    "REVIEW_NEEDED",
+    "negative/action",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    334,
+    "Niet nu.",
+    "ale na",
+    "ale na",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    335,
+    "Ik kom nu.",
+    "ma ale miayom",
+    "ma ale miayom",
+    "REVIEW_NEEDED",
+    "time/come",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    336,
+    "Ik ga nu.",
+    "ma ale merom",
+    "ma ale merom",
+    "REVIEW_NEEDED",
+    "time/go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    337,
+    "Tot nu.",
+    "ta ale",
+    "ta ale",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    338,
+    "Niet vandaag.",
+    "emroz na",
+    "emroz na",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    339,
+    "Ik kom vandaag.",
+    "ma emroz miayom",
+    "ma emroz miayom",
+    "REVIEW_NEEDED",
+    "time/come",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    340,
+    "Ik ga vandaag.",
+    "ma emroz merom",
+    "ma emroz merom",
+    "REVIEW_NEEDED",
+    "time/go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    341,
+    "Tot vandaag.",
+    "ta emroz",
+    "ta emroz",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    342,
+    "Niet morgen.",
+    "saba na",
+    "saba na",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    343,
+    "Ik kom morgen.",
+    "ma saba miayom",
+    "ma saba miayom",
+    "REVIEW_NEEDED",
+    "time/come",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    344,
+    "Ik ga morgen.",
+    "ma saba merom",
+    "ma saba merom",
+    "REVIEW_NEEDED",
+    "time/go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    345,
+    "Tot morgen.",
+    "ta saba",
+    "ta saba",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    346,
+    "Niet later.",
+    "bad-tar na",
+    "bad-tar na",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    347,
+    "Ik kom later.",
+    "ma bad-tar miayom",
+    "ma bad-tar miayom",
+    "REVIEW_NEEDED",
+    "time/come",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    348,
+    "Ik ga later.",
+    "ma bad-tar merom",
+    "ma bad-tar merom",
+    "REVIEW_NEEDED",
+    "time/go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    349,
+    "Tot later.",
+    "ta bad-tar",
+    "ta bad-tar",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    350,
+    "Niet vanavond.",
+    "emshab na",
+    "emshab na",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    351,
+    "Ik kom vanavond.",
+    "ma emshab miayom",
+    "ma emshab miayom",
+    "REVIEW_NEEDED",
+    "time/come",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    352,
+    "Ik ga vanavond.",
+    "ma emshab merom",
+    "ma emshab merom",
+    "REVIEW_NEEDED",
+    "time/go",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    353,
+    "Tot vanavond.",
+    "ta emshab",
+    "ta emshab",
+    "REVIEW_NEEDED",
+    "time",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    354,
+    "Dit is mijn water.",
+    "i au-e ma ast",
+    "i au-e ma ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    355,
+    "Dat is jouw water.",
+    "u au-e tu ast",
+    "u au-e tu ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    356,
+    "Zet water hier.",
+    "au inja beman",
+    "au inja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    357,
+    "Leg water daar.",
+    "au unja beman",
+    "au unja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    358,
+    "Ik zoek water.",
+    "ma au ra mepalom",
+    "ma au ra mepalom",
+    "REVIEW_NEEDED",
+    "search",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    359,
+    "Ik heb water nodig.",
+    "ma ba au zarurat dorom",
+    "ma ba au zarurat dorom",
+    "REVIEW_NEEDED",
+    "need",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    360,
+    "Dit is mijn brood.",
+    "i non-e ma ast",
+    "i non-e ma ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    361,
+    "Dat is jouw brood.",
+    "u non-e tu ast",
+    "u non-e tu ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    362,
+    "Zet brood hier.",
+    "non inja beman",
+    "non inja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    363,
+    "Leg brood daar.",
+    "non unja beman",
+    "non unja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    364,
+    "Ik zoek brood.",
+    "ma non ra mepalom",
+    "ma non ra mepalom",
+    "REVIEW_NEEDED",
+    "search",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    365,
+    "Ik heb brood nodig.",
+    "ma ba non zarurat dorom",
+    "ma ba non zarurat dorom",
+    "REVIEW_NEEDED",
+    "need",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    366,
+    "Dit is mijn rijst.",
+    "i brinj-e ma ast",
+    "i brinj-e ma ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    367,
+    "Dat is jouw rijst.",
+    "u brinj-e tu ast",
+    "u brinj-e tu ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    368,
+    "Zet rijst hier.",
+    "brinj inja beman",
+    "brinj inja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    369,
+    "Leg rijst daar.",
+    "brinj unja beman",
+    "brinj unja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    370,
+    "Ik zoek rijst.",
+    "ma brinj ra mepalom",
+    "ma brinj ra mepalom",
+    "REVIEW_NEEDED",
+    "search",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    371,
+    "Ik heb rijst nodig.",
+    "ma ba brinj zarurat dorom",
+    "ma ba brinj zarurat dorom",
+    "REVIEW_NEEDED",
+    "need",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    372,
+    "Dit is mijn thee.",
+    "i chai-e ma ast",
+    "i chai-e ma ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    373,
+    "Dat is jouw thee.",
+    "u chai-e tu ast",
+    "u chai-e tu ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    374,
+    "Zet thee hier.",
+    "chai inja beman",
+    "chai inja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    375,
+    "Leg thee daar.",
+    "chai unja beman",
+    "chai unja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    376,
+    "Ik zoek thee.",
+    "ma chai ra mepalom",
+    "ma chai ra mepalom",
+    "REVIEW_NEEDED",
+    "search",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    377,
+    "Ik heb thee nodig.",
+    "ma ba chai zarurat dorom",
+    "ma ba chai zarurat dorom",
+    "REVIEW_NEEDED",
+    "need",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    378,
+    "Dit is mijn koffie.",
+    "i qahwa-e ma ast",
+    "i qahwa-e ma ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    379,
+    "Dat is jouw koffie.",
+    "u qahwa-e tu ast",
+    "u qahwa-e tu ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    380,
+    "Zet koffie hier.",
+    "qahwa inja beman",
+    "qahwa inja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    381,
+    "Leg koffie daar.",
+    "qahwa unja beman",
+    "qahwa unja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    382,
+    "Ik zoek koffie.",
+    "ma qahwa ra mepalom",
+    "ma qahwa ra mepalom",
+    "REVIEW_NEEDED",
+    "search",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    383,
+    "Ik heb koffie nodig.",
+    "ma ba qahwa zarurat dorom",
+    "ma ba qahwa zarurat dorom",
+    "REVIEW_NEEDED",
+    "need",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    384,
+    "Dit is mijn melk.",
+    "i shir-e ma ast",
+    "i shir-e ma ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    385,
+    "Dat is jouw melk.",
+    "u shir-e tu ast",
+    "u shir-e tu ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    386,
+    "Zet melk hier.",
+    "shir inja beman",
+    "shir inja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    387,
+    "Leg melk daar.",
+    "shir unja beman",
+    "shir unja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    388,
+    "Ik zoek melk.",
+    "ma shir ra mepalom",
+    "ma shir ra mepalom",
+    "REVIEW_NEEDED",
+    "search",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    389,
+    "Ik heb melk nodig.",
+    "ma ba shir zarurat dorom",
+    "ma ba shir zarurat dorom",
+    "REVIEW_NEEDED",
+    "need",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    390,
+    "Dit is mijn geld.",
+    "i paisa-e ma ast",
+    "i paisa-e ma ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    391,
+    "Dat is jouw geld.",
+    "u paisa-e tu ast",
+    "u paisa-e tu ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    392,
+    "Zet geld hier.",
+    "paisa inja beman",
+    "paisa inja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    393,
+    "Leg geld daar.",
+    "paisa unja beman",
+    "paisa unja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    394,
+    "Ik zoek geld.",
+    "ma paisa ra mepalom",
+    "ma paisa ra mepalom",
+    "REVIEW_NEEDED",
+    "search",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    395,
+    "Ik heb geld nodig.",
+    "ma ba paisa zarurat dorom",
+    "ma ba paisa zarurat dorom",
+    "REVIEW_NEEDED",
+    "need",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    396,
+    "Dit is mijn telefoon.",
+    "i telefon-e ma ast",
+    "i telefon-e ma ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    397,
+    "Dat is jouw telefoon.",
+    "u telefon-e tu ast",
+    "u telefon-e tu ast",
+    "REVIEW_NEEDED",
+    "possession",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    398,
+    "Zet telefoon hier.",
+    "telefon inja beman",
+    "telefon inja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    399,
+    "Leg telefoon daar.",
+    "telefon unja beman",
+    "telefon unja beman",
+    "REVIEW_NEEDED",
+    "imperative/place",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ],
+  [
+    400,
+    "Ik zoek telefoon.",
+    "ma telefon ra mepalom",
+    "ma telefon ra mepalom",
+    "REVIEW_NEEDED",
+    "search",
+    "AI-fonetische startvorm; handmatig valideren buiten de app.",
+    "AI draft"
+  ]
+]
