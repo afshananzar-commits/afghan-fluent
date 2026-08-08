@@ -1,0 +1,221 @@
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import { createRoot } from 'react-dom/client';
+import {
+  Home, BookOpen, Layers3, MessageCircle, UserRound, Volume2, Mic, Heart,
+  ChevronRight, ChevronLeft, Check, Flame, Search, SlidersHorizontal, RotateCcw,
+  Sparkles, Brain, Lock, Trophy, Star, Headphones, Settings, X, Eye, EyeOff,
+  BadgeCheck, Clock3, Play, Pause, CircleHelp, ShieldCheck, WandSparkles, Moon,
+  SunMedium, Shuffle, BookText, GraduationCap, ArrowRight, RefreshCw, Gauge,
+  AudioLines, LibraryBig, CircleCheckBig, Circle, Languages
+} from 'lucide-react';
+import vocabularyRaw from './vocabulary.json';
+import sentencesRaw from './sentences.json';
+import './styles.css';
+
+const vocabHeaders = ['id','dutch','english','category','spoken','latin','script','type','confidence','status','exampleNl','exampleSpoken','notes','source'];
+const sentenceHeaders = ['id','dutch','spoken','latin','status','grammar','notes','source'];
+const vocab = vocabularyRaw.map(r => Object.fromEntries(vocabHeaders.map((h,i)=>[h,r[i] ?? ''])));
+const sentences = sentencesRaw.map(r => Object.fromEntries(sentenceHeaders.map((h,i)=>[h,r[i] ?? ''])));
+
+const CATEGORY = {
+  home:{label:'Thuis',emoji:'🏡'}, food:{label:'Eten & drinken',emoji:'🥣'}, travel:{label:'Onderweg',emoji:'🚌'},
+  daily:{label:'Dagelijks',emoji:'☀️'}, verbs:{label:'Werkwoorden',emoji:'🏃'}, family:{label:'Familie',emoji:'👨‍👩‍👧‍👦'},
+  people:{label:'Mensen',emoji:'🧑'}, body:{label:'Lichaam',emoji:'🫶'}, clothes:{label:'Kleding',emoji:'🧥'},
+  nature:{label:'Natuur',emoji:'🌿'}, animals:{label:'Dieren',emoji:'🐾'}, school:{label:'School',emoji:'🎒'},
+  work:{label:'Werk',emoji:'💼'}, shopping:{label:'Winkelen',emoji:'🛍️'}, time:{label:'Tijd',emoji:'🕰️'},
+  feelings:{label:'Gevoelens',emoji:'💛'}, colors:{label:'Kleuren',emoji:'🎨'}, numbers:{label:'Getallen',emoji:'🔢'},
+  greetings:{label:'Begroeten',emoji:'👋'}, questions:{label:'Vragen',emoji:'❓'}, other:{label:'Overig',emoji:'✨'}
+};
+const iconFor = (cat='') => (CATEGORY[cat] || CATEGORY.other).emoji;
+const labelFor = (cat='') => (CATEGORY[cat] || {label:cat || 'Overig'}).label;
+const seeded = (n) => ((Number(n||1)*9301+49297)%233280)/233280;
+
+const grammarLessons = [
+  {n:'01',title:'Ik, jij, hij/zij',tag:'Basis',desc:'Bouw je eerste zinnen met persoonlijke voornaamwoorden.',example:'ma · tu · u',detail:'In spreektaal leer je eerst de vormen die je werkelijk gebruikt. Oefen ze steeds in een korte zin: “ma merom” — ik ga.'},
+  {n:'02',title:'Ik wil…',tag:'Dagelijks',desc:'Vraag en vertel wat je wilt.',example:'ma mi khojom…',detail:'Gebruik dit patroon als een bouwblok. Voeg daarna een bekend woord toe, bijvoorbeeld water of eten.'},
+  {n:'03',title:'Vragen stellen',tag:'Gesprek',desc:'Waar, wat, wie en hoe in echte gesprekken.',example:'goja? · chi?',detail:'Een vraag wordt sneller vanzelfsprekend als je hem als complete zin leert. Begin daarom met vaste, veelgebruikte vragen.'},
+  {n:'04',title:'Ontkenning',tag:'Basis',desc:'Zeg dat iets niet zo is of niet moet.',example:'na… · nako',detail:'Oefen positief en negatief naast elkaar. Zo hoor je het verschil sneller in een gesprek.'},
+  {n:'05',title:'Hebben & zijn',tag:'A1',desc:'Essentiële patronen voor dagelijkse zinnen.',example:'asti · astan',detail:'Koppel iedere vorm aan één voorbeeldzin uit je eigen woordenlijst. Spreken gaat vóór regels uit het hoofd leren.'},
+  {n:'06',title:'Verleden tijd',tag:'A2',desc:'Vertel eenvoudig wat er gebeurd is.',example:'gisteren · gedaan',detail:'Leer verleden tijd via korte verhalen van drie zinnen: wat gebeurde eerst, daarna en als laatste?'}
+];
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem('afghanFluentProgress')||'{}'); } catch { return {}; }
+}
+function saveProgress(p){ localStorage.setItem('afghanFluentProgress',JSON.stringify(p)); }
+function dayKey(d=new Date()){ return d.toISOString().slice(0,10); }
+
+function useAppState(){
+  const [progress,setProgress] = useState(loadProgress);
+  const update = fn => setProgress(p=>{ const next = typeof fn==='function'?fn(p):fn; saveProgress(next); return next; });
+  const knownIds = new Set(progress.known||[]);
+  const favorites = new Set(progress.favorites||[]);
+  return {progress,update,knownIds,favorites};
+}
+
+function speak(text, rate=.88){
+  if(!text || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text); u.rate=rate; u.pitch=1; window.speechSynthesis.speak(u);
+}
+
+function App(){
+  const [tab,setTab]=useState('today');
+  const [mode,setMode]=useState(localStorage.getItem('afghanFluentMode')||'family');
+  const setModePersist=(m)=>{setMode(m);localStorage.setItem('afghanFluentMode',m)};
+  const app=useAppState();
+  const streak = app.progress.streak || 0;
+  useEffect(()=>{
+    const today=dayKey();
+    if(app.progress.lastOpen!==today){
+      const y=new Date(); y.setDate(y.getDate()-1);
+      const nextStreak = app.progress.lastOpen===dayKey(y)?Math.max(1,(app.progress.streak||0)+1):1;
+      app.update(p=>({...p,lastOpen:today,streak:nextStreak}));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
+
+  const go=(name)=>{ setTab(name); window.scrollTo({top:0,behavior:'smooth'}); };
+  return <div className={`app ${mode==='kids'?'kids-mode':''}`}>
+    <DesktopRail tab={tab} go={go} streak={streak}/>
+    <div className="app-stage">
+      <TopChrome mode={mode} setMode={setModePersist}/>
+      <main>
+        {tab==='today' && <Today app={app} go={go}/>} 
+        {tab==='path' && <LearningPath app={app} go={go}/>} 
+        {tab==='words' && <Words app={app}/>} 
+        {tab==='sentences' && <Sentences app={app}/>} 
+        {tab==='grammar' && <Grammar/>} 
+        {tab==='speak' && <SpeakPractice app={app}/>} 
+        {tab==='profile' && <Profile app={app} mode={mode} setMode={setModePersist}/>} 
+      </main>
+      <BottomNav tab={tab} go={go}/>
+    </div>
+  </div>
+}
+
+function Brand(){return <div className="brand"><div className="brand-arch">A</div><div><strong>Afghan Fluent</strong><span>Leer Afghaans op jouw manier</span></div></div>}
+
+function DesktopRail({tab,go,streak}){
+ const items=[['today',Home,'Vandaag'],['path',BookOpen,'Leerpad'],['words',Layers3,'Woorden'],['sentences',MessageCircle,'Zinnen'],['grammar',BookText,'Grammatica'],['speak',Mic,'Uitspraak']];
+ return <aside className="desktop-rail"><Brand/><div className="rail-stats"><span><Flame/> {streak} dagen</span><span><Sparkles/> 1000 woorden</span></div><nav>{items.map(([id,I,l])=><button key={id} className={tab===id?'active':''} onClick={()=>go(id)}><I/><span>{l}</span></button>)}</nav><button className="profile-tile" onClick={()=>go('profile')}><div className="avatar">A</div><div><b>Jouw profiel</b><small>Family mode</small></div><ChevronRight/></button></aside>
+}
+
+function TopChrome({mode,setMode}){
+ return <header className="top-chrome"><div className="mobile-brand"><div className="mini-arch">A</div><span>Afghan Fluent</span></div><div className="mode-switch"><button className={mode==='family'?'active':''} onClick={()=>setMode('family')}>Volwassen</button><button className={mode==='kids'?'active':''} onClick={()=>setMode('kids')}>Kids</button></div></header>
+}
+
+function Today({app,go}){
+ const known=app.knownIds.size;
+ const dailyGoal=10;
+ const learnedToday=app.progress.learnedToday?.date===dayKey()?app.progress.learnedToday.count:0;
+ const pct=Math.min(100,Math.round(learnedToday/dailyGoal*100));
+ const reviewCount=Math.max(0,Math.min(14, known));
+ return <div className="screen today-screen">
+   <section className="welcome"><div><p className="kicker">GOEDE DAG</p><h1>Salaam, Afshan! <span>👋</span></h1><p>Vandaag is een mooie dag om te leren.</p></div><div className="streak-pill"><Flame/><b>{app.progress.streak||1}</b><span>dagen</span></div></section>
+   <section className="daily-card">
+      <div className="daily-metrics"><div><Flame/><div><b>{app.progress.streak||1}</b><span>Dagelijkse streak</span></div></div><div className="divider"/><div><Gauge/><div><b>{pct}%</b><span>Weekdoel</span></div></div></div>
+      <div className="continue-card" onClick={()=>go('path')}><div><small>GA VERDER MET LEREN</small><h2>Les 5 · Familie</h2><div className="mini-progress"><i style={{width:`${Math.max(25,pct)}%`}}/></div><span>{Math.max(25,pct)}%</span></div><FamilyIllustration/><button><ChevronRight/></button></div>
+   </section>
+   <section className="quick-grid">
+     <Quick title="Woorden" sub="Flashcards" icon="🃏" onClick={()=>go('words')}/>
+     <Quick title="Zinnen" sub="Oefen zinnen" icon="💬" onClick={()=>go('sentences')}/>
+     <Quick title="Uitspraak" sub="Luister & spreek" icon="🎙️" onClick={()=>go('speak')}/>
+     <Quick title="Grammatica" sub="Eenvoudig uitgelegd" icon="📕" onClick={()=>go('grammar')}/>
+   </section>
+   <section className="review-banner" onClick={()=>go('words')}><div className="seal"><Brain/></div><div><b>Woorden om te herhalen</b><span>{reviewCount || 10} woorden wachten op jou</span></div><ChevronRight/></section>
+   <SectionTitle title="Jouw leerroute" action="Bekijk alles" onClick={()=>go('path')}/>
+   <div className="lesson-preview">
+     <LessonRow emoji="👋" title="Begroeten" meta="12 / 12 woorden" progress={100} done/>
+     <LessonRow emoji="👨‍👩‍👧‍👦" title="Familie" meta={`${Math.min(known,18)} / 20 woorden`} progress={Math.min(90,known*5)}/>
+     <LessonRow emoji="🏡" title="Thuis" meta="15 / 20 woorden" progress={75}/>
+   </div>
+ </div>
+}
+function FamilyIllustration(){return <div className="family-illus"><span>👨🏽</span><span>👩🏽</span><span>👦🏽</span><span>👧🏽</span></div>}
+function Quick({title,sub,icon,onClick}){return <button className="quick-card" onClick={onClick}><span className="quick-icon">{icon}</span><div><b>{title}</b><small>{sub}</small></div><ChevronRight/></button>}
+function SectionTitle({title,action,onClick}){return <div className="section-title"><h2>{title}</h2>{action&&<button onClick={onClick}>{action}<ChevronRight/></button>}</div>}
+function LessonRow({emoji,title,meta,progress,done,locked,onClick}){return <button className={`lesson-row ${locked?'locked':''}`} onClick={onClick} disabled={locked}><span className="lesson-art">{emoji}</span><div className="lesson-main"><b>{title}</b><small>{meta}</small><div className="tiny-bar"><i style={{width:`${progress}%`}}/></div></div>{locked?<Lock/>:done?<span className="done-dot"><Check/></span>:<span className="ring-mini" style={{'--p':`${progress*3.6}deg`}}/>}</button>}
+
+function LearningPath({app,go}){
+ const known=app.knownIds.size;
+ const modules=[
+ {e:'👋',t:'Begroeten',n:12,p:100}, {e:'👨‍👩‍👧‍👦',t:'Familie',n:20,p:Math.min(90,known*4)}, {e:'🏡',t:'Thuis',n:20,p:75},
+ {e:'🥣',t:'Eten & drinken',n:20,p:40}, {e:'🚌',t:'Onderweg',n:20,p:0,lock:true}, {e:'🛍️',t:'Winkelen',n:20,p:0,lock:true},
+ {e:'🎒',t:'School',n:20,p:0,lock:true}, {e:'💛',t:'Gevoelens',n:20,p:0,lock:true}
+ ];
+ return <div className="screen path-screen"><PageHead eyebrow="JOUW ROUTE" title="Leerpad" sub="Spreken en verstaan in kleine, haalbare stappen." badge={<><Flame/> {app.progress.streak||1}</>}/>
+  <div className="level-heading"><div><span>BEGINNER</span><h2>A1 · De basis</h2></div><div className="level-chip"><Trophy/> {Math.min(100,Math.round(known/2))}%</div></div>
+  <div className="path-list">{modules.slice(0,5).map((m,i)=><div className="path-item" key={m.t}><span className={`path-node ${m.p===100?'complete':''}`}>{m.p===100?<Check/>:i+1}</span><LessonRow emoji={m.e} title={`${i+1}. ${m.t}`} meta={`${Math.round(m.p/5)} / ${m.n}`} progress={m.p} done={m.p===100} locked={m.lock} onClick={()=>!m.lock&&go('words')}/></div>)}</div>
+  <div className="level-divider"><span>Basis (A2)</span></div>
+  <div className="path-list">{modules.slice(5).map((m,i)=><div className="path-item" key={m.t}><span className="path-node">{i+6}</span><LessonRow emoji={m.e} title={`${i+6}. ${m.t}`} meta={`0 / ${m.n}`} progress={0} locked onClick={()=>{}}/></div>)}</div>
+ </div>
+}
+function PageHead({eyebrow,title,sub,badge}){return <div className="page-head"><div><span>{eyebrow}</span><h1>{title}</h1>{sub&&<p>{sub}</p>}</div>{badge&&<div className="page-badge">{badge}</div>}</div>}
+
+function Words({app}){
+ const [query,setQuery]=useState(''); const [category,setCategory]=useState('all'); const [idx,setIdx]=useState(0); const [revealed,setRevealed]=useState(false); const [shuffle,setShuffle]=useState(false);
+ const cats=useMemo(()=>Array.from(new Set(vocab.map(v=>v.category).filter(Boolean))).slice(0,18),[]);
+ const filtered=useMemo(()=>{ let a=vocab.filter(v=>(category==='all'||v.category===category) && (!query||`${v.dutch} ${v.spoken} ${v.latin} ${v.english}`.toLowerCase().includes(query.toLowerCase()))); if(shuffle) a=[...a].sort((x,y)=>seeded(x.id)-seeded(y.id)); return a;},[query,category,shuffle]);
+ useEffect(()=>{setIdx(0);setRevealed(false)},[query,category,shuffle]);
+ const w=filtered[idx]||vocab[0]; const known=app.knownIds.has(w.id); const fav=app.favorites.has(w.id);
+ const next=()=>{setIdx(i=>(i+1)%Math.max(1,filtered.length));setRevealed(false)}; const prev=()=>{setIdx(i=>(i-1+filtered.length)%Math.max(1,filtered.length));setRevealed(false)};
+ const markKnown=()=>{app.update(p=>{const set=new Set(p.known||[]); const wasKnown=set.has(w.id); set.add(w.id); const lt=p.learnedToday?.date===dayKey()?p.learnedToday:{date:dayKey(),count:0}; return {...p,known:[...set],learnedToday:{date:dayKey(),count:lt.count+(wasKnown?0:1)}}});next()};
+ const toggleFav=()=>app.update(p=>{const s=new Set(p.favorites||[]);s.has(w.id)?s.delete(w.id):s.add(w.id);return {...p,favorites:[...s]}});
+ return <div className="screen words-screen"><PageHead eyebrow="1000+ WOORDEN" title="Woorden" sub="Kijk, luister en herhaal. Spreken staat centraal." badge={<>{idx+1} / {filtered.length}</>}/>
+   <div className="word-toolbar"><label><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Zoek Nederlands of fonetisch…"/></label><button className={shuffle?'active':''} onClick={()=>setShuffle(s=>!s)}><Shuffle/> <span>Mix</span></button></div>
+   <div className="chips"><button className={category==='all'?'active':''} onClick={()=>setCategory('all')}>Alles</button>{cats.slice(0,8).map(c=><button key={c} className={category===c?'active':''} onClick={()=>setCategory(c)}>{iconFor(c)} {labelFor(c)}</button>)}</div>
+   <div className="flash-layout">
+    <div>
+      <article className={`premium-flashcard ${revealed?'revealed':''}`} onClick={()=>setRevealed(r=>!r)}>
+        <div className="card-top"><span>{labelFor(w.category)}</span><button onClick={e=>{e.stopPropagation();toggleFav()}} className={fav?'fav':''}><Heart fill={fav?'currentColor':'none'}/></button></div>
+        <WordIllustration word={w}/>
+        <div className="word-copy"><small>NEDERLANDS</small><h2>{w.dutch}</h2>{revealed?<><small>ZO ZEG JE HET</small><h3>{w.spoken||w.latin||'Nog te valideren'}</h3>{w.script&&<div className="native-script">{w.script}</div>}<button className="sound-btn" onClick={e=>{e.stopPropagation();speak(w.spoken||w.latin)}}><Volume2/> Luister</button></>:<div className="reveal-hint"><Eye/> Tik om de vertaling te zien</div>}</div>
+        {revealed && (w.exampleNl||w.exampleSpoken) && <div className="example-box"><span>Voorbeeldzin</span><b>{w.exampleNl||'Voorbeeld'}</b><p>{w.exampleSpoken}</p>{w.exampleSpoken&&<button onClick={e=>{e.stopPropagation();speak(w.exampleSpoken,.82)}}><Volume2/></button>}</div>}
+        {w.status!=='VALIDATED'&&<div className="review-tag"><Clock3/> Nog te valideren</div>}
+      </article>
+      <div className="card-nav"><button onClick={prev}><ChevronLeft/> Vorige</button><button className={known?'mastered':''} onClick={markKnown}>{known?<BadgeCheck/>:<Check/>} {known?'Beheerst':'Ken ik'}</button><button onClick={next}>Volgende <ChevronRight/></button></div>
+    </div>
+    <aside className="word-browser"><h3>Woordenlijst</h3><p>{filtered.length} woorden in deze selectie</p><div className="browser-list">{filtered.slice(Math.max(0,idx-4),Math.max(0,idx-4)+10).map((x,j)=>{const real=filtered.indexOf(x);return <button className={real===idx?'active':''} key={`${x.id}-${j}`} onClick={()=>{setIdx(real);setRevealed(true)}}><span>{iconFor(x.category)}</span><div><b>{x.dutch}</b><small>{x.spoken||x.latin}</small></div>{app.knownIds.has(x.id)&&<Check/>}</button>})}</div></aside>
+   </div>
+ </div>
+}
+function WordIllustration({word}){const e=iconFor(word.category);return <div className={`word-illustration cat-${String(word.category).replace(/[^a-z]/g,'')}`}><div className="watercolor one"/><div className="watercolor two"/><span>{e}</span><div className="ground"/></div>}
+
+function Sentences({app}){
+ const [query,setQuery]=useState(''); const [filter,setFilter]=useState('all'); const [playing,setPlaying]=useState(null);
+ const data=useMemo(()=>sentences.filter(s=>(filter==='all'||(filter==='valid'&&s.status==='VALIDATED')||(filter==='review'&&s.status!=='VALIDATED'))&&(!query||`${s.dutch} ${s.spoken}`.toLowerCase().includes(query.toLowerCase()))),[query,filter]);
+ const play=(s)=>{setPlaying(s.id);speak(s.spoken||s.latin,.82);setTimeout(()=>setPlaying(null),1700)};
+ return <div className="screen"><PageHead eyebrow="400+ ZINNEN" title="Zinnen" sub="Leer hele zinnen zoals je ze in echte gesprekken gebruikt." badge={<MessageCircle/>}/>
+  <div className="sentence-hero"><div className="bubble-icon"><Languages/></div><div><small>ZIN VAN DE DAG</small><h2>{sentences[0].dutch}</h2><p>{sentences[0].spoken}</p></div><button onClick={()=>play(sentences[0])}><Volume2/></button></div>
+  <div className="word-toolbar"><label><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Zoek in zinnen…"/></label></div>
+  <div className="chips"><button className={filter==='all'?'active':''} onClick={()=>setFilter('all')}>Alle zinnen</button><button className={filter==='valid'?'active':''} onClick={()=>setFilter('valid')}><ShieldCheck/> Gevalideerd</button><button className={filter==='review'?'active':''} onClick={()=>setFilter('review')}><Clock3/> Review</button></div>
+  <div className="sentence-list">{data.slice(0,80).map((s,i)=><article className="sentence-card" key={s.id}><div className="sentence-num">{String(i+1).padStart(2,'0')}</div><div className="sentence-copy"><h3>{s.dutch}</h3><p>{s.spoken||s.latin}</p><div className="sentence-meta"><span>{s.grammar||'Dagelijks gesprek'}</span>{s.status==='VALIDATED'?<em><BadgeCheck/> Gevalideerd</em>:<em className="review"><Clock3/> Review</em>}</div></div><button className={playing===s.id?'playing':''} onClick={()=>play(s)}>{playing===s.id?<AudioLines/>:<Volume2/>}</button></article>)}</div>
+ </div>
+}
+
+function Grammar(){const [open,setOpen]=useState(grammarLessons[0]);return <div className="screen"><PageHead eyebrow="PRAKTISCH" title="Grammatica" sub="Geen schoolboek. Alleen patronen die je helpen spreken en verstaan." badge={<BookOpen/>}/>
+ <div className="grammar-hero"><div className="grammar-mark">Aa</div><div><h2>Leer de logica door te spreken</h2><p>Korte uitleg, veel voorbeelden en meteen toepassen.</p></div></div>
+ <div className="grammar-layout"><div className="grammar-list">{grammarLessons.map(g=><button key={g.n} onClick={()=>setOpen(g)} className={open.n===g.n?'active':''}><span>{g.n}</span><div><small>{g.tag}</small><h3>{g.title}</h3><p>{g.desc}</p></div><ChevronRight/></button>)}</div><aside className="grammar-detail"><span className="detail-tag">{open.tag}</span><h2>{open.title}</h2><p>{open.detail}</p><div className="pattern"><small>PATROON</small><strong>{open.example}</strong><button onClick={()=>speak(open.example)}><Volume2/></button></div><button className="primary-wide"><Play/> Start oefening</button></aside></div>
+ </div>}
+
+function SpeakPractice({app}){
+ const pool=useMemo(()=>sentences.filter(s=>s.status==='VALIDATED'&&s.spoken).slice(0,50),[]); const [idx,setIdx]=useState(0); const [listening,setListening]=useState(false); const [heard,setHeard]=useState(''); const [score,setScore]=useState(null);
+ const s=pool[idx]||sentences[0];
+ const record=()=>{
+   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+   if(!SR){setHeard('Spraakherkenning wordt in deze browser niet ondersteund. Gebruik de luisterknop en zeg de zin hardop na.');setScore(null);return}
+   const r=new SR(); r.lang='fa-AF'; r.interimResults=false; r.maxAlternatives=1; setListening(true);setHeard('');setScore(null);
+   r.onresult=e=>{const t=e.results[0][0].transcript;setHeard(t);const target=(s.spoken||'').toLowerCase().split(/\s+/);const got=t.toLowerCase().split(/\s+/);const match=target.filter(x=>got.some(y=>y.includes(x.slice(0,Math.max(2,x.length-1))))).length;setScore(Math.min(100,Math.round(match/Math.max(1,target.length)*100)));}; r.onerror=()=>setHeard('Ik kon je stem niet goed herkennen. Probeer het nog eens.'); r.onend=()=>setListening(false); r.start();
+ };
+ return <div className="screen speak-screen"><PageHead eyebrow="LUISTER & SPREEK" title="Uitspraak" sub="Luister eerst. Zeg daarna rustig dezelfde zin na." badge={<>{idx+1} / {pool.length}</>}/>
+  <section className="speak-practice-card"><div className="sound-orbit"><button onClick={()=>speak(s.spoken,.72)}><Volume2/></button></div><span className="listen-label">LUISTER EN SPREEK NA</span><h2>{s.spoken}</h2><p>{s.dutch}</p><div className="speech-progress"><i style={{width:`${((idx+1)/pool.length)*100}%`}}/></div><button className={`record-main ${listening?'recording':''}`} onClick={record}><Mic/>{listening?'Ik luister…':'Tik en spreek'}</button>{heard&&<div className="heard-box"><small>Ik hoorde</small><b>{heard}</b>{score!==null&&<span className={score>60?'good':''}>{score}% overeenkomst</span>}</div>}<div className="tip-card"><Sparkles/><div><b>Tip</b><span>Spreek rustig. Het ritme is belangrijker dan perfecte spelling.</span></div></div><div className="speak-actions"><button onClick={()=>setIdx(i=>(i-1+pool.length)%pool.length)}><ChevronLeft/></button><button onClick={()=>{setIdx(i=>(i+1)%pool.length);setHeard('');setScore(null)}}>Volgende zin <ChevronRight/></button></div></section>
+ </div>
+}
+
+function Profile({app,mode,setMode}){return <div className="screen"><PageHead eyebrow="JOUW VOORTGANG" title="Profiel" sub="Alles wat je leert blijft op dit apparaat bewaard." badge={<UserRound/>}/><div className="profile-hero"><div className="big-avatar">A</div><div><h2>Afshan</h2><p>Afghan Fluent learner</p><span><Flame/> {app.progress.streak||1} dagen streak</span></div></div><div className="profile-stats"><StatCard icon={<Layers3/>} value={app.knownIds.size} label="Woorden beheerst"/><StatCard icon={<Heart/>} value={app.favorites.size} label="Favorieten"/><StatCard icon={<MessageCircle/>} value="400" label="Zinnen beschikbaar"/></div><SectionTitle title="Leerinstellingen"/><div className="settings-card"><div><div className="setting-icon"><UserRound/></div><div><b>Weergave</b><span>Kies een rustige volwassen of extra speelse kinderweergave.</span></div></div><div className="segmented"><button className={mode==='family'?'active':''} onClick={()=>setMode('family')}>Volwassen</button><button className={mode==='kids'?'active':''} onClick={()=>setMode('kids')}>Kids</button></div></div><div className="settings-card"><div><div className="setting-icon"><ShieldCheck/></div><div><b>Gevalideerde inhoud</b><span>Je dataset blijft de bron; niet-gevalideerde woorden worden gemarkeerd.</span></div></div><span className="status-ok"><Check/> Actief</span></div></div>}
+function StatCard({icon,value,label}){return <div className="stat-card"><span>{icon}</span><b>{value}</b><small>{label}</small></div>}
+
+function BottomNav({tab,go}){const x=[['today',Home,'Vandaag'],['path',BookOpen,'Leerpad'],['words',Layers3,'Woorden'],['sentences',MessageCircle,'Zinnen'],['profile',UserRound,'Profiel']];return <nav className="bottom-nav">{x.map(([id,I,l])=><button key={id} className={tab===id?'active':''} onClick={()=>go(id)}><I/><span>{l}</span></button>)}</nav>}
+
+createRoot(document.getElementById('root')).render(<App/>);
