@@ -160,30 +160,39 @@ function Words({app}){
  const cats=useMemo(()=>Array.from(new Set(vocab.map(v=>v.category).filter(Boolean))).slice(0,18),[]);
  const filtered=useMemo(()=>{ let a=vocab.filter(v=>(category==='all'||v.category===category) && (!query||`${v.dutch} ${v.spoken} ${v.latin} ${v.english}`.toLowerCase().includes(query.toLowerCase()))); if(shuffle) a=[...a].sort((x,y)=>seeded(x.id)-seeded(y.id)); return a;},[query,category,shuffle]);
  useEffect(()=>{setIdx(0);setRevealed(false)},[query,category,shuffle]);
- const w=filtered[idx]||vocab[0]; const known=app.knownIds.has(w.id); const fav=app.favorites.has(w.id);
- const next=()=>{setIdx(i=>(i+1)%Math.max(1,filtered.length));setRevealed(false)}; const prev=()=>{setIdx(i=>(i-1+filtered.length)%Math.max(1,filtered.length));setRevealed(false)};
- const markKnown=()=>{app.update(p=>{const set=new Set(p.known||[]); const wasKnown=set.has(w.id); set.add(w.id); const lt=p.learnedToday?.date===dayKey()?p.learnedToday:{date:dayKey(),count:0}; return {...p,known:[...set],learnedToday:{date:dayKey(),count:lt.count+(wasKnown?0:1)}}});next()};
- const markLearning=()=>{app.update(p=>{const set=new Set(p.known||[]);set.delete(w.id);return {...p,known:[...set]}});next()};
- const startDrag=(x)=>{dragStart.current=x;setDragging(true)};
- const moveDrag=(x)=>{if(dragStart.current!==null)setDragX(Math.max(-180,Math.min(180,x-dragStart.current)))};
- const endDrag=()=>{if(dragStart.current===null)return; const x=dragX; dragStart.current=null; setDragging(false); if(Math.abs(x)>85){setDragX(x>0?420:-420);setTimeout(()=>{setDragX(0);x>0?markKnown():markLearning()},180)}else setDragX(0)};
+ const w=filtered[idx]||vocab[0]; const nextW=filtered[(idx+1)%Math.max(1,filtered.length)]||w; const known=app.knownIds.has(w.id); const fav=app.favorites.has(w.id);
+ const [swipeExit,setSwipeExit]=useState(null);
+ const next=()=>{if(swipeExit)return;setIdx(i=>(i+1)%Math.max(1,filtered.length));setRevealed(false);setDragX(0)}; const prev=()=>{if(swipeExit)return;setIdx(i=>(i-1+filtered.length)%Math.max(1,filtered.length));setRevealed(false);setDragX(0)};
+ const saveKnown=()=>app.update(p=>{const set=new Set(p.known||[]); const wasKnown=set.has(w.id); set.add(w.id); const lt=p.learnedToday?.date===dayKey()?p.learnedToday:{date:dayKey(),count:0}; return {...p,known:[...set],learnedToday:{date:dayKey(),count:lt.count+(wasKnown?0:1)}}});
+ const saveLearning=()=>app.update(p=>{const set=new Set(p.known||[]);set.delete(w.id);return {...p,known:[...set]}});
+ const finishSwipe=(direction)=>{if(swipeExit)return; const right=direction==='right'; right?saveKnown():saveLearning(); setDragging(false); setSwipeExit(direction); const distance=Math.max(520,(typeof window!=='undefined'?window.innerWidth:430)*1.25); setDragX(right?distance:-distance); setTimeout(()=>{setIdx(i=>(i+1)%Math.max(1,filtered.length));setRevealed(false);setDragX(0);setSwipeExit(null)},270)};
+ const markKnown=()=>finishSwipe('right');
+ const markLearning=()=>finishSwipe('left');
+ const startDrag=(x)=>{if(swipeExit)return;dragStart.current=x;setDragging(true)};
+ const moveDrag=(x)=>{if(dragStart.current!==null&&!swipeExit)setDragX(Math.max(-220,Math.min(220,x-dragStart.current)))};
+ const endDrag=()=>{if(dragStart.current===null)return; const x=dragX; dragStart.current=null; setDragging(false); if(Math.abs(x)>85){finishSwipe(x>0?'right':'left')}else setDragX(0)};
  const toggleFav=()=>app.update(p=>{const s=new Set(p.favorites||[]);s.has(w.id)?s.delete(w.id):s.add(w.id);return {...p,favorites:[...s]}});
  return <div className="screen words-screen"><PageHead eyebrow="1000+ WOORDEN" title="Woorden" sub="Kijk, luister en herhaal. Spreken staat centraal." badge={<>{idx+1} / {filtered.length}</>}/>
    <div className="word-toolbar"><label><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Zoek Nederlands of fonetisch…"/></label><button className={shuffle?'active':''} onClick={()=>setShuffle(s=>!s)}><Shuffle/> <span>Mix</span></button></div>
    <div className="chips"><button className={category==='all'?'active':''} onClick={()=>setCategory('all')}>Alles</button>{cats.slice(0,8).map(c=><button key={c} className={category===c?'active':''} onClick={()=>setCategory(c)}>{iconFor(c)} {labelFor(c)}</button>)}</div>
    <div className="flash-layout">
     <div>
-      <div className="swipe-stage">
-      <article className={`premium-flashcard swipe-card ${revealed?'revealed':''} ${dragging?'dragging':''}`} style={{transform:`translateX(${dragX}px) rotate(${dragX/24}deg)`,transition:dragging?'none':'transform .2s ease'}} onPointerDown={e=>{e.currentTarget.setPointerCapture?.(e.pointerId);startDrag(e.clientX)}} onPointerMove={e=>moveDrag(e.clientX)} onPointerUp={endDrag} onPointerCancel={endDrag} onClick={()=>{if(Math.abs(dragX)<8)setRevealed(r=>!r)}}>
-        <div className={`swipe-stamp learn ${dragX< -25?'show':''}`}>NOG LEREN</div><div className={`swipe-stamp know ${dragX>25?'show':''}`}>GEKEND</div>
+      <div className={`swipe-stage ${swipeExit?'is-exiting':''}`}>
+      <article className="premium-flashcard swipe-card swipe-card-under" aria-hidden="true">
+        <div className="card-top"><span>{labelFor(nextW.category)}</span><span className="stack-dot">•••</span></div>
+        <WordIllustration word={nextW}/>
+        <div className="word-copy"><small>NEDERLANDS</small><h2>{nextW.dutch}</h2><div className="reveal-hint"><Eye/> Tik om de vertaling te zien</div></div>
+      </article>
+      <article key={w.id} className={`premium-flashcard swipe-card swipe-card-top ${revealed?'revealed':''} ${dragging?'dragging':''} ${swipeExit?`exit-${swipeExit}`:''}`} style={{transform:`translateX(${dragX}px) rotate(${dragX/24}deg)`,transition:dragging?'none':swipeExit?'transform .27s cubic-bezier(.22,.72,.18,1)':'transform .24s cubic-bezier(.2,.75,.25,1)'}} onPointerDown={e=>{e.currentTarget.setPointerCapture?.(e.pointerId);startDrag(e.clientX)}} onPointerMove={e=>moveDrag(e.clientX)} onPointerUp={endDrag} onPointerCancel={endDrag} onClick={()=>{if(!swipeExit&&Math.abs(dragX)<8)setRevealed(r=>!r)}}>
+        <div className={`swipe-stamp learn ${dragX< -25?'show':''}`}>NOG OEFENEN</div><div className={`swipe-stamp know ${dragX>25?'show':''}`}>KEN IK!</div>
         <div className="card-top"><span>{labelFor(w.category)}</span><button onClick={e=>{e.stopPropagation();toggleFav()}} className={fav?'fav':''}><Heart fill={fav?'currentColor':'none'}/></button></div>
         <WordIllustration word={w}/>
         <div className="word-copy"><small>NEDERLANDS</small><h2>{w.dutch}</h2>{revealed?<><small>ZO ZEG JE HET</small><h3>{w.spoken||w.latin||'Nog te valideren'}</h3>{w.script&&<div className="native-script">{w.script}</div>}<button className="sound-btn" onClick={e=>{e.stopPropagation();speak(w.spoken||w.latin)}}><Volume2/> Luister</button></>:<div className="reveal-hint"><Eye/> Tik om de vertaling te zien</div>}</div>
         {revealed && (w.exampleNl||w.exampleSpoken) && <div className="example-box"><span>Voorbeeldzin</span><b>{w.exampleNl||'Voorbeeld'}</b><p>{w.exampleSpoken}</p>{w.exampleSpoken&&<button onClick={e=>{e.stopPropagation();speak(w.exampleSpoken,.82)}}><Volume2/></button>}</div>}
         {w.status!=='VALIDATED'&&<div className="review-tag"><Clock3/> Nog te valideren</div>}
       </article></div>
-      <div className="swipe-hint"><span>← Nog leren</span><span>Swipe de kaart</span><span>Gekend →</span></div>
-      <div className="card-nav swipe-actions-row"><button className="learn-btn" onClick={markLearning}><X/> Nog leren</button><button className={known?'mastered':''} onClick={markKnown}>{known?<BadgeCheck/>:<Check/>} {known?'Beheerst':'Ken ik'}</button></div>
+      <div className="swipe-hint"><span>← Nog oefenen</span><span>Swipe de kaart</span><span>Ken ik! →</span></div>
+      <div className="card-nav swipe-actions-row"><button className="learn-btn" onClick={markLearning} disabled={!!swipeExit}><X/> Nog oefenen</button><button className={known?'mastered':''} onClick={markKnown} disabled={!!swipeExit}>{known?<BadgeCheck/>:<Check/>} Ken ik!</button></div>
       <div className="card-nav secondary-nav"><button onClick={prev}><ChevronLeft/> Vorige</button><button onClick={next}>Volgende <ChevronRight/></button></div>
     </div>
     <aside className="word-browser"><h3>Woordenlijst</h3><p>{filtered.length} woorden in deze selectie</p><div className="browser-list">{filtered.slice(Math.max(0,idx-4),Math.max(0,idx-4)+10).map((x,j)=>{const real=filtered.indexOf(x);return <button className={real===idx?'active':''} key={`${x.id}-${j}`} onClick={()=>{setIdx(real);setRevealed(true)}}><span>{iconFor(x.category)}</span><div><b>{x.dutch}</b><small>{x.spoken||x.latin}</small></div>{app.knownIds.has(x.id)&&<Check/>}</button>})}</div></aside>
