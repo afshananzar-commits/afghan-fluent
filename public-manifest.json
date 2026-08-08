@@ -1,0 +1,9 @@
+{
+  "name": "Afghan Fluent",
+  "short_name": "Afghan Fluent",
+  "description": "Leer Afghaans door luisteren, spreken, woorden en zinnen.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f0e3",
+  "theme_color": "#55765c"
+}
