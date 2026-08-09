@@ -207,3 +207,289 @@
     height:146px;
   }
 }
+
+
+/* =========================================================
+   FARANGIS v9 — FRAMELESS POP-OUT CHARACTER SYSTEM
+   Design rule: Farangis is never a card/avatar. She appears
+   from behind an edge and speaks in a light floating bubble.
+   ========================================================= */
+.farangis-popout{
+  position:relative;
+  z-index:8;
+  pointer-events:none;
+  min-height:96px;
+}
+.farangis-character{
+  position:absolute;
+  z-index:2;
+  display:block;
+  width:132px;
+  height:auto;
+  max-width:none;
+  object-fit:contain;
+  /* visually dissolve the square source into the page */
+  -webkit-mask-image:radial-gradient(ellipse 72% 76% at 50% 48%,#000 62%,rgba(0,0,0,.92) 72%,transparent 96%);
+  mask-image:radial-gradient(ellipse 72% 76% at 50% 48%,#000 62%,rgba(0,0,0,.92) 72%,transparent 96%);
+  filter:drop-shadow(0 13px 13px rgba(48,42,31,.14));
+}
+.farangis-bubble{
+  position:absolute;
+  z-index:3;
+  max-width:260px;
+  padding:10px 13px;
+  border:1px solid rgba(222,207,184,.9);
+  border-radius:18px 18px 18px 7px;
+  background:rgba(255,253,248,.94);
+  box-shadow:0 9px 22px rgba(60,50,35,.09);
+  backdrop-filter:blur(8px);
+  color:var(--ink);
+}
+.farangis-bubble:after{
+  content:"";
+  position:absolute;
+  left:-8px; bottom:11px;
+  width:15px;height:15px;
+  background:inherit;
+  border-left:1px solid rgba(222,207,184,.9);
+  border-bottom:1px solid rgba(222,207,184,.9);
+  transform:rotate(45deg);
+}
+.farangis-bubble small{
+  display:block;
+  color:var(--terra);
+  font-size:7px;
+  letter-spacing:.14em;
+  font-weight:900;
+  margin-bottom:2px;
+}
+.farangis-bubble span{
+  display:block;
+  font-size:11px;
+  line-height:1.35;
+  font-weight:600;
+}
+
+/* Home: she rises out of the green card. */
+.continue-with-coach{
+  position:relative;
+  overflow:visible;
+  grid-template-columns:1fr 210px 36px;
+}
+.continue-with-coach .placement-continue{
+  position:absolute;
+  right:44px;
+  bottom:0;
+  width:235px;
+  height:190px;
+}
+.placement-continue .farangis-character{
+  width:172px;
+  right:0;
+  bottom:-1px;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0 84%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0 84%,transparent 100%);
+}
+.placement-continue .farangis-bubble{
+  left:-35px;
+  top:22px;
+  max-width:142px;
+  color:var(--ink);
+  transform:rotate(-1deg);
+}
+.placement-continue .farangis-bubble small{display:none}
+
+/* Sentence builder: coach floats over an edge only when called. */
+.sentence-builder-v2{position:relative}
+.placement-exercise{
+  position:absolute;
+  z-index:20;
+  right:-6px;
+  top:46%;
+  width:245px;
+  height:155px;
+  animation:farangisSlideIn .24s cubic-bezier(.2,.8,.2,1);
+}
+.placement-exercise .farangis-character{
+  width:118px;
+  right:-6px;
+  bottom:0;
+}
+.placement-exercise .farangis-bubble{
+  right:86px;
+  bottom:40px;
+  width:170px;
+  border-radius:18px 18px 7px 18px;
+}
+.placement-exercise .farangis-bubble:after{
+  left:auto;right:-8px;
+  border-left:0;border-bottom:0;
+  border-right:1px solid rgba(222,207,184,.9);
+  border-top:1px solid rgba(222,207,184,.9);
+}
+.placement-success{
+  position:absolute;
+  z-index:21;
+  right:-4px;
+  bottom:62px;
+  width:250px;
+  height:150px;
+  animation:farangisPop .3s cubic-bezier(.18,.89,.32,1.28);
+}
+.placement-success .farangis-character{
+  width:124px;
+  right:-2px;
+  bottom:0;
+}
+.placement-success .farangis-bubble{
+  right:94px;
+  bottom:48px;
+  width:150px;
+  border-radius:18px 18px 7px 18px;
+}
+.placement-success .farangis-bubble:after{
+  left:auto;right:-8px;
+  border-left:0;border-bottom:0;
+  border-right:1px solid rgba(222,207,184,.9);
+  border-top:1px solid rgba(222,207,184,.9);
+}
+
+/* Pronunciation: Farangis leans in from the upper-right of the lesson. */
+.speak-practice-card{position:relative;overflow:visible;padding-top:112px}
+.speak-practice-card .placement-speak{
+  position:absolute;
+  right:-8px;
+  top:-28px;
+  width:330px;
+  height:190px;
+}
+.placement-speak .farangis-character{
+  width:170px;
+  right:0;
+  top:0;
+}
+.placement-speak .farangis-bubble{
+  right:130px;
+  top:45px;
+  width:190px;
+  text-align:left;
+  border-radius:18px 18px 7px 18px;
+}
+.placement-speak .farangis-bubble:after{
+  left:auto;right:-8px;
+  border-left:0;border-bottom:0;
+  border-right:1px solid rgba(222,207,184,.9);
+  border-top:1px solid rgba(222,207,184,.9);
+}
+
+/* Secondary screens: a restrained peek from the right margin. */
+.placement-section{
+  float:right;
+  width:235px;
+  height:112px;
+  margin:-18px 0 8px 18px;
+}
+.placement-section .farangis-character{
+  width:104px;
+  right:0;bottom:0;
+}
+.placement-section .farangis-bubble{
+  right:76px;bottom:28px;width:155px;
+  border-radius:18px 18px 7px 18px;
+}
+.placement-section .farangis-bubble:after{
+  left:auto;right:-8px;
+  border-left:0;border-bottom:0;
+  border-right:1px solid rgba(222,207,184,.9);
+  border-top:1px solid rgba(222,207,184,.9);
+}
+
+@keyframes farangisSlideIn{
+  from{opacity:0;transform:translateX(34px) translateY(8px)}
+  to{opacity:1;transform:none}
+}
+@keyframes farangisPop{
+  from{opacity:0;transform:translateY(28px) scale(.88)}
+  to{opacity:1;transform:none}
+}
+
+@media(max-width:620px){
+  .continue-with-coach{
+    grid-template-columns:1fr 145px 30px;
+    min-height:170px;
+    padding-right:12px;
+  }
+  .continue-with-coach>div:first-child{position:relative;z-index:4}
+  .continue-with-coach .mini-progress{width:145px}
+  .continue-with-coach .placement-continue{
+    right:27px;
+    width:165px;
+    height:175px;
+  }
+  .placement-continue .farangis-character{
+    width:148px;
+    right:-3px;
+  }
+  .placement-continue .farangis-bubble{
+    left:-36px;
+    top:19px;
+    width:112px;
+    padding:8px 9px;
+  }
+  .placement-continue .farangis-bubble span{font-size:9px}
+  .continue-with-coach>button{position:relative;z-index:5}
+
+  .placement-exercise{
+    right:-10px;
+    top:auto;
+    bottom:128px;
+    width:205px;
+    height:130px;
+  }
+  .placement-exercise .farangis-character{width:102px}
+  .placement-exercise .farangis-bubble{
+    right:74px;bottom:36px;width:132px;padding:8px 9px;
+  }
+  .placement-exercise .farangis-bubble span{font-size:9px}
+
+  .placement-success{
+    right:-10px;
+    bottom:56px;
+    width:205px;
+    height:128px;
+  }
+  .placement-success .farangis-character{width:104px}
+  .placement-success .farangis-bubble{
+    right:78px;bottom:40px;width:124px;padding:8px 9px;
+  }
+  .placement-success .farangis-bubble span{font-size:9px}
+
+  .speak-practice-card{padding-top:128px}
+  .speak-practice-card .placement-speak{
+    right:-5px;
+    top:-24px;
+    width:285px;
+    height:175px;
+  }
+  .placement-speak .farangis-character{width:145px}
+  .placement-speak .farangis-bubble{
+    right:112px;top:42px;width:158px;padding:9px 10px;
+  }
+  .placement-speak .farangis-bubble span{font-size:9px}
+
+  .placement-section{
+    width:190px;height:98px;margin:-12px -4px 5px 8px;
+  }
+  .placement-section .farangis-character{width:88px}
+  .placement-section .farangis-bubble{
+    right:66px;bottom:24px;width:122px;padding:8px;
+  }
+  .placement-section .farangis-bubble span{font-size:8px}
+}
+
+/* Very short phones: keep the character, shrink only the bubble. */
+@media(max-width:620px) and (max-height:740px){
+  .placement-exercise{bottom:112px;transform:scale(.9);transform-origin:right bottom}
+  .placement-success{bottom:48px;transform:scale(.9);transform-origin:right bottom}
+  .farangis-bubble small{display:none}
+}
