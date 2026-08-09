@@ -890,3 +890,58 @@
 .home-v14 .quick-icon{background:#e9f0e8 !important;color:#46664f !important}
 .home-v14 .home-review .seal{background:#e5eee4 !important;color:#46664f !important}
 .home-v14 .home-review>svg{color:#46664f !important}
+
+/* HOME/CHALLENGE v18 — coach bubble in the reserved space above Farangis */
+.farangis-character-button{
+  appearance:none;
+  -webkit-appearance:none;
+  border:0;
+  padding:0;
+  margin:0;
+  background:transparent;
+  display:block;
+  cursor:pointer;
+  font:inherit;
+}
+.farangis-character-button .farangis-character{
+  display:block;
+}
+
+/* On the challenge coach, use the quiet open area above the portrait. */
+.challenge-card .farangis-popout,
+.challenge-shell .farangis-popout,
+.placement-challenge{
+  overflow:visible;
+}
+.challenge-card .farangis-bubble,
+.challenge-shell .farangis-bubble,
+.placement-challenge .farangis-bubble{
+  top:-78px !important;
+  right:8px !important;
+  left:auto !important;
+  bottom:auto !important;
+  width:min(290px,42vw) !important;
+  min-height:58px;
+  transform:none !important;
+}
+.challenge-card .farangis-bubble:after,
+.challenge-shell .farangis-bubble:after,
+.placement-challenge .farangis-bubble:after{
+  left:auto !important;
+  right:28px !important;
+  top:auto !important;
+  bottom:-9px !important;
+  transform:rotate(45deg) !important;
+}
+
+/* Bubble can be dismissed by tapping Farangis without moving the layout. */
+.farangis-popout .farangis-bubble{
+  opacity:1;
+  visibility:visible;
+  transition:opacity .18s ease, visibility .18s ease, transform .18s ease;
+}
+.farangis-popout.bubble-hidden .farangis-bubble{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
