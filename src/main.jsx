@@ -196,14 +196,25 @@ function WordIllustration({word}){
   useEffect(()=>{ setImageFailed(false); },[numericId]);
 
   if(hasNumericId && !imageFailed){
-    return <div className={`word-illustration word-illustration-image cat-${String(word?.category||'').replace(/[^a-z]/g,'')}`}>
+    const imageUrl = `/images/words/${filename}.png`;
+    return <div
+      className={`word-illustration word-illustration-image cat-${String(word?.category||'').replace(/[^a-z]/g,'')}`}
+      role="img"
+      aria-label={word?.dutch || `Woord ${numericId}`}
+      style={{
+        backgroundImage:`url("${imageUrl}")`,
+        backgroundSize:'contain',
+        backgroundPosition:'center',
+        backgroundRepeat:'no-repeat',
+        backgroundColor:'#f7f0e3'
+      }}
+    >
       <img
-        src={`/images/words/${filename}.png`}
-        alt={word?.dutch || `Woord ${numericId}`}
-        loading="eager"
-        draggable="false"
+        src={imageUrl}
+        alt=""
+        aria-hidden="true"
         onError={()=>setImageFailed(true)}
-        style={{width:'100%',height:'100%',objectFit:'contain',objectPosition:'center',display:'block'}}
+        style={{position:'absolute',width:'1px',height:'1px',opacity:0,pointerEvents:'none'}}
       />
     </div>;
   }
