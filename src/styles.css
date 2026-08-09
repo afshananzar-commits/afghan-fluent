@@ -41,3 +41,169 @@
 
 /* Farangis coach v7 — pose-specific transparent illustrations */
 .farangis-coach img{object-fit:contain;object-position:center;background:transparent;border:0;border-radius:0;filter:drop-shadow(0 5px 8px rgba(79,60,38,.10))}.farangis-coach{overflow:hidden}.farangis-coach.farangis-celebrate{background:linear-gradient(135deg,#fff8df,#eef4e9)}.farangis-coach.farangis-almost{background:linear-gradient(135deg,#fff7ef,#f5e8df)}.farangis-coach.farangis-listen{background:linear-gradient(135deg,#f8f4e9,#eaf1e7)}.farangis-coach.farangis-explain,.farangis-coach.farangis-fact{background:linear-gradient(135deg,#fffaf1,#f2eadc)}
+
+
+/* Farangis v8 — larger, more natural coach presence */
+.farangis-coach{
+  position:relative;
+  min-height:112px;
+  padding:14px 18px 14px 126px;
+  overflow:visible;
+  isolation:isolate;
+  background:linear-gradient(135deg,rgba(255,250,241,.98),rgba(238,244,234,.96));
+  border:1px solid #e7dccb;
+  box-shadow:0 10px 28px rgba(64,55,40,.09);
+}
+.farangis-coach .farangis-portrait{
+  position:absolute;
+  left:10px;
+  bottom:0;
+  width:106px;
+  height:122px;
+  border-radius:28px 28px 18px 18px;
+  overflow:hidden;
+  box-shadow:0 10px 22px rgba(56,47,35,.14);
+  transform:rotate(-1.5deg);
+  background:#efe4d3;
+  border:3px solid rgba(255,255,255,.9);
+}
+.farangis-coach .farangis-portrait img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center top;
+  border:0;
+  border-radius:0;
+  display:block;
+}
+.farangis-coach .farangis-copy{position:relative;z-index:2}
+.farangis-coach .farangis-copy small{
+  display:block;
+  margin-bottom:2px;
+  font-size:7px;
+  letter-spacing:.16em;
+  font-weight:800;
+  color:var(--terra);
+}
+.farangis-coach .farangis-copy b{font-size:20px}
+.farangis-coach .farangis-copy span{font-size:12px;line-height:1.45}
+
+/* Compact feedback is still clearly Farangis, but doesn't steal the exercise. */
+.farangis-coach.compact{
+  min-height:86px;
+  padding:10px 12px 10px 92px;
+}
+.farangis-coach.compact .farangis-portrait{
+  left:8px;
+  width:76px;
+  height:88px;
+  border-radius:22px 22px 14px 14px;
+}
+.farangis-coach.compact .farangis-copy b{font-size:16px}
+.farangis-coach.compact .farangis-copy span{font-size:10px}
+.farangis-coach.compact .farangis-copy small{display:none}
+
+/* Hero moments: coach deliberately overlaps the card like a character, not an avatar. */
+.farangis-coach.hero{
+  min-height:158px;
+  margin-top:22px;
+  padding:22px 22px 22px 176px;
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 14% 18%,rgba(255,255,255,.88),transparent 34%),
+    linear-gradient(135deg,#fff9ed,#e9f0e5);
+}
+.farangis-coach.hero .farangis-portrait{
+  left:14px;
+  bottom:0;
+  width:148px;
+  height:178px;
+  border-radius:34px 34px 20px 20px;
+  transform:rotate(-2deg);
+  box-shadow:0 16px 34px rgba(55,48,37,.16);
+}
+.farangis-coach.hero .farangis-copy b{
+  font-family:Fraunces;
+  font-size:26px;
+}
+.farangis-coach.hero .farangis-copy span{
+  font-size:13px;
+  max-width:480px;
+}
+
+/* In pronunciation she becomes part of the lesson composition. */
+.speak-practice-card .farangis-coach.hero{
+  margin:-8px 0 18px;
+  text-align:left;
+}
+.speak-practice-card .farangis-coach.hero + .sound-orbit{margin-top:20px}
+
+/* Different poses feel less repetitive. */
+.farangis-correct .farangis-portrait,
+.farangis-good .farangis-portrait,
+.farangis-celebrate .farangis-portrait{transform:rotate(1.5deg)}
+.farangis-almost .farangis-portrait,
+.farangis-help .farangis-portrait{transform:rotate(-1deg)}
+
+@media(max-width:620px){
+  .farangis-coach{
+    min-height:102px;
+    padding:12px 12px 12px 108px;
+    margin:9px 0;
+  }
+  .farangis-coach .farangis-portrait{
+    width:90px;
+    height:108px;
+    left:8px;
+  }
+  .farangis-coach .farangis-copy b{font-size:18px}
+  .farangis-coach .farangis-copy span{font-size:10px}
+
+  .farangis-coach.compact{
+    min-height:76px;
+    padding:8px 9px 8px 80px;
+  }
+  .farangis-coach.compact .farangis-portrait{
+    width:64px;
+    height:78px;
+    left:7px;
+  }
+
+  .farangis-coach.hero{
+    min-height:142px;
+    padding:18px 13px 16px 142px;
+    margin-top:18px;
+    border-radius:23px;
+  }
+  .farangis-coach.hero .farangis-portrait{
+    width:124px;
+    height:154px;
+    left:8px;
+    border-radius:29px 29px 18px 18px;
+  }
+  .farangis-coach.hero .farangis-copy b{font-size:22px}
+  .farangis-coach.hero .farangis-copy span{font-size:10px;line-height:1.4}
+  .farangis-coach.hero .farangis-copy small{font-size:6px}
+
+  /* Keep challenge screens fitting comfortably while making the coach recognizable. */
+  .games-focus .farangis-coach.compact{
+    min-height:68px;
+    padding:7px 8px 7px 72px;
+  }
+  .games-focus .farangis-coach.compact .farangis-portrait{
+    width:58px;
+    height:70px;
+  }
+  .games-focus .farangis-coach.compact .farangis-copy b{font-size:14px}
+  .games-focus .farangis-coach.compact .farangis-copy span{font-size:8px}
+}
+
+@media(max-width:390px){
+  .farangis-coach.hero{
+    padding-left:130px;
+  }
+  .farangis-coach.hero .farangis-portrait{
+    width:112px;
+    height:146px;
+  }
+}
