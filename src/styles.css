@@ -1118,3 +1118,14 @@
 @media(max-width:390px){
   .home-v14 .home-coach-character{transform:translateY(-18px) !important;}
 }
+
+/* HOME v24 — lift Farangis further so her full waving hand is visible. */
+.home-v14 .home-coach-character{
+  transform:translateY(-48px) !important;
+}
+@media(max-width:620px){
+  .home-v14 .home-coach-character{transform:translateY(-44px) !important;}
+}
+@media(max-width:390px){
+  .home-v14 .home-coach-character{transform:translateY(-40px) !important;}
+}
