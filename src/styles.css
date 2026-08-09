@@ -1107,3 +1107,14 @@
   }
   .home-v14 .home-coach-character{width:180px;right:-5px;bottom:-22px}
 }
+
+/* HOME v23 — only adjustment: move Farangis slightly higher. */
+.home-v14 .home-coach-character{
+  transform:translateY(-22px) !important;
+}
+@media(max-width:620px){
+  .home-v14 .home-coach-character{transform:translateY(-20px) !important;}
+}
+@media(max-width:390px){
+  .home-v14 .home-coach-character{transform:translateY(-18px) !important;}
+}
