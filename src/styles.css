@@ -528,3 +528,174 @@
   .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-character{width:86px}
   .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble{right:65px;bottom:18px;width:112px}
 }
+
+
+/* =========================================================
+   FARANGIS v11 — CALM TOP COMPOSITION
+   Farangis has her own visual place at the top-right.
+   The message sits separately below/left and NEVER crosses
+   over her body or the exercise title.
+   ========================================================= */
+.sentence-builder-v2 .builder-coach-head{
+  min-height:154px;
+  padding:0 128px 52px 0;
+  align-items:flex-start;
+  position:relative;
+  overflow:visible;
+}
+.sentence-builder-v2 .builder-title{
+  max-width:none;
+  width:100%;
+  position:relative;
+  z-index:2;
+}
+.sentence-builder-v2 .builder-title h2{
+  max-width:520px;
+  margin-right:0;
+}
+.sentence-builder-v2 .builder-coach-slot{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:5;
+}
+.sentence-builder-v2 .builder-coach-slot .placement-exercise{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  transform:none!important;
+}
+.sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-character{
+  width:124px;
+  right:-4px;
+  top:-20px;
+  bottom:auto;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0 86%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0 86%,transparent 100%);
+  filter:drop-shadow(0 12px 12px rgba(48,42,31,.13));
+}
+.sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble{
+  left:0;
+  right:auto;
+  top:auto;
+  bottom:0;
+  width:min(390px,calc(100% - 132px));
+  max-width:none;
+  min-height:40px;
+  padding:9px 13px 9px 14px;
+  border-radius:14px;
+  background:rgba(255,250,241,.92);
+  box-shadow:none;
+  border:1px solid rgba(226,214,195,.88);
+}
+.sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble:after{
+  display:none;
+}
+.sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble small{
+  display:inline;
+  margin:0 7px 0 0;
+  font-size:6.5px;
+}
+.sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble span{
+  display:inline;
+  font-size:9.5px;
+  line-height:1.35;
+}
+
+/* XP remains attached to the exercise label rather than floating near Farangis. */
+.sentence-builder-v2 .builder-xp-inline{
+  margin-left:6px;
+  padding:2px 6px;
+  font-size:7px;
+}
+
+@media(max-width:620px){
+  .sentence-builder-v2 .builder-coach-head{
+    min-height:142px;
+    padding:0 100px 48px 0;
+  }
+  .sentence-builder-v2 .builder-title{
+    max-width:none;
+    width:100%;
+  }
+  .sentence-builder-v2 .builder-title h2{
+    max-width:225px;
+    font-size:18px;
+    line-height:1.08;
+  }
+  .sentence-builder-v2 .builder-coach-slot{
+    inset:0;
+    width:100%;
+    height:100%;
+    top:0;
+    right:0;
+  }
+  .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-character{
+    width:102px;
+    right:-5px;
+    top:-14px;
+  }
+  .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble{
+    left:0;
+    right:auto;
+    bottom:0;
+    width:calc(100% - 106px);
+    min-height:38px;
+    padding:7px 9px;
+    border-radius:12px;
+  }
+  .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble small{
+    display:none;
+  }
+  .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble span{
+    font-size:8.5px;
+    line-height:1.28;
+  }
+}
+
+@media(max-width:390px){
+  .sentence-builder-v2 .builder-coach-head{
+    min-height:136px;
+    padding-right:92px;
+    padding-bottom:46px;
+  }
+  .sentence-builder-v2 .builder-title h2{
+    max-width:205px;
+    font-size:17px;
+  }
+  .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-character{
+    width:94px;
+    right:-6px;
+  }
+  .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble{
+    width:calc(100% - 96px);
+    padding:7px 8px;
+  }
+}
+
+@media(max-width:620px) and (max-height:740px){
+  .sentence-builder-v2 .builder-coach-head{
+    min-height:118px;
+    padding-right:84px;
+    padding-bottom:40px;
+  }
+  .sentence-builder-v2 .builder-title h2{
+    font-size:16px;
+    max-width:200px;
+  }
+  .sentence-builder-v2 .builder-coach-slot{
+    height:100%;
+    top:0;
+  }
+  .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-character{
+    width:84px;
+    top:-10px;
+  }
+  .sentence-builder-v2 .builder-coach-slot .placement-exercise .farangis-bubble{
+    width:calc(100% - 88px);
+    bottom:0;
+  }
+}
