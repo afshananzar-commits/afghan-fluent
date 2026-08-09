@@ -862,3 +862,31 @@
   .home-v14 .quick-card b{font-size:8.7px !important}
   .home-v14 .placement-continue .farangis-bubble{right:150px !important;width:108px !important;max-width:108px !important}
 }
+
+
+/* HOME v17 — coach artwork and hero visually merge */
+.home-v14 .continue-card{
+  background:#f4ecdd !important;
+  color:var(--ink) !important;
+  border:1px solid rgba(218,204,181,.82);
+  box-shadow:0 8px 24px rgba(63,48,31,.055);
+}
+.home-v14 .continue-copy small{color:#6f7f6f !important;font-weight:800}
+.home-v14 .continue-copy h2{color:var(--ink) !important}
+.home-v14 .continue-card>button{
+  background:#58765f !important;color:#fff !important;
+  box-shadow:0 5px 14px rgba(50,78,58,.16)
+}
+.home-v14 .continue-card .mini-progress{background:rgba(58,84,64,.12) !important}
+.home-v14 .continue-card .mini-progress i{background:#58765f !important}
+.home-v14 .placement-continue .farangis-bubble{
+  background:rgba(250,246,237,.98) !important;
+  border-color:rgba(214,200,177,.9) !important
+}
+.home-v14 .placement-continue .farangis-bubble:after{
+  background:rgba(250,246,237,.98) !important;
+  border-color:rgba(214,200,177,.9) !important
+}
+.home-v14 .quick-icon{background:#e9f0e8 !important;color:#46664f !important}
+.home-v14 .home-review .seal{background:#e5eee4 !important;color:#46664f !important}
+.home-v14 .home-review>svg{color:#46664f !important}
