@@ -890,3 +890,57 @@
 .home-v14 .quick-icon{background:#e9f0e8 !important;color:#46664f !important}
 .home-v14 .home-review .seal{background:#e5eee4 !important;color:#46664f !important}
 .home-v14 .home-review>svg{color:#46664f !important}
+
+
+/* =========================================================
+   HOME v20 — soft green app tiles
+   Built on the stable v17 home screen.
+   ========================================================= */
+
+/* Four calm sage app tiles: same family, slight tonal variation. */
+.home-v14 .home-actions .quick-card{
+  background:#e7eee4 !important;
+  border-color:rgba(82,112,88,.14) !important;
+  color:#294333 !important;
+  box-shadow:0 6px 16px rgba(49,76,57,.055) !important;
+}
+.home-v14 .home-actions .quick-card:nth-child(2){
+  background:#e2ebe0 !important;
+}
+.home-v14 .home-actions .quick-card:nth-child(3){
+  background:#e9f0e6 !important;
+}
+.home-v14 .home-actions .quick-card:nth-child(4){
+  background:#dfe9dd !important;
+}
+
+/* Darker green icon chips give the four tiles a clear app-icon hierarchy. */
+.home-v14 .home-actions .quick-icon{
+  background:#cdddc9 !important;
+  color:#365840 !important;
+}
+.home-v14 .home-actions .quick-card:nth-child(2) .quick-icon{
+  background:#c6d8c3 !important;
+}
+.home-v14 .home-actions .quick-card:nth-child(3) .quick-icon{
+  background:#d2e0ce !important;
+}
+.home-v14 .home-actions .quick-card:nth-child(4) .quick-icon{
+  background:#c3d5c0 !important;
+}
+
+.home-v14 .home-actions .quick-card b{
+  color:#294333 !important;
+}
+
+/* A little more green identity elsewhere, without changing Farangis' warm hero. */
+.home-v14 .home-review{
+  border-color:rgba(82,112,88,.15) !important;
+}
+.home-v14 .home-review .seal{
+  background:#dce8d9 !important;
+  color:#46664f !important;
+}
+.home-v14 .home-review>svg{
+  color:#55765c !important;
+}
