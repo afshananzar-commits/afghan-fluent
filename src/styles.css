@@ -585,3 +585,84 @@
     border-radius:18px;
   }
 }
+
+/* =========================================================
+   HOME v14 — calmer, aligned, Apple-like dashboard
+   Keeps Farangis at the existing size; only composition changes.
+   ========================================================= */
+.home-v14{max-width:760px;margin:0 auto;padding-bottom:18px}
+.home-v14 .welcome{align-items:center;margin:14px 0 28px;gap:20px}
+.home-v14 .welcome>div:first-child{min-width:0}
+.home-v14 .welcome h1{font-size:clamp(38px,6vw,54px);line-height:1.02;letter-spacing:-.025em;margin:7px 0 10px}
+.home-v14 .welcome h1 span{display:inline-block;font-family:'DM Sans',sans-serif;font-size:.72em;vertical-align:.08em}
+.home-v14 .welcome>div>p:last-child{font-size:16px;line-height:1.45;max-width:390px}
+.home-v14 .streak-pill{flex:0 0 auto;padding:11px 15px;background:rgba(255,250,239,.72);box-shadow:none}
+.home-v14 .streak-pill svg{width:18px}
+
+.home-v14 .continue-card{min-height:190px;border-radius:30px;padding:26px 28px;background:linear-gradient(135deg,#45694f 0%,#6f8a70 100%);box-shadow:0 16px 38px rgba(54,75,58,.13);border:1px solid rgba(255,255,255,.12)}
+.home-v14 .continue-copy{position:relative;z-index:6;align-self:center}
+.home-v14 .continue-copy small{font-size:10px;letter-spacing:.075em;opacity:.9}
+.home-v14 .continue-copy h2{font-size:34px;line-height:1.05;margin:13px 0 28px;letter-spacing:-.015em}
+.home-v14 .continue-card>button{position:relative;z-index:8;width:42px;height:42px;display:grid;place-items:center;color:var(--ink);box-shadow:0 5px 14px rgba(29,47,35,.10)}
+.home-v14 .continue-card>button svg{width:20px}
+.home-v14 .mini-progress{width:190px;height:6px;background:rgba(255,255,255,.22)}
+.home-v14 .mini-progress i{background:#f3d69a}
+/* Preserve character dimensions from v13. Only give bubble a calmer position. */
+.home-v14 .placement-continue .farangis-bubble{top:15px;left:-27px;transform:none;box-shadow:0 8px 20px rgba(35,52,39,.10)}
+
+.home-v14 .home-actions{grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 12px}
+.home-v14 .quick-card{min-height:104px;padding:16px 14px;border-radius:22px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:11px;border:1px solid rgba(220,209,193,.82);background:rgba(255,253,249,.86);box-shadow:0 5px 16px rgba(68,52,34,.045);transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+.home-v14 .quick-card:active{transform:scale(.985);background:#fff}
+.home-v14 .quick-icon{width:34px;height:34px;border-radius:11px;background:#edf2ea;display:grid;place-items:center;color:var(--olive);font-size:0}
+.home-v14 .quick-icon svg{width:18px;height:18px;stroke-width:1.9}
+.home-v14 .quick-card>div{min-width:0}
+.home-v14 .quick-card b{font-size:13px;line-height:1.2;margin-bottom:3px}
+.home-v14 .quick-card small{font-size:10px;line-height:1.25;color:#817a71}
+
+.home-v14 .home-review{margin-top:0;padding:15px 17px;border-radius:22px;background:rgba(248,242,232,.78);box-shadow:none}
+.home-v14 .home-review .seal{background:#e8efe6;color:var(--olive)}
+.home-v14 .home-review b{font-size:13px;margin-bottom:2px}
+.home-v14 .home-review span{font-size:10px;line-height:1.35}
+.home-v14 .home-review>svg{width:18px;color:var(--olive)}
+
+.home-v14 .home-progress{margin-top:24px;padding-top:20px;border-top:1px solid rgba(222,211,194,.8)}
+.home-v14 .home-progress-title{display:flex;justify-content:space-between;align-items:end;margin-bottom:10px}
+.home-v14 .home-progress-title span{font-size:9px;letter-spacing:.16em;color:var(--terra);font-weight:800}
+.home-v14 .home-progress-title b{font-family:Fraunces;font-size:20px}
+.home-v14 .home-progress>.game-summary{margin:0 0 10px;padding:12px 14px;border-radius:18px;background:rgba(255,250,242,.64);box-shadow:none}
+.home-v14 .home-progress .profile-stats{margin:0;gap:8px}
+.home-v14 .home-progress .stat-card{padding:12px 9px;border-radius:17px;box-shadow:none;background:rgba(255,253,249,.7)}
+.home-v14 .home-progress .stat-card>span{width:31px;height:31px;border-radius:10px}
+.home-v14 .home-progress .stat-card b{font-size:19px;margin-top:3px}
+
+@media(max-width:980px){
+  .home-v14{max-width:700px}
+  .home-v14 .home-actions{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:620px){
+  .app:has(.home-v14) .top-chrome{height:68px;padding:7px 16px 5px;background:rgba(247,240,227,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(226,215,198,.45)}
+  .app:has(.home-v14) .mobile-brand{gap:9px;font-size:16px;font-weight:700}
+  .app:has(.home-v14) .mini-arch{width:34px;height:38px;border-radius:18px 18px 10px 10px}
+  .app:has(.home-v14) main{padding-top:8px}
+  .home-v14 .welcome{margin:12px 0 24px;align-items:flex-start}
+  .home-v14 .welcome h1{font-size:39px;max-width:260px}
+  .home-v14 .welcome>div>p:last-child{font-size:15px;max-width:265px}
+  .home-v14 .streak-pill{margin-top:12px;padding:9px 11px;font-size:11px}
+  .home-v14 .continue-card{min-height:184px;padding:23px 20px;border-radius:28px}
+  .home-v14 .continue-copy h2{font-size:31px;margin:12px 0 27px;max-width:130px}
+  .home-v14 .mini-progress{width:145px}
+  .home-v14 .placement-continue .farangis-bubble{left:-30px;top:16px}
+  .home-v14 .home-actions{grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 12px}
+  .home-v14 .quick-card{min-height:84px;padding:13px 14px;display:grid;grid-template-columns:34px 1fr;align-items:center;gap:11px}
+  .home-v14 .quick-icon{width:34px;height:34px}
+  .home-v14 .quick-card b{font-size:13px}
+  .home-v14 .quick-card small{font-size:10px}
+  .home-v14 .home-progress{margin-top:20px;padding-top:17px}
+  .home-v14 .home-progress>.game-summary{grid-template-columns:auto 1fr auto;gap:8px;padding:10px 11px}
+  .home-v14 .home-progress .game-stat>span{width:30px;height:30px}
+  .home-v14 .home-progress .game-stat small{display:none}
+  .home-v14 .home-progress .game-goal{display:none}
+  .home-v14 .home-progress .game-xp small{font-size:7px}
+  .home-v14 .home-progress .profile-stats{grid-template-columns:repeat(3,1fr)}
+  .home-v14 .home-progress .profile-stats .stat-card:last-child{grid-column:auto}
+}
