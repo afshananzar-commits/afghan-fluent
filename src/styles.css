@@ -553,3 +553,25 @@
 }
 .answer-slot.hover{transform:scale(1.035);border-color:var(--sage);box-shadow:0 0 0 4px rgba(85,118,92,.10)}
 @media(max-width:620px){.floating-word-tile{padding:11px 14px;font-size:14px;min-width:64px}}
+
+/* Farangis v12 — blend the coach artwork into the challenge header.
+   Keep the existing size/position; only make the area behind the PNG
+   use the same warm paper tone so the source rectangle disappears. */
+.sentence-builder-v2 .builder-coach-head{
+  background:linear-gradient(90deg,transparent 0 55%,#f7f0e3 55% 100%);
+  border-radius:18px 18px 0 0;
+}
+.sentence-builder-v2 .builder-coach-slot{
+  background:#f7f0e3;
+  border-radius:22px 22px 14px 14px;
+}
+.sentence-builder-v2 .builder-coach-slot .farangis-character{
+  -webkit-mask-image:linear-gradient(to bottom,#000 0 82%,rgba(0,0,0,.96) 88%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0 82%,rgba(0,0,0,.96) 88%,transparent 100%);
+  filter:drop-shadow(0 8px 10px rgba(48,42,31,.08));
+}
+@media(max-width:620px){
+  .sentence-builder-v2 .builder-coach-head{
+    background:linear-gradient(90deg,transparent 0 54%,#f7f0e3 54% 100%);
+  }
+}
