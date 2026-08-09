@@ -207,9 +207,9 @@ function WordIllustration({word}){
         backgroundPosition:'center',
         backgroundRepeat:'no-repeat',
         backgroundColor:'#f7f0e3',
-        WebkitMaskImage:'linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)',
+        WebkitMaskImage:'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)',
         WebkitMaskComposite:'source-in',
-        maskImage:'linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)',
+        maskImage:'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)',
         maskComposite:'intersect'
       }}
     >
