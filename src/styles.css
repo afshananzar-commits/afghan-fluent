@@ -944,3 +944,83 @@
 .home-v14 .home-review>svg{
   color:#55765c !important;
 }
+
+/* =========================================================
+   HOME v21 — green continue card + coach in the open space
+   Farangis now lives above the card, like the approved reference:
+   half-body, no square frame, speech bubble above her head.
+   ========================================================= */
+.home-v14{position:relative}
+
+/* Restore the strong green learning card. */
+.home-v14 .continue-card{
+  position:relative !important;
+  z-index:3;
+  min-height:190px !important;
+  background:linear-gradient(135deg,#45694f 0%,#66836b 100%) !important;
+  border-color:rgba(255,255,255,.12) !important;
+  box-shadow:0 16px 38px rgba(54,75,58,.13) !important;
+  color:#fff !important;
+}
+.home-v14 .continue-copy small{color:rgba(255,255,255,.82) !important}
+.home-v14 .continue-copy h2{color:#fff !important}
+.home-v14 .continue-card .mini-progress{background:rgba(255,255,255,.20) !important}
+.home-v14 .continue-card .mini-progress i{background:#f3d69a !important}
+.home-v14 .continue-card>button{background:rgba(255,253,248,.94) !important;color:#31523b !important}
+
+/* Dedicated calm area for Farangis between greeting and card. */
+.home-v14 .home-coach-stage{
+  position:relative;
+  z-index:5;
+  height:164px;
+  margin:-128px 10px -26px 0;
+  pointer-events:none;
+}
+.home-v14 .placement-home-top{
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:280px;
+  height:190px;
+  min-height:0;
+}
+.home-v14 .placement-home-top .farangis-character{
+  width:184px;
+  right:0;
+  bottom:0;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0 84%,rgba(0,0,0,.96) 90%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0 84%,rgba(0,0,0,.96) 90%,transparent 100%);
+  filter:drop-shadow(0 10px 12px rgba(48,42,31,.10));
+}
+.home-v14 .placement-home-top .farangis-bubble{
+  left:8px;
+  top:2px;
+  width:145px;
+  max-width:145px;
+  padding:11px 13px;
+  border-radius:20px 20px 8px 20px;
+  background:rgba(255,253,248,.96);
+  box-shadow:0 8px 22px rgba(60,50,35,.08);
+}
+.home-v14 .placement-home-top .farangis-bubble small{display:none}
+.home-v14 .placement-home-top .farangis-bubble span{font-size:11px;line-height:1.35;font-weight:700}
+.home-v14 .placement-home-top .farangis-bubble:after{
+  left:auto;
+  right:24px;
+  bottom:-8px;
+  border-left:0;
+  border-bottom:1px solid rgba(222,207,184,.9);
+  border-right:1px solid rgba(222,207,184,.9);
+}
+
+@media(max-width:620px){
+  .home-v14 .home-coach-stage{
+    height:146px;
+    margin:-116px 4px -24px 0;
+  }
+  .home-v14 .placement-home-top{width:240px;height:168px;right:-2px}
+  .home-v14 .placement-home-top .farangis-character{width:158px}
+  .home-v14 .placement-home-top .farangis-bubble{left:0;top:2px;width:126px;max-width:126px;padding:9px 11px}
+  .home-v14 .placement-home-top .farangis-bubble span{font-size:10px}
+  .home-v14 .continue-card{min-height:176px !important}
+}
