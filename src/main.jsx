@@ -33,35 +33,7 @@ async function syncOneDriveContent(){
  return {changed,data};
 }
 const COACH_IMAGES={welcome:'/images/coach/farangis-welcome.png',tip:'/images/coach/farangis-tip.png',fact:'/images/coach/farangis-fact.png',think:'/images/coach/farangis-think.png',listen:'/images/coach/farangis-listen.png',correct:'/images/coach/farangis-correct.png',good:'/images/coach/farangis-correct.png',almost:'/images/coach/farangis-almost.png',help:'/images/coach/farangis-help.png',explain:'/images/coach/farangis-explain.png',celebrate:'/images/coach/farangis-celebrate.png'};
-function Coach({type='tip',text,compact=false,hero=false,placement='edge'}) {
-  const src=COACH_IMAGES[type]||COACH_IMAGES.tip;
-  const fallback={
-    welcome:'Salaam! Zullen we samen verder leren? 💛',
-    tip:'Probeer het rustig hardop te zeggen.',
-    good:'Super gedaan! ✨',
-    correct:'Super gedaan! ✨',
-    almost:'Bijna! Probeer het nog één keer.',
-    help:'Zal ik je een handje helpen?',
-    fact:'Wist je dat? Door hardop te oefenen onthoud je woorden beter.',
-    think:'Denk rustig na. Je weet meer dan je denkt.',
-    listen:'Luister goed naar het ritme en de klank.',
-    explain:'Ik leg het stap voor stap uit.',
-    celebrate:'Wauw! Heel goed gedaan! 🎉'
-  };
-  const toggleBubble=(e)=>{
-    const coach=e.currentTarget.closest('.farangis-popout');
-    if(coach) coach.classList.toggle('bubble-hidden');
-  };
-  return <div className={`farangis-popout farangis-${type} ${compact?'compact':''} ${hero?'hero':''} placement-${placement}`}>
-    <button type="button" className="farangis-character-button" onClick={toggleBubble} aria-label="Toon of verberg bericht van Farangis">
-      <img className="farangis-character" src={src} alt={`Farangis — ${type}`}/>
-    </button>
-    <div className="farangis-bubble">
-      <small>FARANGIS</small>
-      <span>{text||fallback[type]||fallback.tip}</span>
-    </div>
-  </div>
-}
+function Coach({type='tip',text,compact=false,hero=false,placement='edge'}){const src=COACH_IMAGES[type]||COACH_IMAGES.tip;const fallback={welcome:'Salaam! Zullen we samen verder leren? 💛',tip:'Probeer het rustig hardop te zeggen.',good:'Super gedaan! ✨',correct:'Super gedaan! ✨',almost:'Bijna! Probeer het nog één keer.',help:'Zal ik je een handje helpen?',fact:'Wist je dat? Door hardop te oefenen onthoud je woorden beter.',think:'Denk rustig na. Je weet meer dan je denkt.',listen:'Luister goed naar het ritme en de klank.',explain:'Ik leg het stap voor stap uit.',celebrate:'Wauw! Heel goed gedaan! 🎉'};return <div className={`farangis-popout farangis-${type} ${compact?'compact':''} ${hero?'hero':''} placement-${placement}`}><img className="farangis-character" src={src} alt={`Farangis — ${type}`}/><div className="farangis-bubble"><small>FARANGIS</small><span>{text||fallback[type]||fallback.tip}</span></div></div>}
 
 const CATEGORY={home:{label:'Thuis',emoji:'🏡'},food:{label:'Eten & drinken',emoji:'🥣'},travel:{label:'Onderweg',emoji:'🚌'},daily:{label:'Dagelijks',emoji:'☀️'},verbs:{label:'Werkwoorden',emoji:'🏃'},family:{label:'Familie',emoji:'👨‍👩‍👧‍👦'},people:{label:'Mensen',emoji:'🧑'},body:{label:'Lichaam',emoji:'🫶'},clothes:{label:'Kleding',emoji:'🧥'},nature:{label:'Natuur',emoji:'🌿'},animals:{label:'Dieren',emoji:'🐾'},school:{label:'School',emoji:'🎒'},work:{label:'Werk',emoji:'💼'},shopping:{label:'Winkelen',emoji:'🛍️'},time:{label:'Tijd',emoji:'🕰️'},feelings:{label:'Gevoelens',emoji:'💛'},colors:{label:'Kleuren',emoji:'🎨'},numbers:{label:'Getallen',emoji:'🔢'},greetings:{label:'Begroeten',emoji:'👋'},questions:{label:'Vragen',emoji:'❓'},other:{label:'Overig',emoji:'✨'}};
 const iconFor=c=>(CATEGORY[c]||CATEGORY.other).emoji, labelFor=c=>(CATEGORY[c]||{label:c||'Overig'}).label;
