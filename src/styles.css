@@ -2071,3 +2071,96 @@
   position:relative!important;
   z-index:3!important;
 }
+
+
+/* =========================================================
+   Home quick actions — warm Afghan/Japandi palette
+   v39
+   ========================================================= */
+
+/* Shared tile treatment */
+.home-quick-card,
+.quick-action-card,
+.home-action-card,
+.home-shortcut,
+.home-mode-card {
+  border-color:#D9CEBA !important;
+}
+
+/* 1 — Spelen: soft sage */
+.home-quick-card:nth-child(1),
+.quick-action-card:nth-child(1),
+.home-action-card:nth-child(1),
+.home-shortcut:nth-child(1),
+.home-mode-card:nth-child(1) {
+  background:#E4E9DC !important;
+}
+.home-quick-card:nth-child(1) .icon,
+.quick-action-card:nth-child(1) .icon,
+.home-action-card:nth-child(1) .icon,
+.home-shortcut:nth-child(1) .icon,
+.home-mode-card:nth-child(1) .icon {
+  background:#D2DDCC !important;
+}
+
+/* 2 — Woorden: warm sand */
+.home-quick-card:nth-child(2),
+.quick-action-card:nth-child(2),
+.home-action-card:nth-child(2),
+.home-shortcut:nth-child(2),
+.home-mode-card:nth-child(2) {
+  background:#EEE4D2 !important;
+}
+.home-quick-card:nth-child(2) .icon,
+.quick-action-card:nth-child(2) .icon,
+.home-action-card:nth-child(2) .icon,
+.home-shortcut:nth-child(2) .icon,
+.home-mode-card:nth-child(2) .icon {
+  background:#E1D2B9 !important;
+}
+
+/* 3 — Zinnen: soft terracotta */
+.home-quick-card:nth-child(3),
+.quick-action-card:nth-child(3),
+.home-action-card:nth-child(3),
+.home-shortcut:nth-child(3),
+.home-mode-card:nth-child(3) {
+  background:#F1DED1 !important;
+}
+.home-quick-card:nth-child(3) .icon,
+.quick-action-card:nth-child(3) .icon,
+.home-action-card:nth-child(3) .icon,
+.home-shortcut:nth-child(3) .icon,
+.home-mode-card:nth-child(3) .icon {
+  background:#E8CABB !important;
+}
+
+/* 4 — Uitspraak: warm honey/cream */
+.home-quick-card:nth-child(4),
+.quick-action-card:nth-child(4),
+.home-action-card:nth-child(4),
+.home-shortcut:nth-child(4),
+.home-mode-card:nth-child(4) {
+  background:#F1E6C9 !important;
+}
+.home-quick-card:nth-child(4) .icon,
+.quick-action-card:nth-child(4) .icon,
+.home-action-card:nth-child(4) .icon,
+.home-shortcut:nth-child(4) .icon,
+.home-mode-card:nth-child(4) .icon {
+  background:#E5D4A8 !important;
+}
+
+/* Keep labels/icons coherent with the app's primary green */
+.home-quick-card,
+.home-quick-card *,
+.quick-action-card,
+.quick-action-card *,
+.home-action-card,
+.home-action-card *,
+.home-shortcut,
+.home-shortcut *,
+.home-mode-card,
+.home-mode-card * {
+  color:#244B39;
+}
