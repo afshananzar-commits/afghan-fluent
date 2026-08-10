@@ -1598,3 +1598,128 @@
     grid-template-columns:repeat(4,minmax(0,1fr))!important;
   }
 }
+
+
+/* =========================================================
+   SENTENCE BUILDER v32 — fixed lower coach zone + balanced 4+ words
+   ========================================================= */
+
+/* 1) Keep Farangis + actions in one fixed lower zone regardless of word count. */
+.sentence-builder-v29{
+  --builder-lower-zone:224px;
+}
+.sentence-builder-v29 .builder-v29-coach-zone{
+  min-height:var(--builder-lower-zone)!important;
+  height:var(--builder-lower-zone)!important;
+  flex:0 0 var(--builder-lower-zone)!important;
+  margin-top:auto!important;
+  position:relative!important;
+}
+.sentence-builder-v29 .builder-v29-coach{
+  min-height:var(--builder-lower-zone)!important;
+  height:var(--builder-lower-zone)!important;
+}
+.sentence-builder-v29 .builder-v29-actions{
+  position:absolute!important;
+  right:14px!important;
+  bottom:18px!important;
+  width:132px!important;
+  padding:0!important;
+  margin:0!important;
+  transform:none!important;
+  z-index:5!important;
+}
+.sentence-builder-v29 .builder-v29-coach img{
+  bottom:0!important;
+}
+
+/* Remove the old rule that shifts coach area when there are many words. */
+.sentence-builder-v29.has-many-words .builder-v29-coach-zone{
+  margin-top:auto!important;
+}
+
+/* 2) Use a clean adaptive answer grid for 4+ words. */
+@media(max-width:620px){
+  .sentence-builder-v29.has-many-words .builder-v29-slots{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    padding:8px!important;
+    min-height:auto!important;
+  }
+
+  .sentence-builder-v29.has-many-words .builder-v29-slots .answer-slot{
+    height:48px!important;
+    min-width:0!important;
+    border:0!important;
+    border-radius:14px!important;
+    outline:2px dashed #d2c1aa!important;
+    outline-offset:-5px!important;
+    background:rgba(255,250,242,.28)!important;
+  }
+
+  .sentence-builder-v29.has-many-words .builder-v29-slots .answer-slot.filled{
+    outline:0!important;
+    background:transparent!important;
+  }
+
+  /* Filled word becomes a compact pill instead of a giant rectangular block. */
+  .sentence-builder-v29.has-many-words .builder-v29-slots .answer-slot .sentence-tile{
+    width:auto!important;
+    min-width:72px!important;
+    max-width:100%!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:7px 12px!important;
+    border-radius:999px!important;
+    justify-content:center!important;
+    margin:auto!important;
+    box-shadow:0 4px 10px rgba(63,48,31,.05)!important;
+    background:#fffaf2!important;
+    border:1px solid #d8c8af!important;
+    font-size:14px!important;
+  }
+
+  /* Word bank: compact equal pills, not oversized cards. */
+  .sentence-builder-v29.has-many-words .builder-v29-bank{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    width:100%!important;
+    align-items:center!important;
+  }
+  .sentence-builder-v29.has-many-words .builder-v29-bank .sentence-tile{
+    width:100%!important;
+    min-width:0!important;
+    min-height:42px!important;
+    height:42px!important;
+    padding:7px 10px!important;
+    border-radius:16px!important;
+    font-size:14px!important;
+  }
+
+  .sentence-builder-v29.has-many-words .builder-v29-divider{
+    margin:9px 0 7px!important;
+  }
+}
+
+/* 3) On wider phones, 4 words can be one neat row without changing lower coach position. */
+@media(min-width:430px) and (max-width:620px){
+  .sentence-builder-v29.has-many-words .builder-v29-slots,
+  .sentence-builder-v29.has-many-words .builder-v29-bank{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+
+  .sentence-builder-v29.has-many-words .builder-v29-slots .answer-slot .sentence-tile{
+    min-width:0!important;
+    width:calc(100% - 8px)!important;
+    border-radius:14px!important;
+    padding:7px 6px!important;
+    font-size:13px!important;
+  }
+}
+
+/* 4) For 3 words keep the approved look untouched. */
+.sentence-builder-v29.has-three-words .builder-v29-coach-zone{
+  margin-top:auto!important;
+}
