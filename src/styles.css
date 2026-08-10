@@ -1129,3 +1129,372 @@
 @media(max-width:390px){
   .home-v14 .home-coach-character{transform:translateY(-40px) !important;}
 }
+
+
+/* =========================================================
+   SENTENCE BUILDER v27 — approved reference layout
+   Farangis always visible, compact floating tools, green words.
+   ========================================================= */
+.sentence-builder-v27{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  min-height:720px;
+  overflow:hidden;
+  padding:24px 26px 0;
+  background:#fffdf9;
+}
+.sentence-builder-v27 .builder-v27-head{
+  position:relative;
+  min-height:205px;
+  padding-right:190px;
+}
+.sentence-builder-v27 .builder-v27-title small{
+  color:var(--terra);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.015em;
+}
+.sentence-builder-v27 .builder-xp-inline{
+  display:inline-flex;
+  margin-left:9px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#fff4db;
+  border:1px solid #e7c979;
+  color:#9b6d21;
+  font-size:9px;
+  letter-spacing:0;
+  vertical-align:middle;
+}
+.sentence-builder-v27 .builder-v27-title h2{
+  margin:18px 0 9px;
+  font-family:Fraunces;
+  font-size:38px;
+  line-height:1.05;
+  letter-spacing:-.025em;
+  color:var(--ink);
+}
+.sentence-builder-v27 .builder-v27-title p{
+  margin:0;
+  color:#81786e;
+  font-size:14px;
+}
+
+/* Floating hint/listen/answer cluster */
+.builder-v27-tools{
+  position:absolute;
+  right:0;
+  top:16px;
+  width:170px;
+  height:140px;
+}
+.builder-v27-tools button{
+  position:absolute;
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  border:1px solid rgba(227,215,197,.9);
+  background:rgba(255,253,249,.97);
+  box-shadow:0 10px 24px rgba(64,50,34,.08);
+  display:grid;
+  place-items:center;
+  padding:0;
+  font-size:23px;
+  cursor:pointer;
+  z-index:2;
+}
+.builder-v27-tools button:nth-of-type(1){left:6px;bottom:0}
+.builder-v27-tools button:nth-of-type(2){left:63px;top:37px}
+.builder-v27-tools button:nth-of-type(3){right:0;top:0}
+.builder-v27-tools button.active{background:#eef4ea;border-color:#c8d9c5}
+.builder-v27-spark{position:absolute;color:#e5a72d;font-size:18px;line-height:1}
+.builder-v27-spark.s1{right:22px;top:-2px}
+.builder-v27-spark.s2{left:50px;top:20px;font-size:13px}
+.builder-v27-spark.s3{left:4px;top:55px;font-size:12px}
+.builder-v27-hint{
+  position:absolute;
+  right:4px;
+  bottom:-28px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#fff8e8;
+  border:1px solid #ead7b7;
+  color:#745d38;
+  font-size:9px;
+  white-space:nowrap;
+  box-shadow:0 6px 16px rgba(64,50,34,.06);
+}
+
+/* Big three-slot answer strip */
+.sentence-builder-v27 .builder-v27-slots{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0;
+  min-height:110px;
+  padding:14px 12px;
+  margin:6px 0 0;
+  border-radius:24px;
+  background:#fbf6ee;
+  border:1px solid #e3d6c4;
+}
+.sentence-builder-v27 .builder-v27-slots .answer-slot{
+  height:80px;
+  border:0;
+  border-right:1px solid #e6dac9;
+  border-radius:0;
+  background:transparent;
+}
+.sentence-builder-v27 .builder-v27-slots .answer-slot:first-child{border-radius:18px 0 0 18px}
+.sentence-builder-v27 .builder-v27-slots .answer-slot:last-child{border-right:0;border-radius:0 18px 18px 0}
+.sentence-builder-v27 .builder-v27-slots .answer-slot:empty,
+.sentence-builder-v27 .builder-v27-slots .answer-slot:not(.filled){
+  outline:2px dashed #d7cab8;
+  outline-offset:-7px;
+}
+.sentence-builder-v27 .builder-v27-slots .slot-number{
+  font-family:Fraunces;
+  font-size:24px;
+  color:#b9ac99;
+}
+.sentence-builder-v27 .builder-v27-slots .answer-slot.filled{
+  border-color:#e6dac9;
+  background:#fffdf9;
+  outline:0;
+}
+.sentence-builder-v27 .builder-v27-slots .answer-slot.hover{
+  background:#edf3ea;
+  box-shadow:inset 0 0 0 2px var(--sage);
+  transform:none;
+}
+
+/* Words divider and bank */
+.sentence-builder-v27 .builder-v27-divider{
+  margin:24px 0 17px;
+  color:#9a9186;
+}
+.sentence-builder-v27 .builder-v27-bank{
+  min-height:76px;
+  padding:0;
+  margin:0;
+  background:transparent;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+.sentence-builder-v27 .builder-v27-bank .sentence-tile{
+  min-width:94px;
+  min-height:58px;
+  padding:13px 18px;
+  border-radius:17px;
+  border:1px solid #e0d5c5;
+  background:#fffdf9;
+  color:#315b43;
+  font-size:20px;
+  font-weight:800;
+  justify-content:center;
+  box-shadow:0 6px 16px rgba(63,48,31,.055);
+}
+.sentence-builder-v27 .answer-slot .sentence-tile{
+  color:#315b43;
+  font-size:18px;
+}
+.sentence-builder-v27 .builder-v27-floating{
+  color:#315b43!important;
+}
+
+/* Compact feedback */
+.sentence-builder-v27 .builder-v27-feedback{
+  margin:10px 0 0;
+}
+
+/* Farangis and actions live in the bottom white area all the time */
+.sentence-builder-v27 .builder-v27-bottom{
+  margin-top:auto;
+  min-height:260px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 220px;
+  align-items:end;
+  position:relative;
+}
+.sentence-builder-v27 .builder-v27-coach{
+  position:relative;
+  height:260px;
+  overflow:hidden;
+  pointer-events:none;
+}
+.sentence-builder-v27 .builder-v27-coach img{
+  position:absolute;
+  left:-6px;
+  bottom:-20px;
+  width:300px;
+  max-width:none;
+  height:auto;
+  display:block;
+  object-fit:contain;
+  filter:drop-shadow(0 12px 15px rgba(48,42,31,.08));
+  -webkit-mask-image:linear-gradient(to bottom,#000 0 90%,rgba(0,0,0,.98) 95%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0 90%,rgba(0,0,0,.98) 95%,transparent 100%);
+}
+.sentence-builder-v27 .builder-v27-actions{
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+  align-self:end;
+  padding:0 0 30px 12px;
+}
+.sentence-builder-v27 .builder-v27-actions button{
+  min-height:58px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  font-size:15px;
+  font-weight:700;
+}
+.sentence-builder-v27 .builder-v27-actions .ghost-game{
+  background:#fffdf9;
+  color:#315b43;
+  border:1px solid #e2d7c8;
+}
+.sentence-builder-v27 .builder-v27-actions .primary-game{
+  border:0;
+  background:#315b43;
+  color:#fff;
+}
+.sentence-builder-v27 .builder-v27-actions .primary-game:disabled{
+  background:#c6d2c7;
+  color:#fff;
+}
+
+/* Match the reference: no separate Dutch prompt or old coach overlays. */
+.sentence-builder-v27 .translation-prompt,
+.sentence-builder-v27 .builder-help-actions,
+.sentence-builder-v27 .builder-coach-head,
+.sentence-builder-v27>.placement-success{display:none!important;}
+
+@media(max-width:980px){
+  /* Keep bottom navigation visible on challenge screens, like the reference. */
+  .app:has(.games-focus) .bottom-nav{display:flex!important}
+  .app:has(.games-focus) main{
+    height:calc(100dvh - 62px)!important;
+    padding-bottom:0!important;
+  }
+  .games-focus{
+    height:calc(100dvh - 62px)!important;
+    padding-bottom:7px!important;
+  }
+}
+
+@media(max-width:620px){
+  .games-focus .sentence-builder-v27{
+    flex:1;
+    min-height:0;
+    padding:14px 14px 0;
+    border-radius:24px;
+  }
+  .sentence-builder-v27 .builder-v27-head{
+    min-height:151px;
+    padding-right:128px;
+  }
+  .sentence-builder-v27 .builder-v27-title small{
+    font-size:8px;
+  }
+  .sentence-builder-v27 .builder-xp-inline{
+    margin-left:5px;
+    padding:4px 8px;
+    font-size:8px;
+  }
+  .sentence-builder-v27 .builder-v27-title h2{
+    margin:13px 0 6px;
+    font-size:clamp(28px,7vw,34px);
+    line-height:1.02;
+  }
+  .sentence-builder-v27 .builder-v27-title p{
+    font-size:11px;
+  }
+
+  .builder-v27-tools{
+    width:118px;
+    height:102px;
+    right:-2px;
+    top:16px;
+  }
+  .builder-v27-tools button{
+    width:42px;
+    height:42px;
+    font-size:18px;
+  }
+  .builder-v27-tools button:nth-of-type(1){left:0;bottom:0}
+  .builder-v27-tools button:nth-of-type(2){left:38px;top:31px}
+  .builder-v27-tools button:nth-of-type(3){right:0;top:0}
+  .builder-v27-spark.s1{right:15px;top:-5px;font-size:14px}
+  .builder-v27-spark.s2{left:39px;top:12px;font-size:11px}
+  .builder-v27-spark.s3{left:0;top:42px;font-size:10px}
+  .builder-v27-hint{right:0;bottom:-25px;font-size:7px;padding:4px 7px}
+
+  .sentence-builder-v27 .builder-v27-slots{
+    min-height:88px;
+    padding:10px 8px;
+    border-radius:20px;
+  }
+  .sentence-builder-v27 .builder-v27-slots .answer-slot{
+    height:66px;
+  }
+  .sentence-builder-v27 .builder-v27-slots .slot-number{
+    font-size:19px;
+  }
+
+  .sentence-builder-v27 .builder-v27-divider{
+    margin:15px 0 9px;
+  }
+  .sentence-builder-v27 .builder-v27-bank{
+    min-height:60px;
+    gap:8px;
+  }
+  .sentence-builder-v27 .builder-v27-bank .sentence-tile{
+    min-width:72px;
+    min-height:48px;
+    padding:10px 12px;
+    font-size:16px;
+    border-radius:14px;
+  }
+  .sentence-builder-v27 .answer-slot .sentence-tile{font-size:14px}
+
+  .sentence-builder-v27 .builder-v27-bottom{
+    min-height:205px;
+    grid-template-columns:minmax(0,1fr) 138px;
+  }
+  .sentence-builder-v27 .builder-v27-coach{
+    height:205px;
+  }
+  .sentence-builder-v27 .builder-v27-coach img{
+    width:232px;
+    left:-14px;
+    bottom:-17px;
+  }
+  .sentence-builder-v27 .builder-v27-actions{
+    gap:9px;
+    padding:0 0 19px 3px;
+  }
+  .sentence-builder-v27 .builder-v27-actions button{
+    min-height:46px;
+    font-size:11px;
+    padding:9px 8px!important;
+  }
+  .sentence-builder-v27 .builder-v27-actions button svg{width:18px;height:18px}
+}
+
+@media(max-width:390px){
+  .sentence-builder-v27 .builder-v27-head{padding-right:116px}
+  .sentence-builder-v27 .builder-v27-title h2{font-size:27px}
+  .sentence-builder-v27 .builder-v27-bottom{
+    grid-template-columns:minmax(0,1fr) 126px;
+    min-height:190px;
+  }
+  .sentence-builder-v27 .builder-v27-coach{height:190px}
+  .sentence-builder-v27 .builder-v27-coach img{width:216px;left:-16px}
+}

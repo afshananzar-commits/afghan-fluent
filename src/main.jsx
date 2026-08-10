@@ -80,21 +80,67 @@ function LearningPath({app,openLesson}){const lessons=useMemo(()=>{const a=[];fo
 
 function SentenceBuilder({game}){
  const pool=useMemo(()=>sentences.filter(s=>(s.spoken||s.latin||'').trim().split(/\s+/).length>=3),[]),[idx,setIdx]=useState(game.game.positions?.builder||0),s=pool[idx%Math.max(1,pool.length)];
- const[bank,setBank]=useState([]),[answer,setAnswer]=useState([]),[result,setResult]=useState(null),[dragging,setDragging]=useState(null),[dragPos,setDragPos]=useState(null),[hoverSlot,setHoverSlot]=useState(null),[hintLevel,setHintLevel]=useState(0); const drag=useRef(null);
- useEffect(()=>{if(!s)return;const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setBank(shuffle(words));setAnswer(Array(words.length).fill(null));setResult(null);setDragging(null);setHoverSlot(null);setHintLevel(0)},[s?.id]);
- const reset=()=>{const all=[...bank,...answer.filter(Boolean)];setBank(shuffle(all));setAnswer(Array(all.length).fill(null));setResult(null);setDragging(null);setHoverSlot(null);setHintLevel(0)};
- const hint=()=>setHintLevel(h=>Math.min(3,h+1));
- const revealAnswer=()=>{const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setAnswer(words);setBank([]);setResult(null);setHintLevel(3)};
+ const[bank,setBank]=useState([]),[answer,setAnswer]=useState([]),[result,setResult]=useState(null),[dragging,setDragging]=useState(null),[dragPos,setDragPos]=useState(null),[hoverSlot,setHoverSlot]=useState(null),[hintOpen,setHintOpen]=useState(false); const drag=useRef(null);
+
+ useEffect(()=>{if(!s)return;const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setBank(shuffle(words));setAnswer(Array(words.length).fill(null));setResult(null);setDragging(null);setDragPos(null);setHoverSlot(null);setHintOpen(false)},[s?.id]);
+
+ const reset=()=>{const all=[...bank,...answer.filter(Boolean)];setBank(shuffle(all));setAnswer(Array(all.length).fill(null));setResult(null);setDragging(null);setDragPos(null);setHoverSlot(null);setHintOpen(false)};
+ const revealAnswer=()=>{const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setAnswer(words);setBank([]);setResult(null)};
  const putInSlot=(tile,slot,source,sourceIndex)=>{setResult(null);setAnswer(a=>{const n=[...a],displaced=n[slot];n[slot]=tile;if(source==='slot'&&sourceIndex!==slot)n[sourceIndex]=displaced||null;else if(source==='bank'&&displaced)setBank(b=>[...b,displaced]);return n});if(source==='bank')setBank(b=>b.filter(x=>x.id!==tile.id))};
  const returnToBank=(slot)=>{const tile=answer[slot];if(!tile)return;setAnswer(a=>a.map((x,i)=>i===slot?null:x));setBank(b=>[...b,tile]);setResult(null)};
  const tapBank=tile=>{const slot=answer.findIndex(x=>!x);if(slot>=0)putInSlot(tile,slot,'bank',null)};
- const startDrag=(e,tile,source,sourceIndex)=>{if(result==='good')return;e.preventDefault();e.currentTarget.setPointerCapture?.(e.pointerId);drag.current={tile,source,sourceIndex,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};setDragging(tile.id);setDragPos({x:e.clientX,y:e.clientY,word:tile.word})};
- const moveDrag=e=>{if(!drag.current)return;e.preventDefault();if(Math.hypot(e.clientX-drag.current.startX,e.clientY-drag.current.startY)>5)drag.current.moved=true;setDragPos({x:e.clientX,y:e.clientY,word:drag.current.tile.word});const el=document.elementsFromPoint(e.clientX,e.clientY).find(n=>n?.dataset?.answerSlot!==undefined);setHoverSlot(el?Number(el.dataset.answerSlot):null)};
+ const startDrag=(e,tile,source,sourceIndex)=>{if(result==='good')return;e.preventDefault();e.currentTarget.setPointerCapture?.(e.pointerId);drag.current={tile,source,sourceIndex,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY};setDragging(tile.id);setDragPos({x:e.clientX,y:e.clientY,word:tile.word})};
+ const moveDrag=e=>{if(!drag.current)return;e.preventDefault();setDragPos({x:e.clientX,y:e.clientY,word:drag.current.tile.word});const el=document.elementsFromPoint(e.clientX,e.clientY).find(n=>n?.dataset?.answerSlot!==undefined);setHoverSlot(el?Number(el.dataset.answerSlot):null)};
  const endDrag=e=>{if(!drag.current)return;const d=drag.current;const el=document.elementsFromPoint(e.clientX,e.clientY).find(n=>n?.dataset?.answerSlot!==undefined);const slot=el?Number(el.dataset.answerSlot):null;if(slot!==null)putInSlot(d.tile,slot,d.source,d.sourceIndex);drag.current=null;setDragging(null);setDragPos(null);setHoverSlot(null);try{e.currentTarget.releasePointerCapture?.(e.pointerId)}catch{}};
+
  const check=()=>{if(answer.some(x=>!x))return;const ok=answer.every((t,i)=>t?.origin===i);setResult(ok?'good':'bad');practice(game,`sentence:${s.id}`,ok);if(ok)awardXP(game,20,'zin gebouwd')};
- const next=()=>{const n=(idx+1)%pool.length;setIdx(n);remember(game,'builder',n)};if(!s)return null;
- return <section className="game-card sentence-builder-v2"><div className="game-card-head builder-coach-head"><div className="builder-title"><small>🧩 BOUW DE ZIN <span className="builder-xp-inline">+20 XP</span></small><h2>Zet de zin in de goede volgorde</h2></div><div className={`builder-coach-slot ${hintLevel>0||result==='good'?'active':''}`}>{(hintLevel>0||result==='good')&&<Coach placement="exercise" type={result==='good'?'celebrate':hintLevel===1?'think':hintLevel===2?'listen':'explain'} text={result==='good'?'Perfect! Helemaal goed. 🎉':hintLevel===1?`Hint: het eerste woord is ‘${(s.spoken||s.latin).trim().split(/\s+/)[0]}’.`:hintLevel===2?'Luister naar de zin en probeer het ritme na te doen.':'Ik heb het antwoord voor je klaargezet. Bekijk de volgorde goed.'}/>}</div></div><div className="translation-prompt">{s.dutch}</div><div className={`answer-slots ${dragging?'is-dragging':''}`}>{answer.map((tile,i)=><div key={i} data-answer-slot={i} className={`answer-slot ${tile?'filled':''} ${hoverSlot===i?'hover':''} ${result==='good'?'correct-slot':''} ${result==='bad'&&tile?.origin!==i?'wrong-slot':''}`}>{tile?<button className={`sentence-tile placed ${dragging===tile.id?'is-held':''}`} onClick={()=>returnToBank(i)} onPointerDown={e=>startDrag(e,tile,'slot',i)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>:<span className="slot-number">{i+1}</span>}</div>)}</div><div className="builder-help-actions"><button onClick={hint}>💡 Hint</button><button onClick={()=>speak(s.spoken||s.latin,.78)}>🔊 Luister</button><button onClick={revealAnswer}>👀 Antwoord</button></div><div className="builder-divider"><span>WOORDEN</span></div><div className="word-bank">{bank.map(tile=><button key={tile.id} className={`sentence-tile bank-tile ${dragging===tile.id?'is-held':''}`} onClick={()=>tapBank(tile)} onPointerDown={e=>startDrag(e,tile,'bank',null)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>)}</div>{dragPos&&<div className="floating-word-tile" style={{left:dragPos.x,top:dragPos.y}}>{dragPos.word}</div>}{result&&<div className={`game-result feedback-panel ${result==='good'?'good':'bad'}`}><span className="feedback-icon">{result==='good'?<Check/>:<X/>}</span><div><b>{result==='good'?'+20 XP verdiend':'Bijna — kijk nog eens naar de rode vakjes'}</b><small>{result==='good'?'Mooi gedaan!':'Sleep de woorden naar een andere plek en controleer opnieuw.'}</small></div>{result==='good'&&<button onClick={()=>speak(s.spoken||s.latin,.82)}><Volume2/> Luister</button>}</div>}<div className="game-actions"><button className="ghost-game" onClick={reset}><RotateCcw/> Opnieuw</button><button className="primary-game" disabled={answer.some(x=>!x)} onClick={result==='good'?next:check}>{result==='good'?'Volgende zin':'Controleer'}</button></div></section>
+ const next=()=>{const n=(idx+1)%pool.length;setIdx(n);remember(game,'builder',n)};
+ if(!s)return null;
+
+ const firstWord=(s.spoken||s.latin).trim().split(/\s+/)[0];
+ const coachSrc=result==='good'?COACH_IMAGES.celebrate:COACH_IMAGES.think;
+
+ return <section className="game-card sentence-builder-v2 sentence-builder-v27">
+   <div className="builder-v27-head">
+     <div className="builder-v27-title">
+       <small>🧩 BOUW DE ZIN <span className="builder-xp-inline">+20 XP</span></small>
+       <h2>Zet de zin in<br/>goede volgorde</h2>
+       <p>Sleep de woorden naar de juiste plek.</p>
+     </div>
+
+     <div className="builder-v27-tools" aria-label="Hulpmiddelen">
+       <span className="builder-v27-spark s1">✦</span>
+       <span className="builder-v27-spark s2">✦</span>
+       <span className="builder-v27-spark s3">✦</span>
+       <button className={hintOpen?'active':''} onClick={()=>setHintOpen(v=>!v)} aria-label="Hint" title="Hint">💡</button>
+       <button onClick={()=>speak(s.spoken||s.latin,.78)} aria-label="Luister" title="Luister">🎧</button>
+       <button onClick={revealAnswer} aria-label="Antwoord" title="Antwoord">👀</button>
+       {hintOpen&&<div className="builder-v27-hint">Eerste woord: <b>{firstWord}</b></div>}
+     </div>
+   </div>
+
+   <div className={`answer-slots builder-v27-slots ${dragging?'is-dragging':''}`}>{answer.map((tile,i)=><div key={i} data-answer-slot={i} className={`answer-slot ${tile?'filled':''} ${hoverSlot===i?'hover':''} ${result==='good'?'correct-slot':''} ${result==='bad'&&tile?.origin!==i?'wrong-slot':''}`}>{tile?<button className={`sentence-tile placed ${dragging===tile.id?'is-held':''}`} onClick={()=>returnToBank(i)} onPointerDown={e=>startDrag(e,tile,'slot',i)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>:<span className="slot-number">{i+1}</span>}</div>)}</div>
+
+   <div className="builder-divider builder-v27-divider"><span>WOORDEN</span></div>
+
+   <div className="word-bank builder-v27-bank">{bank.map(tile=><button key={tile.id} className={`sentence-tile bank-tile ${dragging===tile.id?'is-held':''}`} onClick={()=>tapBank(tile)} onPointerDown={e=>startDrag(e,tile,'bank',null)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>)}</div>
+
+   {dragPos&&<div className="floating-word-tile builder-v27-floating" style={{left:dragPos.x,top:dragPos.y}}>{dragPos.word}</div>}
+
+   {result&&<div className={`game-result feedback-panel builder-v27-feedback ${result==='good'?'good':'bad'}`}><span className="feedback-icon">{result==='good'?<Check/>:<X/>}</span><div><b>{result==='good'?'+20 XP verdiend':'Bijna — probeer nog eens'}</b><small>{result==='good'?'Mooi gedaan!':'Zet de woorden opnieuw in de juiste volgorde.'}</small></div></div>}
+
+   <div className="builder-v27-bottom">
+     <div className="builder-v27-coach">
+       <img src={coachSrc} alt="Farangis"/>
+     </div>
+     <div className="builder-v27-actions">
+       <button className="ghost-game" onClick={reset}><RotateCcw/> Opnieuw</button>
+       <button className="primary-game" disabled={answer.some(x=>!x)} onClick={result==='good'?next:check}>{result==='good'?'Volgende zin':'Controleren'}</button>
+     </div>
+   </div>
+ </section>
 }
+
 function ListeningQuiz({game}){const pool=useMemo(()=>sentences.filter(s=>(s.spoken||s.latin)&&s.dutch).slice(0,150),[]),[idx,setIdx]=useState(game.game.positions?.listen||0),[choice,setChoice]=useState(null),s=pool[idx%Math.max(1,pool.length)];const opts=useMemo(()=>s?shuffle([s,...shuffle(pool.filter(x=>x.id!==s.id)).slice(0,3)]):[],[s?.id]);if(!s)return null;const answer=o=>{if(choice)return;const ok=o.id===s.id;setChoice({id:o.id,ok});practice(game,`listen:${s.id}`,ok);if(ok)awardXP(game,15,'luisterquiz')};return <section className="game-card"><div className="game-card-head"><div><small>🎧 LUISTERQUIZ</small><h2>Wat hoor je?</h2></div><span className="xp-chip">+15 XP</span></div><button className="big-listen" onClick={()=>speak(s.spoken||s.latin,.78)}><Headphones/> Luister</button><div className="quiz-options">{opts.map(o=><button key={o.id} onClick={()=>answer(o)} disabled={!!choice} className={choice?(o.id===s.id?'correct':choice.id===o.id?'wrong':'muted-answer'):''}>{o.id===s.id&&choice&&<Check/>}{choice?.id===o.id&&!choice.ok&&<X/>}{o.dutch}</button>)}</div>{choice&&<><div className={`game-result feedback-panel ${choice.ok?'good':'bad'}`}><span className="feedback-icon">{choice.ok?<Check/>:<X/>}</span><div><b>{choice.ok?'Goed gehoord!':'Dat was niet het juiste antwoord'}</b><small>{choice.ok?'+15 XP verdiend':`Juiste antwoord: ${s.dutch}`}</small></div></div><button className="primary-game full" onClick={()=>{const n=(idx+1)%pool.length;setIdx(n);setChoice(null);remember(game,'listen',n)}}>Volgende</button></>}</section>}
 
 function PictureQuiz({game}){
