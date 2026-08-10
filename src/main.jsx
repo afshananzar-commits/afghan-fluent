@@ -101,7 +101,7 @@ function SentenceBuilder({game}){
  if(!s)return null;
  const coachSrc=coachMessage?.type==='good'?COACH_IMAGES.celebrate:coachMessage?.type==='bad'?COACH_IMAGES.almost:coachMessage?.type==='hint'?COACH_IMAGES.think:COACH_IMAGES.explain;
 
- return <section className={`game-card sentence-builder-v2 sentence-builder-v29 ${answer.length>3?'has-many-words':'has-three-words'}`}>
+ return <section className={`game-card sentence-builder-v2 sentence-builder-v29 ${answer.length>3?'has-many-words':'has-three-words'}`} style={{'--word-count':Math.max(1,answer.length)}}>
    <div className="builder-v29-head">
      <div className="builder-v29-title">
        <small>🧩 BOUW DE ZIN <span className="builder-xp-inline">+20 XP</span></small>
