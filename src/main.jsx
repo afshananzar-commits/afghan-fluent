@@ -80,60 +80,54 @@ function LearningPath({app,openLesson}){const lessons=useMemo(()=>{const a=[];fo
 
 function SentenceBuilder({game}){
  const pool=useMemo(()=>sentences.filter(s=>(s.spoken||s.latin||'').trim().split(/\s+/).length>=3),[]),[idx,setIdx]=useState(game.game.positions?.builder||0),s=pool[idx%Math.max(1,pool.length)];
- const[bank,setBank]=useState([]),[answer,setAnswer]=useState([]),[result,setResult]=useState(null),[dragging,setDragging]=useState(null),[dragPos,setDragPos]=useState(null),[hoverSlot,setHoverSlot]=useState(null),[hintOpen,setHintOpen]=useState(false); const drag=useRef(null);
+ const[bank,setBank]=useState([]),[answer,setAnswer]=useState([]),[result,setResult]=useState(null),[dragging,setDragging]=useState(null),[dragPos,setDragPos]=useState(null),[hoverSlot,setHoverSlot]=useState(null),[coachMessage,setCoachMessage]=useState(null); const drag=useRef(null);
 
- useEffect(()=>{if(!s)return;const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setBank(shuffle(words));setAnswer(Array(words.length).fill(null));setResult(null);setDragging(null);setDragPos(null);setHoverSlot(null);setHintOpen(false)},[s?.id]);
+ useEffect(()=>{if(!s)return;const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setBank(shuffle(words));setAnswer(Array(words.length).fill(null));setResult(null);setDragging(null);setDragPos(null);setHoverSlot(null);setCoachMessage(null)},[s?.id]);
 
- const reset=()=>{const all=[...bank,...answer.filter(Boolean)];setBank(shuffle(all));setAnswer(Array(all.length).fill(null));setResult(null);setDragging(null);setDragPos(null);setHoverSlot(null);setHintOpen(false)};
- const revealAnswer=()=>{const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setAnswer(words);setBank([]);setResult(null)};
+ const reset=()=>{const all=[...bank,...answer.filter(Boolean)];setBank(shuffle(all));setAnswer(Array(all.length).fill(null));setResult(null);setDragging(null);setDragPos(null);setHoverSlot(null);setCoachMessage(null)};
+ const showHint=()=>{const first=(s.spoken||s.latin).trim().split(/\s+/)[0];setCoachMessage({type:'hint',text:`Kijk eens naar het eerste woord: ‘${first}’.`})};
+ const revealAnswer=()=>{const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setAnswer(words);setBank([]);setResult(null);setCoachMessage({type:'answer',text:'Ik heb het antwoord voor je klaargezet. Bekijk de volgorde goed.'})};
+
  const putInSlot=(tile,slot,source,sourceIndex)=>{setResult(null);setAnswer(a=>{const n=[...a],displaced=n[slot];n[slot]=tile;if(source==='slot'&&sourceIndex!==slot)n[sourceIndex]=displaced||null;else if(source==='bank'&&displaced)setBank(b=>[...b,displaced]);return n});if(source==='bank')setBank(b=>b.filter(x=>x.id!==tile.id))};
  const returnToBank=(slot)=>{const tile=answer[slot];if(!tile)return;setAnswer(a=>a.map((x,i)=>i===slot?null:x));setBank(b=>[...b,tile]);setResult(null)};
  const tapBank=tile=>{const slot=answer.findIndex(x=>!x);if(slot>=0)putInSlot(tile,slot,'bank',null)};
- const startDrag=(e,tile,source,sourceIndex)=>{if(result==='good')return;e.preventDefault();e.currentTarget.setPointerCapture?.(e.pointerId);drag.current={tile,source,sourceIndex,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY};setDragging(tile.id);setDragPos({x:e.clientX,y:e.clientY,word:tile.word})};
+ const startDrag=(e,tile,source,sourceIndex)=>{if(result==='good')return;e.preventDefault();e.currentTarget.setPointerCapture?.(e.pointerId);drag.current={tile,source,sourceIndex,pointerId:e.pointerId};setDragging(tile.id);setDragPos({x:e.clientX,y:e.clientY,word:tile.word})};
  const moveDrag=e=>{if(!drag.current)return;e.preventDefault();setDragPos({x:e.clientX,y:e.clientY,word:drag.current.tile.word});const el=document.elementsFromPoint(e.clientX,e.clientY).find(n=>n?.dataset?.answerSlot!==undefined);setHoverSlot(el?Number(el.dataset.answerSlot):null)};
  const endDrag=e=>{if(!drag.current)return;const d=drag.current;const el=document.elementsFromPoint(e.clientX,e.clientY).find(n=>n?.dataset?.answerSlot!==undefined);const slot=el?Number(el.dataset.answerSlot):null;if(slot!==null)putInSlot(d.tile,slot,d.source,d.sourceIndex);drag.current=null;setDragging(null);setDragPos(null);setHoverSlot(null);try{e.currentTarget.releasePointerCapture?.(e.pointerId)}catch{}};
 
- const check=()=>{if(answer.some(x=>!x))return;const ok=answer.every((t,i)=>t?.origin===i);setResult(ok?'good':'bad');practice(game,`sentence:${s.id}`,ok);if(ok)awardXP(game,20,'zin gebouwd')};
+ const check=()=>{if(answer.some(x=>!x))return;const ok=answer.every((t,i)=>t?.origin===i);setResult(ok?'good':'bad');practice(game,`sentence:${s.id}`,ok);if(ok){awardXP(game,20,'zin gebouwd');setCoachMessage({type:'good',text:'Perfect! Helemaal goed. +20 XP 🎉'})}else{setCoachMessage({type:'bad',text:'Bijna — probeer het nog eens. Je bent er bijna.'})}};
  const next=()=>{const n=(idx+1)%pool.length;setIdx(n);remember(game,'builder',n)};
+
  if(!s)return null;
+ const coachSrc=coachMessage?.type==='good'?COACH_IMAGES.celebrate:coachMessage?.type==='bad'?COACH_IMAGES.almost:coachMessage?.type==='hint'?COACH_IMAGES.think:COACH_IMAGES.explain;
 
- const firstWord=(s.spoken||s.latin).trim().split(/\s+/)[0];
- const coachSrc=result==='good'?COACH_IMAGES.celebrate:COACH_IMAGES.think;
-
- return <section className="game-card sentence-builder-v2 sentence-builder-v27">
-   <div className="builder-v27-head">
-     <div className="builder-v27-title">
+ return <section className="game-card sentence-builder-v2 sentence-builder-v28">
+   <div className="builder-v28-head">
+     <div className="builder-v28-title">
        <small>🧩 BOUW DE ZIN <span className="builder-xp-inline">+20 XP</span></small>
        <h2>Zet de zin in<br/>goede volgorde</h2>
        <p>Sleep de woorden naar de juiste plek.</p>
      </div>
-
-     <div className="builder-v27-tools" aria-label="Hulpmiddelen">
-       <span className="builder-v27-spark s1">✦</span>
-       <span className="builder-v27-spark s2">✦</span>
-       <span className="builder-v27-spark s3">✦</span>
-       <button className={hintOpen?'active':''} onClick={()=>setHintOpen(v=>!v)} aria-label="Hint" title="Hint">💡</button>
-       <button onClick={()=>speak(s.spoken||s.latin,.78)} aria-label="Luister" title="Luister">🎧</button>
+     <div className="builder-v28-tools" aria-label="Hulpmiddelen">
+       <span className="spark s1">✦</span><span className="spark s2">✦</span><span className="spark s3">✦</span>
+       <button onClick={showHint} aria-label="Hint" title="Hint">💡</button>
+       <button onClick={()=>{speak(s.spoken||s.latin,.78);setCoachMessage({type:'listen',text:'Luister goed naar het ritme en probeer het daarna zelf.'})}} aria-label="Luister" title="Luister">🎧</button>
        <button onClick={revealAnswer} aria-label="Antwoord" title="Antwoord">👀</button>
-       {hintOpen&&<div className="builder-v27-hint">Eerste woord: <b>{firstWord}</b></div>}
      </div>
    </div>
 
-   <div className={`answer-slots builder-v27-slots ${dragging?'is-dragging':''}`}>{answer.map((tile,i)=><div key={i} data-answer-slot={i} className={`answer-slot ${tile?'filled':''} ${hoverSlot===i?'hover':''} ${result==='good'?'correct-slot':''} ${result==='bad'&&tile?.origin!==i?'wrong-slot':''}`}>{tile?<button className={`sentence-tile placed ${dragging===tile.id?'is-held':''}`} onClick={()=>returnToBank(i)} onPointerDown={e=>startDrag(e,tile,'slot',i)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>:<span className="slot-number">{i+1}</span>}</div>)}</div>
+   <div className={`answer-slots builder-v28-slots ${dragging?'is-dragging':''}`}>{answer.map((tile,i)=><div key={i} data-answer-slot={i} className={`answer-slot ${tile?'filled':''} ${hoverSlot===i?'hover':''} ${result==='good'?'correct-slot':''} ${result==='bad'&&tile?.origin!==i?'wrong-slot':''}`}>{tile?<button className={`sentence-tile placed ${dragging===tile.id?'is-held':''}`} onClick={()=>returnToBank(i)} onPointerDown={e=>startDrag(e,tile,'slot',i)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>:<span className="slot-number">{i+1}</span>}</div>)}</div>
 
-   <div className="builder-divider builder-v27-divider"><span>WOORDEN</span></div>
+   <div className="builder-divider builder-v28-divider"><span>WOORDEN</span></div>
+   <div className="word-bank builder-v28-bank">{bank.map(tile=><button key={tile.id} className={`sentence-tile bank-tile ${dragging===tile.id?'is-held':''}`} onClick={()=>tapBank(tile)} onPointerDown={e=>startDrag(e,tile,'bank',null)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>)}</div>
+   {dragPos&&<div className="floating-word-tile builder-v28-floating" style={{left:dragPos.x,top:dragPos.y}}>{dragPos.word}</div>}
 
-   <div className="word-bank builder-v27-bank">{bank.map(tile=><button key={tile.id} className={`sentence-tile bank-tile ${dragging===tile.id?'is-held':''}`} onClick={()=>tapBank(tile)} onPointerDown={e=>startDrag(e,tile,'bank',null)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>)}</div>
-
-   {dragPos&&<div className="floating-word-tile builder-v27-floating" style={{left:dragPos.x,top:dragPos.y}}>{dragPos.word}</div>}
-
-   {result&&<div className={`game-result feedback-panel builder-v27-feedback ${result==='good'?'good':'bad'}`}><span className="feedback-icon">{result==='good'?<Check/>:<X/>}</span><div><b>{result==='good'?'+20 XP verdiend':'Bijna — probeer nog eens'}</b><small>{result==='good'?'Mooi gedaan!':'Zet de woorden opnieuw in de juiste volgorde.'}</small></div></div>}
-
-   <div className="builder-v27-bottom">
-     <div className="builder-v27-coach">
+   <div className="builder-v28-coach-zone">
+     <div className="builder-v28-coach">
        <img src={coachSrc} alt="Farangis"/>
      </div>
-     <div className="builder-v27-actions">
+     {coachMessage&&<div className={`builder-v28-coach-bubble ${coachMessage.type||''}`}><small>FARANGIS</small><span>{coachMessage.text}</span></div>}
+     <div className="builder-v28-actions">
        <button className="ghost-game" onClick={reset}><RotateCcw/> Opnieuw</button>
        <button className="primary-game" disabled={answer.some(x=>!x)} onClick={result==='good'?next:check}>{result==='good'?'Volgende zin':'Controleren'}</button>
      </div>
