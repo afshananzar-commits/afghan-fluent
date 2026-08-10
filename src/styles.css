@@ -2045,3 +2045,29 @@
 }
 
 /* The red state follows the existing fixed one-row layout; no coach/action positioning changes. */
+
+
+/* =========================================================
+   v38 — duidelijke fout-rand, zonder rode invulling
+   ========================================================= */
+.sentence-builder-v29 .builder-v29-slots .answer-slot.wrong-slot{
+  border:3px solid #b94f43!important;
+  outline:none!important;
+  background:rgba(255,250,242,.72)!important;
+  box-shadow:none!important;
+}
+
+.sentence-builder-v29 .builder-v29-slots .answer-slot.wrong-slot .sentence-tile,
+.sentence-builder-v29 .builder-v29-slots .sentence-tile.is-wrong-position{
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:var(--green)!important;
+  box-shadow:none!important;
+}
+
+/* Make the red line stay crisp above neighboring slots. */
+.sentence-builder-v29 .builder-v29-slots .answer-slot.wrong-slot{
+  position:relative!important;
+  z-index:3!important;
+}
