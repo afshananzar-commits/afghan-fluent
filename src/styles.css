@@ -2229,3 +2229,110 @@
   .unified-speed-question h3{font-size:24px}
   .unified-round-finish{min-height:140px}
 }
+
+
+/* =========================================================
+   CHALLENGE NAV v42 — strak, minimalistisch, geen emoji-stijl
+   ========================================================= */
+.games-tabs.games-tabs-minimal{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:7px!important;
+  width:100%;
+  margin:8px 0 14px;
+  padding:0!important;
+  overflow:visible!important;
+}
+
+.games-tabs.games-tabs-minimal button{
+  min-width:0!important;
+  height:42px;
+  padding:0 11px!important;
+  border:1px solid rgba(55,73,60,.10)!important;
+  border-radius:14px!important;
+  background:rgba(255,253,248,.60)!important;
+  color:#6f746d!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  letter-spacing:-.01em;
+  transition:background .16s ease,color .16s ease,border-color .16s ease,transform .12s ease;
+}
+
+.games-tabs.games-tabs-minimal button svg{
+  width:16px!important;
+  height:16px!important;
+  stroke-width:1.8!important;
+  flex:0 0 16px;
+  color:#6e796f;
+}
+
+.games-tabs.games-tabs-minimal button span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.games-tabs.games-tabs-minimal button.active{
+  background:#294b38!important;
+  border-color:#294b38!important;
+  color:#fff!important;
+  font-weight:700!important;
+  box-shadow:0 3px 10px rgba(41,75,56,.10)!important;
+}
+
+.games-tabs.games-tabs-minimal button.active svg{
+  color:#fff!important;
+}
+
+.games-tabs.games-tabs-minimal button:active{
+  transform:scale(.985);
+}
+
+/* no blue browser/button styling */
+.games-tabs.games-tabs-minimal button,
+.games-tabs.games-tabs-minimal button *{
+  text-decoration:none!important;
+}
+
+@media(max-width:620px){
+  .games-tabs.games-tabs-minimal{
+    gap:5px!important;
+    margin:6px 0 11px!important;
+  }
+
+  .games-tabs.games-tabs-minimal button{
+    height:38px!important;
+    padding:0 6px!important;
+    border-radius:12px!important;
+    gap:5px!important;
+    font-size:10.5px!important;
+  }
+
+  .games-tabs.games-tabs-minimal button svg{
+    width:14px!important;
+    height:14px!important;
+    flex-basis:14px;
+  }
+}
+
+@media(max-width:390px){
+  .games-tabs.games-tabs-minimal{
+    gap:4px!important;
+  }
+  .games-tabs.games-tabs-minimal button{
+    height:37px!important;
+    padding:0 4px!important;
+    font-size:9.5px!important;
+    gap:4px!important;
+  }
+  .games-tabs.games-tabs-minimal button svg{
+    width:13px!important;
+    height:13px!important;
+    flex-basis:13px;
+  }
+}
