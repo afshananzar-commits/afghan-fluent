@@ -2007,3 +2007,41 @@
     padding:8px 10px;
   }
 }
+
+
+/* =========================================================
+   SENTENCE BUILDER v37 — verkeerde posities zichtbaar
+   Alleen na Controleren:
+   - verkeerd geplaatst = rode rand + subtiele rode tint
+   - goed geplaatst = blijft rustig/neutraal
+   ========================================================= */
+.sentence-builder-v29 .builder-v29-slots .answer-slot.wrong-slot{
+  border:2px solid #c96f62!important;
+  outline:2px solid rgba(201,111,98,.18)!important;
+  outline-offset:2px!important;
+  background:#fff4f1!important;
+  box-shadow:0 0 0 3px rgba(201,111,98,.08)!important;
+}
+
+.sentence-builder-v29 .builder-v29-slots .answer-slot.wrong-slot .sentence-tile,
+.sentence-builder-v29 .builder-v29-slots .sentence-tile.is-wrong-position{
+  border:0!important;
+  background:#fff4f1!important;
+  color:#8f4d43!important;
+  box-shadow:none!important;
+}
+
+.sentence-builder-v29 .builder-v29-slots .answer-slot.right-slot{
+  border-color:#d8c8b2!important;
+  background:rgba(255,250,242,.72)!important;
+  outline:none!important;
+}
+
+.sentence-builder-v29 .builder-v29-slots .answer-slot.right-slot .sentence-tile,
+.sentence-builder-v29 .builder-v29-slots .sentence-tile.is-right-position{
+  background:transparent!important;
+  color:var(--green)!important;
+  box-shadow:none!important;
+}
+
+/* The red state follows the existing fixed one-row layout; no coach/action positioning changes. */
