@@ -1387,3 +1387,123 @@
   .builder-v29-coach img{width:202px;left:-5px}
   .builder-v29-coach-note{left:137px;bottom:113px;width:175px}
 }
+
+
+/* =========================================================
+   SENTENCE BUILDER v30 — polish pass
+   Farangis smaller + complete, softer seamless cream,
+   coach note moved away from her face, actions always visible.
+   ========================================================= */
+
+/* One consistent warm surface for the complete exercise card. */
+.sentence-builder-v29{
+  --builder-cream:#f6eee1;
+  --builder-cream-2:#f6eee1;
+  background:#f6eee1!important;
+  overflow:hidden!important;
+}
+
+/* Remove the visual seam between exercise and coach area. */
+.sentence-builder-v29 .builder-v29-coach-zone{
+  background:#f6eee1!important;
+  border-top-color:rgba(205,188,161,.42)!important;
+}
+
+/* Slightly smaller coach and enough breathing room to show the full artwork. */
+.sentence-builder-v29 .builder-v29-coach{
+  min-height:300px!important;
+  overflow:visible!important;
+}
+.sentence-builder-v29 .builder-v29-coach img{
+  width:274px!important;
+  left:0!important;
+  bottom:8px!important;
+  object-fit:contain!important;
+  object-position:left bottom!important;
+  max-height:282px!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  clip-path:none!important;
+}
+
+/* The coach note sits in its own quiet area instead of over Farangis' face. */
+.sentence-builder-v29 .builder-v29-coach-note{
+  left:auto!important;
+  right:26px!important;
+  bottom:168px!important;
+  width:255px!important;
+  max-width:255px!important;
+  background:rgba(255,250,242,.96)!important;
+}
+
+/* Make sure both controls always fit within the visible lower card. */
+.sentence-builder-v29 .builder-v29-actions{
+  padding-bottom:24px!important;
+}
+.sentence-builder-v29 .builder-v29-actions button{
+  flex:0 0 auto!important;
+}
+
+/* A little more green hierarchy against the new cream surface. */
+.sentence-builder-v29 .builder-v29-bank .sentence-tile{
+  background:#fbf7ef!important;
+  border-color:#d7c7ae!important;
+  color:#315b43!important;
+}
+.sentence-builder-v29 .builder-v29-slots{
+  background:rgba(255,250,242,.55)!important;
+}
+.sentence-builder-v29 .builder-v29-tools button{
+  background:#fbf7ef!important;
+}
+
+@media(max-width:620px){
+  .sentence-builder-v29 .builder-v29-coach-zone{
+    min-height:222px!important;
+    grid-template-columns:minmax(0,1fr) 132px!important;
+  }
+  .sentence-builder-v29 .builder-v29-coach{
+    min-height:222px!important;
+  }
+  .sentence-builder-v29 .builder-v29-coach img{
+    width:188px!important;
+    max-height:208px!important;
+    left:4px!important;
+    bottom:6px!important;
+  }
+  .sentence-builder-v29 .builder-v29-coach-note{
+    left:auto!important;
+    right:14px!important;
+    bottom:118px!important;
+    width:190px!important;
+    max-width:190px!important;
+    padding:9px 11px!important;
+  }
+  .sentence-builder-v29 .builder-v29-actions{
+    padding:0 0 12px 2px!important;
+    gap:7px!important;
+  }
+  .sentence-builder-v29 .builder-v29-actions button{
+    min-height:40px!important;
+  }
+}
+
+@media(max-width:390px){
+  .sentence-builder-v29 .builder-v29-coach-zone{
+    min-height:214px!important;
+  }
+  .sentence-builder-v29 .builder-v29-coach{
+    min-height:214px!important;
+  }
+  .sentence-builder-v29 .builder-v29-coach img{
+    width:178px!important;
+    max-height:200px!important;
+    left:0!important;
+  }
+  .sentence-builder-v29 .builder-v29-coach-note{
+    right:10px!important;
+    bottom:115px!important;
+    width:170px!important;
+    max-width:170px!important;
+  }
+}
