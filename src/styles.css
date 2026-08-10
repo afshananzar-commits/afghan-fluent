@@ -2166,7 +2166,66 @@
 }
 
 
-/* PLAATJES v40 — Bouw-de-zin stijl, 4 beelden naast elkaar, vaste Farangis-zone */
-.picture-quiz-v40{--picture-cream:#F8EFE3;position:relative;display:flex;flex-direction:column;min-height:720px;padding:24px 26px 0!important;overflow:hidden!important;background:var(--picture-cream)!important;border-color:#e0d1bc!important}.picture-v40-head small{color:var(--terra);font-size:9px;font-weight:800}.picture-v40-head h2{font-family:Fraunces;font-size:34px;line-height:1.05;margin:12px 0 7px}.picture-v40-head p{margin:0;color:var(--muted);font-size:13px}.picture-v40-head .builder-xp-inline{display:inline-flex;margin-left:7px;padding:3px 7px;border-radius:999px;background:#fff1d7;border:1px solid #e7d09e;color:#8c672a;font-size:8px}.picture-v40-word{margin:18px 0 12px;padding:12px 18px;border-radius:20px;border:1px solid rgba(216,199,174,.72);background:rgba(255,250,242,.62);text-align:center;font-family:Fraunces;font-size:30px;font-weight:700;color:#315b43}.picture-v40-options{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}.picture-v40-options button{min-width:0!important;padding:6px!important;border:1px solid #ddcdb7!important;border-radius:17px!important;background:#fbf7ef!important;overflow:hidden}.picture-v40-options .word-illustration{height:118px!important;min-height:0!important;margin:0!important;border-radius:13px!important}.picture-v40-options button>span:last-child{padding:6px 2px 2px!important;font-size:10px!important;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.picture-v40-options button.correct{border:2px solid #55765c!important;background:#edf5eb!important}.picture-v40-options button.wrong{border:2px solid #b94f43!important;background:#fffaf2!important}.picture-v40-tools{display:flex;justify-content:center;gap:8px;margin:13px 0 0}.picture-v40-tools button{border:1px solid #ddcdb7;background:#fffaf2;border-radius:999px;padding:8px 12px;color:var(--ink);font:inherit;font-size:10px;font-weight:800;display:flex;align-items:center;gap:5px}.picture-v40-coach-zone{position:relative;height:250px;min-height:250px;margin:12px -26px 0;padding:0 26px;background:var(--picture-cream);margin-top:auto}.picture-v40-coach{position:absolute;left:22px;bottom:0;width:220px;height:230px}.picture-v40-coach img{position:absolute;left:0;bottom:0;width:205px;max-height:225px;object-fit:contain;object-position:left bottom;filter:drop-shadow(0 10px 14px rgba(48,42,31,.05))}.picture-v40-coach-note{position:absolute;left:205px;bottom:120px;width:230px;padding:10px 13px;border-radius:17px;background:#fffaf2;border:1px solid #dfcfb9;box-shadow:0 9px 22px rgba(66,51,35,.07);z-index:4}.picture-v40-coach-note small{display:block;color:#315b43;font-size:8px;font-weight:900;margin-bottom:4px}.picture-v40-coach-note span{display:block;font-size:10px;line-height:1.35}.picture-v40-coach-note.correct{background:#e7f1e5;border-color:#bdd1bb}.picture-v40-coach-note.almost{background:#fff7ef;border-color:#dfb6a9}.picture-v40-coach-note.tip{background:#fff6df;border-color:#ead29e}.picture-v40-actions{position:absolute;right:26px;bottom:28px;width:160px}.picture-v40-actions .primary-game{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:7px;font-weight:800}.picture-v40-wait{display:block;font-size:10px;color:var(--muted);text-align:center}
-@media(max-width:620px){.games-focus .picture-quiz-v40{flex:1;min-height:0;padding:14px 14px 0!important;border-radius:24px}.picture-v40-head h2{font-size:26px;margin:8px 0 4px}.picture-v40-head p{font-size:10px}.picture-v40-word{margin:9px 0 8px;padding:8px 10px;font-size:23px;border-radius:16px}.picture-v40-options{gap:6px!important}.picture-v40-options button{padding:4px!important;border-radius:13px!important}.picture-v40-options .word-illustration{height:82px!important;border-radius:10px!important}.picture-v40-options button>span:last-child{font-size:8px!important;padding:4px 1px 1px!important}.picture-v40-options .picture-state{width:23px;height:23px;right:5px;top:5px}.picture-v40-options .picture-state svg{width:14px}.picture-v40-tools{gap:5px;margin:8px 0 0}.picture-v40-tools button{flex:1;justify-content:center;padding:7px 5px;font-size:8px}.picture-v40-coach-zone{height:210px;min-height:210px;margin:8px -14px 0;padding:0 14px}.picture-v40-coach{left:8px;width:170px;height:200px}.picture-v40-coach img{width:165px;max-height:195px}.picture-v40-coach-note{left:145px;bottom:105px;width:175px;max-width:calc(100% - 154px);padding:8px 9px;border-radius:14px}.picture-v40-coach-note small{font-size:6px}.picture-v40-coach-note span{font-size:8px}.picture-v40-actions{right:14px;bottom:18px;width:128px}.picture-v40-actions .primary-game{min-height:40px;font-size:10px;padding:8px}.picture-v40-wait{font-size:8px}}
-@media(max-width:390px){.picture-v40-options{gap:4px!important}.picture-v40-options .word-illustration{height:74px!important}.picture-v40-tools button span{display:none}.picture-v40-tools button{font-size:13px}.picture-v40-coach img{width:154px}.picture-v40-coach-note{left:134px;width:160px;max-width:calc(100% - 142px)}}
+/* =========================================================
+   CHALLENGES v41 — unified Farangis + unified tools
+   ========================================================= */
+.unified-game-card{position:relative;display:flex;flex-direction:column;min-height:720px;padding:24px 26px 0;overflow:hidden!important;background:#F8EFE3!important;border-color:#e0d1bc!important}
+.unified-game-card .unified-game-head{position:relative;min-height:205px;padding-right:190px}
+.unified-game-card .builder-v29-title small{color:var(--terra);font-size:9px;font-weight:800}
+.unified-game-card .builder-v29-title h2{margin:18px 0 9px;font-family:Fraunces;font-size:38px;line-height:1.05;letter-spacing:-.025em;color:var(--ink)}
+.unified-game-card .builder-v29-title p{margin:0;color:#7b746b;font-size:14px}
+.unified-game-card .unified-game-tools{right:0;top:16px}
+.unified-listen-main{width:100%;min-height:72px;border:1px solid var(--builder-line);border-radius:22px;background:rgba(255,250,242,.62);color:var(--builder-green);display:flex;align-items:center;justify-content:center;gap:10px;font:800 18px 'DM Sans',sans-serif}
+.unified-choice-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;margin:14px 0 0}
+.unified-choice-grid button{min-height:58px!important;border:1px solid #d8c8af!important;border-radius:16px!important;background:#fffaf2!important;color:var(--builder-green)!important;font-weight:800!important;text-align:center!important;justify-content:center!important}
+.unified-choice-grid button.correct{border:2px solid #5c8463!important;background:#fffaf2!important}
+.unified-choice-grid button.wrong{border:2px solid #b94f43!important;background:#fffaf2!important;color:var(--builder-green)!important}
+.unified-picture-word{margin:0 0 12px!important;font-size:34px!important}
+.unified-picture-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;margin:0!important}
+.unified-picture-grid button{min-width:0!important;padding:5px!important;border:1px solid #d8c8af!important;border-radius:17px!important;background:rgba(255,250,242,.66)!important;overflow:hidden}
+.unified-picture-grid .word-illustration{width:100%!important;height:112px!important;min-height:112px!important;margin:0!important;border-radius:13px!important;background:#F8EFE3!important}
+.unified-picture-grid button>span{display:block;padding:6px 2px 2px!important;color:var(--builder-green)!important;font-size:10px!important;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unified-picture-grid button.correct{border:2px solid #5c8463!important;background:rgba(255,250,242,.66)!important}
+.unified-picture-grid button.wrong{border:2px solid #b94f43!important;background:rgba(255,250,242,.66)!important}
+.unified-speed-start{min-height:190px;border:1px solid var(--builder-line);border-radius:22px;background:rgba(255,250,242,.52);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:18px}
+.unified-speed-question{display:flex;align-items:center;justify-content:center;gap:22px;margin:4px 0 8px}
+.unified-speed-question .speed-score{width:82px;height:82px;margin:0;font-size:30px;flex:0 0 82px}
+.unified-speed-question h3{font-family:Fraunces;font-size:30px;margin:0;color:var(--ink)}
+.unified-round-finish{margin:0;min-height:185px;display:flex;flex-direction:column;justify-content:center}
+.unified-game-card .builder-v29-coach-zone{position:relative;margin:24px -26px 0;min-height:310px;padding:0 26px;background:#F8EFE3!important;border-top:0!important;display:grid;grid-template-columns:minmax(0,1fr) 220px;align-items:end;overflow:visible}
+.unified-game-card .builder-v29-coach{position:relative;min-height:310px;overflow:visible;pointer-events:none}
+.unified-game-card .builder-v29-coach img{position:absolute;left:0!important;bottom:8px!important;width:274px!important;max-width:none;max-height:282px!important;height:auto;object-fit:contain!important;object-position:left bottom!important;-webkit-mask-image:none!important;mask-image:none!important;clip-path:none!important}
+.unified-game-card .builder-v29-coach-note{left:auto!important;right:26px!important;bottom:168px!important;width:255px!important;max-width:255px!important}
+.unified-game-card .builder-v29-actions{position:relative!important;right:auto!important;bottom:auto!important;width:auto!important;display:flex;flex-direction:column;gap:13px;align-self:end;padding:0 0 24px 8px!important;margin:0!important;transform:none!important;z-index:5}
+
+@media(max-width:620px){
+  .games-focus .unified-game-card{flex:1;min-height:0;padding:14px 14px 224px!important;border-radius:24px;position:relative!important}
+  .unified-game-card .unified-game-head{min-height:132px!important;padding-right:128px!important}
+  .unified-game-card .builder-v29-title small{font-size:8px}
+  .unified-game-card .builder-v29-title h2{margin:13px 0 6px;font-size:clamp(28px,7vw,34px);line-height:1.02}
+  .unified-game-card .builder-v29-title p{font-size:11px}
+  .unified-game-card .unified-game-tools{width:118px;height:102px;right:-2px;top:14px}
+  .unified-game-card .builder-v29-coach-zone{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:224px!important;min-height:224px!important;margin:0!important;padding:0 14px!important;background:#F8EFE3!important;border-top:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) 132px!important}
+  .unified-game-card .builder-v29-coach{height:224px!important;min-height:224px!important}
+  .unified-game-card .builder-v29-coach img{width:178px!important;max-height:210px!important;left:2px!important;bottom:0!important}
+  .unified-game-card .builder-v29-coach-note{left:auto!important;right:14px!important;bottom:116px!important;width:190px!important;max-width:190px!important;padding:9px 11px!important;border-radius:15px!important}
+  .unified-game-card .builder-v29-coach-note small{font-size:7px!important;margin-bottom:3px}
+  .unified-game-card .builder-v29-coach-note span{font-size:9px!important;line-height:1.32}
+  .unified-game-card .builder-v29-actions{position:absolute!important;right:14px!important;bottom:18px!important;width:132px!important;padding:0!important;margin:0!important;gap:8px!important;transform:none!important}
+  .unified-game-card .builder-v29-actions button{min-height:42px!important;font-size:11px!important;padding:8px!important}
+  .unified-listen-main{min-height:56px;font-size:15px;margin-bottom:8px}
+  .unified-choice-grid{gap:7px!important;margin-top:6px}
+  .unified-choice-grid button{min-height:48px!important;font-size:12px!important;padding:8px!important}
+  .unified-picture-word{font-size:27px!important;margin:0 0 8px!important}
+  .unified-picture-grid{gap:5px!important}
+  .unified-picture-grid button{padding:3px!important;border-radius:13px!important}
+  .unified-picture-grid .word-illustration{height:76px!important;min-height:76px!important;border-radius:10px!important}
+  .unified-picture-grid button>span{font-size:8.5px!important;padding:4px 1px 1px!important}
+  .unified-picture-grid .picture-state{width:22px;height:22px;right:4px;top:4px}
+  .unified-picture-grid .picture-state svg{width:13px}
+  .unified-speed-start{min-height:142px;padding:12px}
+  .unified-speed-question{gap:14px;margin:2px 0 5px}
+  .unified-speed-question .speed-score{width:64px;height:64px;flex-basis:64px;font-size:25px}
+  .unified-speed-question h3{font-size:24px}
+  .unified-round-finish{min-height:140px}
+}

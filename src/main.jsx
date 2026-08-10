@@ -139,25 +139,94 @@ function SentenceBuilder({game}){
  </section>
 }
 
-function ListeningQuiz({game}){const pool=useMemo(()=>sentences.filter(s=>(s.spoken||s.latin)&&s.dutch).slice(0,150),[]),[idx,setIdx]=useState(game.game.positions?.listen||0),[choice,setChoice]=useState(null),s=pool[idx%Math.max(1,pool.length)];const opts=useMemo(()=>s?shuffle([s,...shuffle(pool.filter(x=>x.id!==s.id)).slice(0,3)]):[],[s?.id]);if(!s)return null;const answer=o=>{if(choice)return;const ok=o.id===s.id;setChoice({id:o.id,ok});practice(game,`listen:${s.id}`,ok);if(ok)awardXP(game,15,'luisterquiz')};return <section className="game-card"><div className="game-card-head"><div><small>🎧 LUISTERQUIZ</small><h2>Wat hoor je?</h2></div><span className="xp-chip">+15 XP</span></div><button className="big-listen" onClick={()=>speak(s.spoken||s.latin,.78)}><Headphones/> Luister</button><div className="quiz-options">{opts.map(o=><button key={o.id} onClick={()=>answer(o)} disabled={!!choice} className={choice?(o.id===s.id?'correct':choice.id===o.id?'wrong':'muted-answer'):''}>{o.id===s.id&&choice&&<Check/>}{choice?.id===o.id&&!choice.ok&&<X/>}{o.dutch}</button>)}</div>{choice&&<><div className={`game-result feedback-panel ${choice.ok?'good':'bad'}`}><span className="feedback-icon">{choice.ok?<Check/>:<X/>}</span><div><b>{choice.ok?'Goed gehoord!':'Dat was niet het juiste antwoord'}</b><small>{choice.ok?'+15 XP verdiend':`Juiste antwoord: ${s.dutch}`}</small></div></div><button className="primary-game full" onClick={()=>{const n=(idx+1)%pool.length;setIdx(n);setChoice(null);remember(game,'listen',n)}}>Volgende</button></>}</section>}
+
+function UnifiedGameTools({onHint,onListen,onAnswer}){
+ return <div className="builder-v29-tools unified-game-tools" aria-label="Hulpmiddelen">
+   <span className="spark s1">✦</span><span className="spark s2">✦</span><span className="spark s3">✦</span>
+   <button onClick={onHint} aria-label="Hint" title="Hint">💡</button>
+   <button onClick={onListen} aria-label="Luister" title="Luister">🎧</button>
+   <button onClick={onAnswer} aria-label="Antwoord" title="Antwoord">👀</button>
+ </div>
+}
+function UnifiedCoachZone({message,type='think',onReset,onPrimary,primaryLabel='Volgende',primaryDisabled=false}){
+ const coachType=message?.type||type||'think', coachSrc=COACH_IMAGES[coachType]||COACH_IMAGES.think;
+ return <div className="builder-v29-coach-zone unified-game-coach-zone">
+   <div className="builder-v29-coach"><img src={coachSrc} alt="Farangis"/></div>
+   {message&&<div className={`builder-v29-coach-note ${message.type||''}`}>
+     <small>{message.type==='tip'?'TIP VAN FARANGIS ✨':message.type==='listen'?'LUISTER MET FARANGIS 🎧':message.type==='correct'?'GOED GEDAAN ✨':message.type==='almost'?'BIJNA!':message.type==='help'?'HULP VAN FARANGIS':message.type==='celebrate'?'TOP! 🎉':'FARANGIS'}</small>
+     <span>{message.text}</span>
+   </div>}
+   <div className="builder-v29-actions">
+     <button className="ghost-game" onClick={onReset}><RotateCcw/> Opnieuw</button>
+     <button className="primary-game" disabled={primaryDisabled} onClick={onPrimary}>{primaryLabel}</button>
+   </div>
+ </div>
+}
+
+function ListeningQuiz({game}){
+ const pool=useMemo(()=>sentences.filter(s=>(s.spoken||s.latin)&&s.dutch).slice(0,150),[]),[idx,setIdx]=useState(game.game.positions?.listen||0),[choice,setChoice]=useState(null),[coachMessage,setCoachMessage]=useState(null),s=pool[idx%Math.max(1,pool.length)];
+ const opts=useMemo(()=>s?shuffle([s,...shuffle(pool.filter(x=>x.id!==s.id)).slice(0,3)]):[],[s?.id]);
+ useEffect(()=>{setChoice(null);setCoachMessage(null)},[s?.id]);
+ if(!s)return null;
+ const play=()=>{speak(s.spoken||s.latin,.78);setCoachMessage({type:'listen',text:'Luister goed naar de klank en het ritme. Daarna kun je kiezen.'})};
+ const hint=()=>setCoachMessage({type:'tip',text:`Luister nog een keer. Denk aan de betekenis van wat je hoort.`});
+ const reveal=()=>setCoachMessage({type:'help',text:`Het juiste antwoord is: “${s.dutch}”.`});
+ const answer=o=>{if(choice)return;const ok=o.id===s.id;setChoice({id:o.id,ok});practice(game,`listen:${s.id}`,ok);if(ok){awardXP(game,15,'luisterquiz');setCoachMessage({type:'correct',text:'Goed gehoord! +15 XP ✨'})}else setCoachMessage({type:'almost',text:'Bijna. Luister nog eens rustig en vergelijk de antwoorden.'})};
+ const reset=()=>{setChoice(null);setCoachMessage(null)};
+ const next=()=>{const n=(idx+1)%pool.length;setIdx(n);setChoice(null);setCoachMessage(null);remember(game,'listen',n)};
+ return <section className="game-card sentence-builder-v29 unified-game-card listening-unified">
+   <div className="builder-v29-head unified-game-head">
+     <div className="builder-v29-title"><small>🎧 LUISTERQUIZ <span className="builder-xp-inline">+15 XP</span></small><h2>Luister en kies<br/>het juiste antwoord</h2><p>Wat hoor je?</p></div>
+     <UnifiedGameTools onHint={hint} onListen={play} onAnswer={reveal}/>
+   </div>
+   <button className="unified-listen-main" onClick={play}><Headphones/> Luister</button>
+   <div className="quiz-options unified-choice-grid">{opts.map(o=><button key={o.id} onClick={()=>answer(o)} disabled={!!choice} className={choice?(o.id===s.id?'correct':choice.id===o.id?'wrong':'muted-answer'):''}>{o.id===s.id&&choice&&<Check/>}{choice?.id===o.id&&!choice.ok&&<X/>}{o.dutch}</button>)}</div>
+   <UnifiedCoachZone message={coachMessage} onReset={reset} onPrimary={choice?next:play} primaryLabel={choice?'Volgende':'Luisteren'}/>
+ </section>
+}
 
 function PictureQuiz({game}){
- const pool=useMemo(()=>vocab.filter(w=>Number(w.id)>=1).slice(0,300),[]),[idx,setIdx]=useState(game.game.positions?.picture||0),[choice,setChoice]=useState(null),[coach,setCoach]=useState(null),[revealed,setRevealed]=useState(false),w=pool[idx%Math.max(1,pool.length)];
- const opts=useMemo(()=>w?shuffle([w,...shuffle(pool.filter(x=>x.id!==w.id)).slice(0,3)]):[],[w?.id]);if(!w)return null;
- const answer=o=>{if(choice||revealed)return;const ok=o.id===w.id;setChoice({id:o.id,ok});practice(game,`picture:${w.id}`,ok);if(ok){awardXP(game,10,'plaatjesquiz');setCoach({type:'correct',text:'Heel goed! Je koppelt het woord meteen aan het juiste beeld.'})}else setCoach({type:'almost',text:`Bijna! Kijk nog eens goed: ${w.dutch} is het juiste antwoord.`})};
- const next=()=>{const n=(idx+1)%pool.length;setIdx(n);setChoice(null);setCoach(null);setRevealed(false);remember(game,'picture',n)};
- const coachType=coach?.type||'think';
- return <section className="game-card picture-quiz-v40"><div className="picture-v40-head"><small>🖼️ PLAATJESQUIZ <span className="builder-xp-inline">+10 XP</span></small><h2>Welke afbeelding hoort erbij?</h2><p>Kies het plaatje dat past bij het Afghaanse woord.</p></div><div className="picture-v40-word">{w.spoken||w.latin}</div><div className="picture-options picture-v40-options">{opts.map(o=>{const correct=(choice||revealed)&&o.id===w.id,wrong=choice&&!choice.ok&&choice.id===o.id;return <button key={o.id} onClick={()=>answer(o)} disabled={!!choice||revealed} className={`${correct?'correct':''} ${wrong?'wrong':''} ${(choice||revealed)&&!correct&&!wrong?'muted-answer':''}`}><div className="picture-state">{correct?<Check/>:wrong?<X/>:null}</div><WordIllustration word={o}/><span>{o.dutch}</span></button>})}</div><div className="picture-v40-tools"><button onClick={()=>setCoach({type:'tip',text:`Hint: dit woord hoort bij ${labelFor(w.category).toLowerCase()}. Kijk welke afbeelding daarbij past.`})}>💡 <span>Hint</span></button><button onClick={()=>{speak(w.spoken||w.latin,.78);setCoach({type:'listen',text:'Luister goed naar de klank. Zeg het daarna zelf één keer na.'})}}>🎧 <span>Luisteren</span></button><button onClick={()=>{setRevealed(true);setCoach({type:'explain',text:`Het antwoord is “${w.dutch}”. Bekijk het beeld en zeg “${w.spoken||w.latin}” nog één keer hardop.`})}}>👀 <span>Antwoord</span></button></div><div className="picture-v40-coach-zone"><div className="picture-v40-coach"><img src={COACH_IMAGES[coachType]||COACH_IMAGES.think} alt={`Farangis — ${coachType}`}/></div>{coach&&<div className={`picture-v40-coach-note ${coach.type}`}><small>FARANGIS</small><span>{coach.text}</span></div>}<div className="picture-v40-actions">{(choice||revealed)?<button className="primary-game" onClick={next}>Volgende <ChevronRight/></button>:<span className="picture-v40-wait">Kies een plaatje</span>}</div></div></section>
+ const pool=useMemo(()=>vocab.filter(w=>Number(w.id)>=1).slice(0,300),[]),[idx,setIdx]=useState(game.game.positions?.picture||0),[choice,setChoice]=useState(null),[coachMessage,setCoachMessage]=useState(null),w=pool[idx%Math.max(1,pool.length)];
+ const opts=useMemo(()=>w?shuffle([w,...shuffle(pool.filter(x=>x.id!==w.id)).slice(0,3)]):[],[w?.id]);
+ useEffect(()=>{setChoice(null);setCoachMessage(null)},[w?.id]);
+ if(!w)return null; const spoken=w.spoken||w.latin;
+ const hint=()=>setCoachMessage({type:'tip',text:`Kijk goed naar de vier beelden en denk aan de betekenis van “${spoken}”.`});
+ const listen=()=>{speak(spoken,.78);setCoachMessage({type:'listen',text:`Luister naar “${spoken}” en kijk daarna opnieuw naar de plaatjes.`})};
+ const reveal=()=>setCoachMessage({type:'help',text:`“${spoken}” betekent “${w.dutch}”.`});
+ const answer=o=>{if(choice)return;const ok=o.id===w.id;setChoice({id:o.id,ok});practice(game,`picture:${w.id}`,ok);if(ok){awardXP(game,10,'plaatjesquiz');setCoachMessage({type:'correct',text:'Precies! +10 XP ✨'})}else setCoachMessage({type:'almost',text:'Bijna. Kijk nog eens naar de betekenis en de vier beelden.'})};
+ const reset=()=>{setChoice(null);setCoachMessage(null)};
+ const next=()=>{const n=(idx+1)%pool.length;setIdx(n);setChoice(null);setCoachMessage(null);remember(game,'picture',n)};
+ return <section className="game-card sentence-builder-v29 unified-game-card picture-unified">
+   <div className="builder-v29-head unified-game-head">
+     <div className="builder-v29-title"><small>🖼️ PLAATJESQUIZ <span className="builder-xp-inline">+10 XP</span></small><h2>Welke afbeelding<br/>hoort erbij?</h2><p>Kies het plaatje dat past bij het woord.</p></div>
+     <UnifiedGameTools onHint={hint} onListen={listen} onAnswer={reveal}/>
+   </div>
+   <div className="picture-word unified-picture-word">{spoken}</div>
+   <div className="picture-options unified-picture-grid">{opts.map(o=>{const correct=choice&&o.id===w.id,wrong=choice&&!choice.ok&&choice.id===o.id;return <button key={o.id} onClick={()=>answer(o)} disabled={!!choice} className={`${correct?'correct':''} ${wrong?'wrong':''} ${choice&&!correct&&!wrong?'muted-answer':''}`}><div className="picture-state">{correct?<Check/>:wrong?<X/>:null}</div><WordIllustration word={o}/><span>{o.dutch}</span></button>})}</div>
+   <UnifiedCoachZone message={coachMessage} onReset={reset} onPrimary={choice?next:listen} primaryLabel={choice?'Volgende':'Luisteren'}/>
+ </section>
 }
 
 function SpeedRound({game}){
- const[running,setRunning]=useState(false),[seconds,setSeconds]=useState(60),[score,setScore]=useState(0),[q,setQ]=useState(null),[opts,setOpts]=useState([]),[feedback,setFeedback]=useState(null);const feedbackTimer=useRef(null);
- const newQ=()=>{const w=vocab[Math.floor(Math.random()*vocab.length)];setQ(w);setOpts(shuffle([w,...shuffle(vocab.filter(x=>x.id!==w.id)).slice(0,3)]));setFeedback(null)};
+ const[running,setRunning]=useState(false),[seconds,setSeconds]=useState(60),[score,setScore]=useState(0),[q,setQ]=useState(null),[opts,setOpts]=useState([]),[feedback,setFeedback]=useState(null),[coachMessage,setCoachMessage]=useState(null);const feedbackTimer=useRef(null);
+ const newQ=()=>{const w=vocab[Math.floor(Math.random()*vocab.length)];setQ(w);setOpts(shuffle([w,...shuffle(vocab.filter(x=>x.id!==w.id)).slice(0,3)]));setFeedback(null);setCoachMessage(null)};
  useEffect(()=>{if(!running)return;const t=setInterval(()=>setSeconds(s=>s-1),1000);return()=>clearInterval(t)},[running]);
- useEffect(()=>{if(running&&seconds<=0){setRunning(false);clearTimeout(feedbackTimer.current);awardXP(game,score*5,'snelle ronde')}},[seconds]);
+ useEffect(()=>{if(running&&seconds<=0){setRunning(false);clearTimeout(feedbackTimer.current);awardXP(game,score*5,'snelle ronde');setCoachMessage({type:'celebrate',text:`Ronde klaar! ${score} goed 🎉`})}},[seconds]);
  useEffect(()=>()=>clearTimeout(feedbackTimer.current),[]);
- const answer=o=>{if(feedback||!running)return;const ok=o.id===q.id;if(ok)setScore(s=>s+1);practice(game,`speed:${q.id}`,ok);setFeedback({id:o.id,ok,correct:q.id,correctText:q.spoken||q.latin});feedbackTimer.current=setTimeout(()=>{if(seconds>0)newQ()},ok?650:1050)};
- return <section className={`game-card speed-card ${feedback?.ok?'speed-good':feedback&&!feedback.ok?'speed-bad':''}`}><div className="game-card-head"><div><small>⚡ SNELLE RONDE</small><h2>60 seconden</h2></div>{running?<span className="timer-chip"><Timer/>{seconds}s</span>:<span className="xp-chip">5 XP per goed</span>}</div>{!running&&seconds>0?<><p>Zo veel mogelijk woorden goed beantwoorden. Je krijgt na elk antwoord direct feedback.</p><button className="primary-game full" onClick={()=>{setSeconds(60);setScore(0);setRunning(true);newQ()}}><Zap/> Start ronde</button></>:running?<><div className="speed-topline"><div className="speed-score">{score}<small>goed</small></div>{feedback&&<div className={`speed-feedback-pop ${feedback.ok?'good':'bad'}`}>{feedback.ok?<><Check/><b>Goed!</b><span>+5 XP</span></>:<><X/><b>Nog niet</b><span>{feedback.correctText}</span></>}</div>}</div><h3>{q?.dutch}</h3><div className="quiz-options speed-options">{opts.map(o=><button key={o.id} disabled={!!feedback} onClick={()=>answer(o)} className={feedback?(o.id===q.id?'correct':feedback.id===o.id?'wrong':'muted-answer'):''}>{feedback&&o.id===q.id&&<Check/>}{feedback&&!feedback.ok&&feedback.id===o.id&&<X/>}{o.spoken||o.latin}</button>)}</div></>:null}{!running&&seconds<=0&&<div className="round-finish"><Trophy/><h3>Ronde klaar!</h3><b>{score} goed · +{score*5} XP</b><button className="primary-game full" onClick={()=>{setSeconds(60);setScore(0);setRunning(true);newQ()}}><RefreshCw/> Nog een ronde</button></div>}</section>
+ const start=()=>{setSeconds(60);setScore(0);setRunning(true);newQ()};
+ const answer=o=>{if(feedback||!running)return;const ok=o.id===q.id;if(ok)setScore(s=>s+1);practice(game,`speed:${q.id}`,ok);setFeedback({id:o.id,ok,correct:q.id,correctText:q.spoken||q.latin});setCoachMessage(ok?{type:'correct',text:'Goed! Snel én correct. ✨'}:{type:'almost',text:`Nog niet. Het juiste antwoord is “${q.spoken||q.latin}”.`});feedbackTimer.current=setTimeout(()=>{if(seconds>0)newQ()},ok?650:1050)};
+ const hint=()=>q&&setCoachMessage({type:'tip',text:`Denk aan “${q.dutch}” en vergelijk de vier antwoorden.`});
+ const listen=()=>{if(q){speak(q.spoken||q.latin,.78);setCoachMessage({type:'listen',text:'Luister naar het juiste Afghaanse woord.'})}};
+ const reveal=()=>q&&setCoachMessage({type:'help',text:`“${q.dutch}” is “${q.spoken||q.latin}”.`});
+ const reset=()=>{clearTimeout(feedbackTimer.current);setRunning(false);setSeconds(60);setScore(0);setQ(null);setOpts([]);setFeedback(null);setCoachMessage(null)};
+ return <section className={`game-card sentence-builder-v29 unified-game-card speed-card speed-unified ${feedback?.ok?'speed-good':feedback&&!feedback.ok?'speed-bad':''}`}>
+   <div className="builder-v29-head unified-game-head">
+     <div className="builder-v29-title"><small>⚡ SNELLE RONDE <span className="builder-xp-inline">5 XP per goed</span></small><h2>Vertaal zo snel<br/>mogelijk</h2><p>{running?`${seconds} seconden over`:'60 seconden · zo veel mogelijk goed'}</p></div>
+     <UnifiedGameTools onHint={hint} onListen={listen} onAnswer={reveal}/>
+   </div>
+   {!running&&seconds>0?<div className="unified-speed-start"><Zap/><p>Start de ronde en kies zo snel mogelijk het juiste antwoord.</p><button className="primary-game" onClick={start}>Start ronde</button></div>:running?<><div className="unified-speed-question"><div className="speed-score">{score}<small>goed</small></div><h3>{q?.dutch}</h3></div><div className="quiz-options unified-choice-grid speed-options">{opts.map(o=><button key={o.id} disabled={!!feedback} onClick={()=>answer(o)} className={feedback?(o.id===q.id?'correct':feedback.id===o.id?'wrong':'muted-answer'):''}>{feedback&&o.id===q.id&&<Check/>}{feedback&&!feedback.ok&&feedback.id===o.id&&<X/>}{o.spoken||o.latin}</button>)}</div></>:<div className="round-finish unified-round-finish"><Trophy/><h3>Ronde klaar!</h3><b>{score} goed · +{score*5} XP</b></div>}
+   <UnifiedCoachZone message={coachMessage} onReset={reset} onPrimary={running?()=>{}:start} primaryLabel={running?`${seconds}s`:'Nog een ronde'} primaryDisabled={running}/>
+ </section>
 }
 
 function Badges({app,game}){const a=[['Eerste stap','25 woorden',app.knownIds.size>=25,'🌱'],['Woordenkenner','100 woorden',app.knownIds.size>=100,'📚'],['Op stoom','500 XP',game.xp>=500,'⭐'],['Doorzetter','7 dagen',(app.progress.streak||0)>=7,'🔥'],['Taalheld','2500 XP',game.xp>=2500,'🏆']];return <div className="badges-grid">{a.map(([n,s,u,e])=><div key={n} className={`badge-card ${u?'unlocked':''}`}><span>{e}</span><b>{n}</b><small>{s}</small>{u&&<Medal/>}</div>)}</div>}
