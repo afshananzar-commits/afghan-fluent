@@ -1507,3 +1507,94 @@
     max-width:170px!important;
   }
 }
+
+
+/* =========================================================
+   SENTENCE BUILDER v31 — mobile layout corrections
+   Reference cream sampled from supplied image: RGB 248/239/227
+   ========================================================= */
+.sentence-builder-v29{
+  --builder-cream:#F8EFE3;
+  --builder-cream-2:#F8EFE3;
+  background:#F8EFE3!important;
+}
+.sentence-builder-v29 .builder-v29-coach-zone{
+  background:#F8EFE3!important;
+  border-top:0!important;
+}
+
+/* Keep the controls comfortably above the bottom navigation. */
+@media(max-width:620px){
+  .sentence-builder-v29 .builder-v29-coach-zone{
+    min-height:224px!important;
+  }
+  .sentence-builder-v29 .builder-v29-actions{
+    align-self:end!important;
+    padding:0 0 34px 2px!important;
+    transform:translateY(-8px);
+  }
+  .sentence-builder-v29 .builder-v29-actions button{
+    min-height:42px!important;
+  }
+
+  /* 1–3 words: retain the spacious three-column drop zone. */
+  .sentence-builder-v29.has-three-words .builder-v29-slots{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+
+  /* 4+ words: wrap into a balanced compact grid instead of forcing
+     extra items into/under a three-column strip. */
+  .sentence-builder-v29.has-many-words .builder-v29-slots{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    min-height:auto!important;
+    padding:9px!important;
+  }
+  .sentence-builder-v29.has-many-words .builder-v29-slots .answer-slot{
+    height:52px!important;
+    border:0!important;
+    border-radius:14px!important;
+    outline:2px dashed #d2c1aa!important;
+    outline-offset:-5px!important;
+    background:rgba(255,250,242,.32)!important;
+  }
+  .sentence-builder-v29.has-many-words .builder-v29-slots .answer-slot.filled{
+    outline:0!important;
+  }
+  .sentence-builder-v29.has-many-words .builder-v29-slots .slot-number{
+    font-size:17px!important;
+  }
+
+  /* Word bank also wraps evenly for longer sentences. */
+  .sentence-builder-v29.has-many-words .builder-v29-bank{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    width:100%!important;
+  }
+  .sentence-builder-v29.has-many-words .builder-v29-bank .sentence-tile{
+    width:100%!important;
+    min-width:0!important;
+    min-height:44px!important;
+    font-size:15px!important;
+  }
+
+  /* Preserve enough vertical room after a longer word set. */
+  .sentence-builder-v29.has-many-words .builder-v29-divider{
+    margin:10px 0 8px!important;
+  }
+  .sentence-builder-v29.has-many-words .builder-v29-coach-zone{
+    margin-top:10px!important;
+  }
+}
+
+/* On slightly wider phones, 4 words can sit in one clean row. */
+@media(min-width:430px) and (max-width:620px){
+  .sentence-builder-v29.has-many-words .builder-v29-bank{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  .sentence-builder-v29.has-many-words .builder-v29-slots{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
