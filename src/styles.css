@@ -2336,3 +2336,173 @@
     flex-basis:13px;
   }
 }
+
+
+/* =========================================================
+   SPEED ROUND v43 — natuurlijke prompt + opties volledig zichtbaar
+   ========================================================= */
+
+/* Replace loose score + word with one calm prompt card. */
+.speed-unified .speed-prompt-card{
+  display:grid;
+  grid-template-columns:74px 1fr;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  min-height:84px;
+  margin:2px 0 10px;
+  padding:10px 14px;
+  border:1px solid rgba(216,199,174,.72);
+  border-radius:20px;
+  background:rgba(255,250,242,.58);
+}
+
+.speed-unified .speed-score-pill{
+  width:62px;
+  height:62px;
+  border-radius:18px;
+  background:#e6eee2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:var(--ink);
+}
+.speed-unified .speed-score-pill b{
+  font-family:Fraunces;
+  font-size:27px;
+  line-height:1;
+}
+.speed-unified .speed-score-pill small{
+  margin-top:3px;
+  font-size:9px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.speed-unified .speed-current-word{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+}
+.speed-unified .speed-current-word small{
+  color:var(--terra);
+  font-size:8px;
+  letter-spacing:.12em;
+  font-weight:900;
+  margin-bottom:3px;
+}
+.speed-unified .speed-current-word strong{
+  font-family:Fraunces;
+  font-size:31px;
+  line-height:1.05;
+  color:var(--ink);
+  overflow-wrap:anywhere;
+}
+
+/* Keep the full 2x2 answer grid above Farangis at all times. */
+.speed-unified .speed-options{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(2,50px)!important;
+  gap:8px!important;
+  margin:0!important;
+  min-height:108px!important;
+  max-height:108px!important;
+  overflow:visible!important;
+}
+.speed-unified .speed-options button{
+  height:50px!important;
+  min-height:50px!important;
+  padding:8px 10px!important;
+  border-radius:15px!important;
+  font-size:14px!important;
+  line-height:1.1!important;
+}
+
+/* Reserve enough visible content area before the fixed coach zone. */
+.speed-unified{
+  --speed-content-bottom-gap:12px;
+}
+.speed-unified .speed-options{
+  margin-bottom:var(--speed-content-bottom-gap)!important;
+}
+
+@media(max-width:620px){
+  .speed-unified .unified-game-head{
+    min-height:124px!important;
+  }
+
+  .speed-unified .speed-prompt-card{
+    grid-template-columns:58px 1fr;
+    gap:10px;
+    min-height:70px;
+    margin:0 0 8px;
+    padding:7px 10px;
+    border-radius:17px;
+  }
+
+  .speed-unified .speed-score-pill{
+    width:50px;
+    height:50px;
+    border-radius:15px;
+  }
+  .speed-unified .speed-score-pill b{font-size:23px}
+  .speed-unified .speed-score-pill small{font-size:8px}
+
+  .speed-unified .speed-current-word small{font-size:7px}
+  .speed-unified .speed-current-word strong{
+    font-size:26px;
+    line-height:1;
+  }
+
+  .speed-unified .speed-options{
+    grid-template-rows:repeat(2,46px)!important;
+    min-height:100px!important;
+    max-height:100px!important;
+    gap:7px!important;
+    margin-bottom:10px!important;
+  }
+  .speed-unified .speed-options button{
+    height:46px!important;
+    min-height:46px!important;
+    padding:6px 8px!important;
+    font-size:13px!important;
+  }
+}
+
+/* Short phones need an even tighter exercise block so the second row never
+   disappears behind the fixed Farangis/actions zone. */
+@media(max-width:620px) and (max-height:780px){
+  .speed-unified .unified-game-head{
+    min-height:112px!important;
+  }
+  .speed-unified .builder-v29-title h2{
+    font-size:26px!important;
+    margin-top:9px!important;
+  }
+  .speed-unified .speed-prompt-card{
+    min-height:62px;
+    grid-template-columns:52px 1fr;
+    margin-bottom:6px;
+    padding:6px 8px;
+  }
+  .speed-unified .speed-score-pill{
+    width:44px;height:44px;border-radius:13px;
+  }
+  .speed-unified .speed-score-pill b{font-size:20px}
+  .speed-unified .speed-current-word strong{font-size:23px}
+  .speed-unified .speed-options{
+    grid-template-rows:repeat(2,42px)!important;
+    min-height:91px!important;
+    max-height:91px!important;
+    gap:6px!important;
+  }
+  .speed-unified .speed-options button{
+    height:42px!important;
+    min-height:42px!important;
+    font-size:12px!important;
+  }
+}
