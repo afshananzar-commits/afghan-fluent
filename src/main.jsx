@@ -116,6 +116,10 @@ function SentenceBuilder({game}){
      </div>
    </div>
 
+   <div className="builder-v36-dutch-prompt" aria-label="Nederlandse voorbeeldzin">
+     <span>{s.dutch}</span>
+   </div>
+
    <div className={`answer-slots builder-v29-slots ${dragging?'is-dragging':''}`}>{answer.map((tile,i)=><div key={i} data-answer-slot={i} className={`answer-slot ${tile?'filled':''} ${hoverSlot===i?'hover':''} ${result==='good'?'correct-slot':''} ${result==='bad'&&tile?.origin!==i?'wrong-slot':''}`}>{tile?<button className={`sentence-tile placed ${dragging===tile.id?'is-held':''}`} onClick={()=>returnToBank(i)} onPointerDown={e=>startDrag(e,tile,'slot',i)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>:<span className="slot-number">{i+1}</span>}</div>)}</div>
 
    <div className="builder-divider builder-v29-divider"><span>WOORDEN</span></div>

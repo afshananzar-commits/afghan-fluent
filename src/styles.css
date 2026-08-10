@@ -1957,3 +1957,53 @@
     font-size:clamp(9px,3vw,13px)!important;
   }
 }
+
+
+/* =========================================================
+   SENTENCE BUILDER v36 — Nederlandse voorbeeldzin terug
+   ========================================================= */
+.sentence-builder-v29 .builder-v36-dutch-prompt{
+  width:100%;
+  min-height:68px;
+  margin:2px 0 12px;
+  padding:12px 18px;
+  border-radius:20px;
+  border:1px solid rgba(216,199,174,.72);
+  background:rgba(255,250,242,.62);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:var(--ink);
+  font-family:Fraunces;
+  font-size:25px;
+  font-weight:700;
+  line-height:1.18;
+  letter-spacing:-.015em;
+  box-sizing:border-box;
+}
+
+@media(max-width:620px){
+  /* Create room for the Dutch sentence without moving Farangis/actions. */
+  .sentence-builder-v29 .builder-v29-head{
+    min-height:132px!important;
+  }
+  .sentence-builder-v29 .builder-v36-dutch-prompt{
+    min-height:56px;
+    margin:0 0 9px;
+    padding:9px 12px;
+    border-radius:17px;
+    font-size:20px;
+  }
+  .sentence-builder-v29 .builder-v29-slots{
+    margin-top:0!important;
+  }
+}
+
+@media(max-width:390px){
+  .sentence-builder-v29 .builder-v36-dutch-prompt{
+    min-height:52px;
+    font-size:18px;
+    padding:8px 10px;
+  }
+}
