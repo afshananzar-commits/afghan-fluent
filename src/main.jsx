@@ -90,24 +90,127 @@ async function loadCloudState(session){
 function AdminPanel({session,profile}){
  const[users,setUsers]=useState([]),[name,setName]=useState(''),[password,setPassword]=useState(''),[mode,setMode]=useState('adult'),[busy,setBusy]=useState(false),[msg,setMsg]=useState('');
  const[recordType,setRecordType]=useState('word'),[recordIndex,setRecordIndex]=useState(0),[recording,setRecording]=useState(false),[audioUrl,setAudioUrl]=useState(null);
+ const[recordedMap,setRecordedMap]=useState({}),[currentAudio,setCurrentAudio]=useState(null),[searchAudio,setSearchAudio]=useState('');
  const mediaRef=useRef(null),chunksRef=useRef([]);
+
  const refresh=async()=>{const r=await fetch('/api/admin-users',{headers:{Authorization:`Bearer ${session.access_token}`}});const j=await r.json();if(r.ok)setUsers(j.users||[])};
- useEffect(()=>{refresh()},[]);
+ const loadAudioState=async()=>{
+  const{data,error}=await supabase.from('audio_recordings').select('item_type,item_id,storage_path,updated_at').eq('approved',true);
+  if(error){setMsg(error.message);return}
+  const map={};(data||[]).forEach(r=>map[`${r.item_type}:${r.item_id}`]=r);setRecordedMap(map);
+ };
+ useEffect(()=>{refresh();loadAudioState()},[]);
+
  const createUser=async e=>{e.preventDefault();setBusy(true);setMsg('');const r=await fetch('/api/admin-users',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({displayName:name,password,mode})});const j=await r.json();setBusy(false);setMsg(r.ok?'Gebruiker aangemaakt.':j.error||'Aanmaken mislukt.');if(r.ok){setName('');setPassword('');refresh()}};
  const resetUser=async id=>{if(!confirm('Alle leerprogressie van deze gebruiker resetten?'))return;const r=await fetch('/api/admin-reset',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({userId:id})});setMsg(r.ok?'Voortgang gereset.':'Resetten mislukt.')};
- const items=recordType==='word'?vocab:sentences,item=items[recordIndex%items.length],spoken=item?.spoken||item?.latin;
- const startRecording=async()=>{const stream=await navigator.mediaDevices.getUserMedia({audio:true});const mr=new MediaRecorder(stream);chunksRef.current=[];mr.ondataavailable=e=>chunksRef.current.push(e.data);mr.onstop=()=>{const blob=new Blob(chunksRef.current,{type:mr.mimeType||'audio/webm'});setAudioUrl(URL.createObjectURL(blob));mediaRef.current={blob,mime:mr.mimeType||'audio/webm'};stream.getTracks().forEach(t=>t.stop())};mr.start();mediaRef.current=mr;setRecording(true)};
- const stopRecording=()=>{mediaRef.current?.stop();setRecording(false)};
- const saveRecording=async()=>{if(!mediaRef.current?.blob)return;setBusy(true);const ext=mediaRef.current.mime.includes('mp4')?'m4a':'webm',path=`${recordType}s/${item.id}.${ext}`;const{error:upErr}=await supabase.storage.from('farangis-audio').upload(path,mediaRef.current.blob,{upsert:true,contentType:mediaRef.current.mime});if(upErr){setMsg(upErr.message);setBusy(false);return}const{error:dbErr}=await supabase.from('audio_recordings').upsert({item_type:recordType,item_id:Number(item.id),storage_path:path,recorded_by:session.user.id,approved:true},{onConflict:'item_type,item_id'});setBusy(false);if(dbErr)return setMsg(dbErr.message);setMsg('Opname opgeslagen ✓');setAudioUrl(null);mediaRef.current=null;setRecordIndex(i=>(i+1)%items.length)};
+
+ const items=recordType==='word'?vocab:sentences;
+ const filteredItems=searchAudio.trim()?items.filter(x=>`${x.id} ${x.dutch} ${x.spoken||x.latin}`.toLowerCase().includes(searchAudio.trim().toLowerCase())):items;
+ const item=filteredItems.length?filteredItems[Math.min(recordIndex,filteredItems.length-1)]:null;
+ const spoken=item?.spoken||item?.latin;
+ const audioKey=item?`${recordType}:${Number(item.id)}`:'';
+ const existing=recordedMap[audioKey];
+ const recordedCount=Object.keys(recordedMap).filter(k=>k.startsWith(`${recordType}:`)).length;
+ const progressPct=items.length?Math.round(recordedCount/items.length*100):0;
+
+ useEffect(()=>{
+  setAudioUrl(null);mediaRef.current=null;setCurrentAudio(null);
+  if(!existing?.storage_path)return;
+  const{data}=supabase.storage.from('farangis-audio').getPublicUrl(existing.storage_path);
+  if(data?.publicUrl)setCurrentAudio(data.publicUrl);
+ },[audioKey,existing?.storage_path]);
+
+ const changeType=t=>{setRecordType(t);setRecordIndex(0);setSearchAudio('');setAudioUrl(null);mediaRef.current=null};
+ const goNext=()=>setRecordIndex(i=>filteredItems.length?Math.min(i+1,filteredItems.length-1):0);
+ const goPrev=()=>setRecordIndex(i=>Math.max(0,i-1));
+
+ const startRecording=async()=>{
+  try{
+   setMsg('');
+   const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+   const mr=new MediaRecorder(stream);chunksRef.current=[];
+   mr.ondataavailable=e=>{if(e.data?.size)chunksRef.current.push(e.data)};
+   mr.onstop=()=>{const mime=mr.mimeType||'audio/webm';const blob=new Blob(chunksRef.current,{type:mime});setAudioUrl(URL.createObjectURL(blob));mediaRef.current={blob,mime};stream.getTracks().forEach(t=>t.stop())};
+   mr.start();mediaRef.current=mr;setRecording(true);
+  }catch(e){setMsg('Microfoon kon niet worden geopend. Controleer de toestemming in Safari.')}
+ };
+ const stopRecording=()=>{if(mediaRef.current?.state==='recording')mediaRef.current.stop();setRecording(false)};
+ const discardRecording=()=>{if(audioUrl)URL.revokeObjectURL(audioUrl);setAudioUrl(null);mediaRef.current=null};
+
+ const saveRecording=async()=>{
+  if(!mediaRef.current?.blob||!item)return;
+  setBusy(true);setMsg('');
+  try{
+   const mime=mediaRef.current.mime||'audio/webm';
+   const ext=mime.includes('mp4')?'m4a':mime.includes('mpeg')?'mp3':mime.includes('wav')?'wav':'webm';
+   const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+   const path=`${recordType}s/${item.id}/${stamp}.${ext}`;
+
+   const{error:upErr}=await supabase.storage.from('farangis-audio').upload(path,mediaRef.current.blob,{upsert:false,contentType:mime});
+   if(upErr)throw upErr;
+
+   if(existing?.storage_path){
+    const{error:vErr}=await supabase.from('audio_recording_versions').insert({
+     item_type:recordType,item_id:Number(item.id),storage_path:existing.storage_path,
+     replaced_by:path,recorded_by:session.user.id
+    });
+    if(vErr)throw vErr;
+   }
+
+   const{error:dbErr}=await supabase.from('audio_recordings').upsert({
+    item_type:recordType,item_id:Number(item.id),storage_path:path,
+    recorded_by:session.user.id,approved:true,updated_at:new Date().toISOString()
+   },{onConflict:'item_type,item_id'});
+   if(dbErr)throw dbErr;
+
+   setMsg(existing?'Nieuwe uitspraak opgeslagen ✓ Vorige opname is bewaard.':'Opname opgeslagen ✓');
+   discardRecording();await loadAudioState();goNext();
+  }catch(e){setMsg(e.message||'Opslaan mislukt.')}
+  finally{setBusy(false)}
+ };
+
+ const restorePrevious=async()=>{
+  if(!item)return;
+  setBusy(true);setMsg('');
+  try{
+   const{data:version,error}=await supabase.from('audio_recording_versions')
+    .select('id,storage_path').eq('item_type',recordType).eq('item_id',Number(item.id))
+    .order('created_at',{ascending:false}).limit(1).maybeSingle();
+   if(error)throw error;if(!version)throw new Error('Er is geen vorige opname om te herstellen.');
+   const current=existing?.storage_path;
+   const{error:uErr}=await supabase.from('audio_recordings').update({storage_path:version.storage_path,updated_at:new Date().toISOString()})
+    .eq('item_type',recordType).eq('item_id',Number(item.id));
+   if(uErr)throw uErr;
+   await supabase.from('audio_recording_versions').delete().eq('id',version.id);
+   if(current)await supabase.from('audio_recording_versions').insert({item_type:recordType,item_id:Number(item.id),storage_path:current,replaced_by:version.storage_path,recorded_by:session.user.id});
+   setMsg('Vorige opname hersteld ✓');await loadAudioState();
+  }catch(e){setMsg(e.message||'Herstellen mislukt.')}
+  finally{setBusy(false)}
+ };
+
  return <div className="admin-screen"><PageHead eyebrow="ADMIN" title="Beheer" sub="Gebruikers, voortgang en de stem van Farangis."/>
   {msg&&<div className="admin-message">{msg}</div>}
   <section className="admin-card"><h3>Gebruikers</h3><div className="admin-users">{users.map(u=><div className="admin-user" key={u.id}><div className="admin-avatar">{(u.display_name||'?')[0]}</div><div><b>{u.display_name}</b><span>{u.role==='admin'?'Administrator':u.mode==='kids'?'Kids':'Volwassen'}</span></div>{u.role!=='admin'&&<button onClick={()=>resetUser(u.id)}><RefreshCw/> Reset</button>}</div>)}</div>
    <form className="admin-create" onSubmit={createUser}><h4>Nieuw account</h4><input placeholder="Naam, bijvoorbeeld Aeden" value={name} onChange={e=>setName(e.target.value)} required/><input placeholder="Tijdelijk wachtwoord" type="password" value={password} onChange={e=>setPassword(e.target.value)} minLength="6" required/><select value={mode} onChange={e=>setMode(e.target.value)}><option value="adult">Volwassen</option><option value="kids">Kids</option></select><button disabled={busy}><UserRound/> Account aanmaken</button></form>
   </section>
-  <section className="admin-card audio-admin"><div><small>STEM VAN FARANGIS</small><h3>Audio opnemen</h3><p>{recordType==='word'?'Woord':'Zin'} {recordIndex+1} van {items.length}</p></div><div className="audio-type-switch"><button className={recordType==='word'?'active':''} onClick={()=>{setRecordType('word');setRecordIndex(0)}}>Woorden</button><button className={recordType==='sentence'?'active':''} onClick={()=>{setRecordType('sentence');setRecordIndex(0)}}>Zinnen</button></div><div className="record-prompt"><small>NEDERLANDS</small><b>{item?.dutch}</b><small>FONETISCH</small><strong>{spoken}</strong></div><div className="record-actions">{!recording?<button className="record-button" onClick={startRecording}><Mic/> Opnemen</button>:<button className="record-button recording" onClick={stopRecording}><Square/> Stop</button>}{audioUrl&&<><audio controls src={audioUrl}/><button className="save-audio" onClick={saveRecording} disabled={busy}><Check/> Opslaan & volgende</button></>}</div></section>
+
+  <section className="admin-card audio-admin">
+   <div className="audio-admin-head"><div><small>STEM VAN FARANGIS</small><h3>Audio opnemen</h3><p>Neem op, luister terug en vervang later zonder oude opnames kwijt te raken.</p></div><div className="audio-progress-badge"><b>{recordedCount}/{items.length}</b><span>{progressPct}% opgenomen</span></div></div>
+   <div className="audio-progress-track"><i style={{width:`${progressPct}%`}}/></div>
+   <div className="audio-type-switch"><button className={recordType==='word'?'active':''} onClick={()=>changeType('word')}>Woorden</button><button className={recordType==='sentence'?'active':''} onClick={()=>changeType('sentence')}>Zinnen</button></div>
+   <div className="audio-browser"><button onClick={goPrev} disabled={recordIndex===0}><ChevronLeft/></button><input value={searchAudio} onChange={e=>{setSearchAudio(e.target.value);setRecordIndex(0)}} placeholder="Zoek nummer, Nederlands of fonetisch…"/><button onClick={goNext} disabled={recordIndex>=filteredItems.length-1}><ChevronRight/></button></div>
+   {item?<>
+    <div className="record-meta"><span>{recordType==='word'?'WOORD':'ZIN'} {item.id}</span><span className={existing?'done':'todo'}>{existing?'✓ Opgenomen':'Nog opnemen'}</span></div>
+    <div className="record-prompt"><small>NEDERLANDS</small><b>{item.dutch}</b><small>FONETISCH</small><strong>{spoken||'—'}</strong></div>
+    {currentAudio&&<div className="current-recording"><div><small>HUIDIGE OPNAME</small><b>Farangis</b></div><audio controls src={currentAudio}/>{existing&&<button className="restore-audio" onClick={restorePrevious} disabled={busy}><RotateCcw/> Vorige herstellen</button>}</div>}
+    <div className="record-actions">
+     {!recording?<button className="record-button" onClick={startRecording}><Mic/> {existing?'Opnieuw opnemen':'Opnemen'}</button>:<button className="record-button recording" onClick={stopRecording}><Square/> Stop</button>}
+     {audioUrl&&<div className="new-recording"><small>NIEUWE OPNAME — LUISTER EERST TERUG</small><audio controls src={audioUrl}/><div><button className="discard-audio" onClick={discardRecording}><Trash2/> Opnieuw</button><button className="save-audio" onClick={saveRecording} disabled={busy}><Check/> {existing?'Vervangen & volgende':'Opslaan & volgende'}</button></div></div>}
+    </div>
+   </>:<div className="audio-empty">Geen resultaten gevonden.</div>}
+  </section>
  </div>
 }
-
 function App(){
  const[session,setSession]=useState(null),[authReady,setAuthReady]=useState(false),[profile,setProfile]=useState(null),[cloudProgress,setCloudProgress]=useState({}),[cloudGame,setCloudGame]=useState({});
  const[tab,setTab]=useState('today'),[mode,setMode]=useState('family'),[selectedLesson,setSelectedLesson]=useState(null);
