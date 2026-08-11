@@ -101,7 +101,12 @@ function SentenceBuilder({game}){
  if(!s)return null;
  const coachType=coachMessage?.type||'think'; const coachSrc=COACH_IMAGES[coachType]||COACH_IMAGES.think;
 
- return <section className={`game-card sentence-builder-v2 sentence-builder-v29 ${answer.length>3?'has-many-words':'has-three-words'}`} style={{'--word-count':Math.max(1,answer.length)}}>
+ const sentenceWords=(s.spoken||s.latin||'').trim().split(/\s+/).filter(Boolean);
+ const sentenceChars=sentenceWords.join('').length;
+ const longestWord=Math.max(1,...sentenceWords.map(w=>w.length));
+ const tileFontSize=sentenceChars<=16&&longestWord<=8?18:sentenceChars<=24&&longestWord<=10?16:sentenceChars<=34&&longestWord<=12?14:12;
+
+ return <section className={`game-card sentence-builder-v2 sentence-builder-v29 ${answer.length>3?'has-many-words':'has-three-words'}`} style={{'--word-count':Math.max(1,answer.length),'--sentence-tile-font':`${tileFontSize}px`}}>
    <div className="builder-v29-head">
      <div className="builder-v29-title">
        <small>🧩 BOUW DE ZIN <span className="builder-xp-inline">+20 XP</span></small>

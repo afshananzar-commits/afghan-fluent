@@ -2506,3 +2506,61 @@
     font-size:12px!important;
   }
 }
+
+
+/* =========================================================
+   SENTENCE BUILDER v44 — consistente woordtypografie
+   De hele zin bepaalt één lettergrootte voor alle woordtegels.
+   ========================================================= */
+
+/* Alle woorden gebruiken dezelfde app-typografie en staan exact gecentreerd. */
+.sentence-builder-v29 .builder-v29-bank .sentence-tile,
+.sentence-builder-v29 .builder-v29-slots .answer-slot .sentence-tile{
+  font-family:'DM Sans',sans-serif!important;
+  font-size:var(--sentence-tile-font,16px)!important;
+  font-weight:700!important;
+  line-height:1!important;
+  letter-spacing:-.015em!important;
+  text-align:center!important;
+  justify-content:center!important;
+  align-items:center!important;
+  white-space:nowrap!important;
+}
+
+/* Ook de daadwerkelijke tekst-span krijgt volledige centrering. */
+.sentence-builder-v29 .builder-v29-bank .sentence-tile>span,
+.sentence-builder-v29 .builder-v29-slots .answer-slot .sentence-tile>span{
+  display:flex!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+/* Dezelfde grootte geldt voor woorden vóór én na plaatsing. */
+@media(max-width:620px){
+  .sentence-builder-v29 .builder-v29-bank .sentence-tile,
+  .sentence-builder-v29 .builder-v29-slots .answer-slot .sentence-tile{
+    font-size:var(--sentence-tile-font,16px)!important;
+  }
+
+  /* Verwijder oudere mobiele regels die individuele tegels kleiner maakten.
+     De JS-berekening houdt nu rekening met de lengte van de complete zin. */
+  .sentence-builder-v29 .builder-v29-bank .sentence-tile{
+    padding-left:4px!important;
+    padding-right:4px!important;
+  }
+}
+
+@media(max-width:390px){
+  .sentence-builder-v29 .builder-v29-bank .sentence-tile,
+  .sentence-builder-v29 .builder-v29-slots .answer-slot .sentence-tile{
+    font-size:calc(var(--sentence-tile-font,16px) * .92)!important;
+  }
+}
