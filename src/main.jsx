@@ -130,14 +130,16 @@ function App(){
  if(!session)return <LoginScreen onReady={setSession}/>;
  if(!profile)return <div className="auth-loading">Profiel laden…</div>;
  const displayName=profile.display_name||'Leerling';
- return <div className={`app ${mode==='kids'?'kids-mode':''}`}><DesktopRail tab={tab} go={go} streak={app.progress.streak||0} isAdmin={profile.role==='admin'}/><div className="app-stage"><TopChrome mode={mode} setMode={setModePersist} displayName={displayName}/><main>
+ const isAdmin=session?.user?.app_metadata?.role==='admin';
+ const effectiveProfile=isAdmin?{...profile,role:'admin'}:profile;
+ return <div className={`app ${mode==='kids'?'kids-mode':''}`}><DesktopRail tab={tab} go={go} streak={app.progress.streak||0} isAdmin={isAdmin}/><div className="app-stage"><TopChrome mode={mode} setMode={setModePersist} displayName={displayName}/><main>
   {tab==='today'&&<Today app={app} game={game} go={go} displayName={displayName}/>}
   {tab==='path'&&<LearningPath app={app} openLesson={l=>{setSelectedLesson(l);go('words')}}/>}
   {tab==='games'&&<Games app={app} game={game} go={go}/>}
   {tab==='words'&&<Words app={app} game={game} go={go} selectedLesson={selectedLesson} clearSelectedLesson={()=>setSelectedLesson(null)}/>}
   {tab==='sentences'&&<Sentences/>}{tab==='grammar'&&<Grammar/>}{tab==='speak'&&<SpeakPractice/>}
-  {tab==='profile'&&<Profile app={app} game={game} mode={mode} setMode={setModePersist} contentStatus={contentStatus} refreshContent={refreshContent} profile={profile} onLogout={()=>supabase.auth.signOut()}/>}
-  {tab==='admin'&&profile.role==='admin'&&<AdminPanel session={session} profile={profile}/>}
+  {tab==='profile'&&<Profile app={app} game={game} mode={mode} setMode={setModePersist} contentStatus={contentStatus} refreshContent={refreshContent} profile={effectiveProfile} onLogout={()=>supabase.auth.signOut()}/>}
+  {tab==='admin'&&isAdmin&&<AdminPanel session={session} profile={effectiveProfile}/>}
  </main><BottomNav tab={tab} go={go}/></div></div>
 }
 function Brand(){return <div className="brand"><div className="brand-arch">A</div><div><strong>Afghan Fluent</strong><span>Leer Afghaans op jouw manier</span></div></div>}
