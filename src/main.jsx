@@ -81,14 +81,11 @@ function LoginScreen({onReady}){
  const login=async e=>{e.preventDefault();setBusy(true);setError('');const raw=email.trim();const slug=raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'.').replace(/^\.+|\.+$/g,'');const loginEmail=raw.includes('@')?raw:`${slug}@users.afghan-fluent.local`;const{data,error}=await supabase.auth.signInWithPassword({email:loginEmail,password});setBusy(false);if(error)return setError('Inloggen lukt niet. Controleer je naam/e-mailadres en wachtwoord.');onReady?.(data.session)};
  return <div className="auth-shell"><div className="auth-card"><Brand/><div className="auth-coach"><img src={COACH_IMAGES.welcome} alt="Farangis"/></div><small>WELKOM TERUG</small><h1>Salaam 👋</h1><p>Log in om je eigen woorden, XP en voortgang te laden.</p><form onSubmit={login}><label>Naam of e-mailadres<input type="text" autoComplete="username" value={email} onChange={e=>setEmail(e.target.value)} required/></label><label>Wachtwoord<input type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required/></label>{error&&<div className="auth-error">{error}</div>}<button className="auth-primary" disabled={busy}>{busy?'Even laden…':'Inloggen'}</button></form></div></div>
 }
-async function loadCloudState(userId){
- const[{data:profile},{data:progress},{data:wordRows}]=await Promise.all([
-  supabase.from('profiles').select('*').eq('id',userId).maybeSingle(),
-  supabase.from('user_progress').select('*').eq('user_id',userId).maybeSingle(),
-  supabase.from('word_progress').select('word_id,status').eq('user_id',userId)
- ]);
- const known=(wordRows||[]).filter(x=>x.status==='mastered').map(x=>String(x.word_id));
- return{profile,progress:{known,streak:progress?.streak||0,lastOpen:progress?.last_active_date||null},game:{xp:progress?.xp||0}};
+async function loadCloudState(session){
+ const response=await fetch('/api/profile',{headers:{Authorization:`Bearer ${session.access_token}`},cache:'no-store'});
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok)throw new Error(data?.error||'Profiel kon niet worden geladen.');
+ return data;
 }
 function AdminPanel({session,profile}){
  const[users,setUsers]=useState([]),[name,setName]=useState(''),[password,setPassword]=useState(''),[mode,setMode]=useState('adult'),[busy,setBusy]=useState(false),[msg,setMsg]=useState('');
@@ -117,7 +114,17 @@ function App(){
  const[contentStatus,setContentStatus]=useState(()=>readJsonStorage(CONTENT_STATUS_KEY,{state:cachedContent?'cached':'bundled',lastSync:cachedContent?.syncedAt||null,vocabularyCount:vocab.length,sentenceCount:sentences.length,source:cachedContent?'OneDrive cache':'Ingebouwde reservekopie'}));
  const syncTimer=useRef(null),gameTimer=useRef(null);
  useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setAuthReady(true)});const{data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);setAuthReady(true)});return()=>subscription.unsubscribe()},[]);
- useEffect(()=>{if(!session?.user?.id){setProfile(null);return}loadCloudState(session.user.id).then(s=>{setProfile(s.profile);setCloudProgress(s.progress);setCloudGame(s.game);setMode(s.profile?.mode==='kids'?'kids':'family')})},[session?.user?.id]);
+ useEffect(()=>{
+  if(!session?.user?.id){setProfile(null);return}
+  let cancelled=false;
+  loadCloudState(session).then(s=>{if(cancelled)return;setProfile(s.profile);setCloudProgress(s.progress||{});setCloudGame(s.game||{});setMode(s.profile?.mode==='kids'?'kids':'family')}).catch(error=>{
+   console.error('Profiel laden mislukt',error);
+   if(cancelled)return;
+   const fallbackRole=session.user.app_metadata?.role==='admin'?'admin':'user';
+   setProfile({id:session.user.id,display_name:session.user.user_metadata?.display_name||session.user.email?.split('@')[0]||'Leerling',role:fallbackRole,mode:'adult',is_active:true,_loadError:error.message});
+  });
+  return()=>{cancelled=true};
+ },[session?.user?.id]);
  const queueProgress=p=>{if(!session?.user?.id)return;clearTimeout(syncTimer.current);syncTimer.current=setTimeout(async()=>{const known=new Set((p.known||[]).map(String));await supabase.from('user_progress').upsert({user_id:session.user.id,streak:p.streak||0,last_active_date:p.lastOpen||dayKey(),updated_at:new Date().toISOString()});if(known.size){await supabase.from('word_progress').upsert([...known].map(id=>({user_id:session.user.id,word_id:Number(id),status:'mastered',updated_at:new Date().toISOString()})),{onConflict:'user_id,word_id'})}},450)};
  const queueGame=g=>{if(!session?.user?.id)return;clearTimeout(gameTimer.current);gameTimer.current=setTimeout(()=>supabase.from('user_progress').upsert({user_id:session.user.id,xp:g.xp||0,level:Math.floor((g.xp||0)/500)+1,updated_at:new Date().toISOString()}),450)};
  const app=useAppState(session?.user?.id,cloudProgress,queueProgress),game=useGameState(session?.user?.id,cloudGame,queueGame);
@@ -130,16 +137,14 @@ function App(){
  if(!session)return <LoginScreen onReady={setSession}/>;
  if(!profile)return <div className="auth-loading">Profiel laden…</div>;
  const displayName=profile.display_name||'Leerling';
- const isAdmin=session?.user?.app_metadata?.role==='admin';
- const effectiveProfile=isAdmin?{...profile,role:'admin'}:profile;
- return <div className={`app ${mode==='kids'?'kids-mode':''}`}><DesktopRail tab={tab} go={go} streak={app.progress.streak||0} isAdmin={isAdmin}/><div className="app-stage"><TopChrome mode={mode} setMode={setModePersist} displayName={displayName}/><main>
+ return <div className={`app ${mode==='kids'?'kids-mode':''}`}><DesktopRail tab={tab} go={go} streak={app.progress.streak||0} isAdmin={profile.role==='admin'}/><div className="app-stage"><TopChrome mode={mode} setMode={setModePersist} displayName={displayName}/><main>
   {tab==='today'&&<Today app={app} game={game} go={go} displayName={displayName}/>}
   {tab==='path'&&<LearningPath app={app} openLesson={l=>{setSelectedLesson(l);go('words')}}/>}
   {tab==='games'&&<Games app={app} game={game} go={go}/>}
   {tab==='words'&&<Words app={app} game={game} go={go} selectedLesson={selectedLesson} clearSelectedLesson={()=>setSelectedLesson(null)}/>}
   {tab==='sentences'&&<Sentences/>}{tab==='grammar'&&<Grammar/>}{tab==='speak'&&<SpeakPractice/>}
-  {tab==='profile'&&<Profile app={app} game={game} mode={mode} setMode={setModePersist} contentStatus={contentStatus} refreshContent={refreshContent} profile={effectiveProfile} onLogout={()=>supabase.auth.signOut()}/>}
-  {tab==='admin'&&isAdmin&&<AdminPanel session={session} profile={effectiveProfile}/>}
+  {tab==='profile'&&<Profile app={app} game={game} mode={mode} setMode={setModePersist} contentStatus={contentStatus} refreshContent={refreshContent} profile={profile} onLogout={()=>supabase.auth.signOut()}/>}
+  {tab==='admin'&&profile.role==='admin'&&<AdminPanel session={session} profile={profile}/>}
  </main><BottomNav tab={tab} go={go}/></div></div>
 }
 function Brand(){return <div className="brand"><div className="brand-arch">A</div><div><strong>Afghan Fluent</strong><span>Leer Afghaans op jouw manier</span></div></div>}
