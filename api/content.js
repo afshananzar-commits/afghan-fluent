@@ -35,7 +35,7 @@ async function downloadWorkbook(shareUrl){
       if(!looksZip && type.includes('text/html')) throw new Error('OneDrive gaf een webpagina terug in plaats van het Excel-bestand. Controleer of delen op “Iedereen met de link” staat.');
       if(buffer.length < 1000) throw new Error('Het opgehaalde Excel-bestand is onverwacht klein.');
       return buffer;
-    }catch(error){ lastError = error; }
+    }catch(error){ console.error('ONEDRIVE_CANDIDATE_FAILED',{url,error:error?.message}); lastError = error; }
   }
   throw lastError || new Error('Excel kon niet worden gedownload.');
 }
@@ -54,6 +54,7 @@ export default async function handler(req, res){
     const version = createHash('sha256').update(JSON.stringify([vocabulary,sentences])).digest('hex').slice(0,20);
     res.status(200).json({source:'OneDrive Excel',syncedAt:new Date().toISOString(),version,vocabulary,sentences});
   }catch(error){
+    console.error('CONTENT_API_ERROR', error);
     res.status(502).json({error:error?.message || 'Synchronisatie met OneDrive mislukt.'});
   }
 }
