@@ -433,153 +433,121 @@ const AFGHAN_FACTS=[
 ];
 
 function KiteAdventure({onExit}){
- const canvasRef=useRef(null),rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(0),keysRef=useRef({left:false,right:false,action:false}),prevActionRef=useRef(false);
- const playerRef=useRef({x:120,y:620,w:52,h:70,vx:0,vy:0,onGround:false,invuln:0}),melonsRef=useRef([]),collectedRef=useRef(new Set());
- const[phase,setPhase]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[fact,setFact]=useState(null),[collected,setCollected]=useState(0),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0);
+ const WORLD_W=1000,WORLD_H=720;
+ const rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(1.4),keysRef=useRef({left:false,right:false}),actionLatchRef=useRef(false);
+ const playerRef=useRef({x:82,y:590,w:68,h:94,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:0});
+ const melonsRef=useRef([]),collectedRef=useRef(new Set()),phaseRef=useRef('select'),secondsRef=useRef(60),factsRef=useRef([]),lastPaintRef=useRef(0);
+ const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[frame,setFrame]=useState({player:{x:82,y:590,pose:'idle',dir:1},melons:[]});
+ const setPhase=p=>{phaseRef.current=p;setPhaseState(p)};
 
  const platforms=useMemo(()=>[
-  {x1:28,x2:972,y:700,kind:'street'},
-  {x1:88,x2:410,y:560,kind:'roof'},{x1:545,x2:950,y:560,kind:'roof'},
-  {x1:40,x2:330,y:420,kind:'roof'},{x1:440,x2:755,y:420,kind:'roof'},
-  {x1:180,x2:525,y:280,kind:'roof'},{x1:650,x2:960,y:280,kind:'roof'},
-  {x1:55,x2:355,y:145,kind:'roof'},{x1:520,x2:850,y:145,kind:'roof'}
+  {id:'ground',x1:28,x2:972,y:684,kind:'courtyard'},
+  {id:'l1a',x1:45,x2:430,y:548,kind:'roof'},{id:'l1b',x1:535,x2:960,y:548,kind:'roof'},
+  {id:'l2a',x1:125,x2:620,y:405,kind:'terrace'},{id:'l2b',x1:708,x2:958,y:405,kind:'balcony'},
+  {id:'l3a',x1:42,x2:350,y:260,kind:'roof'},{id:'l3b',x1:430,x2:842,y:260,kind:'bridge'},
+  {id:'topa',x1:150,x2:545,y:118,kind:'balcony'},{id:'topb',x1:655,x2:962,y:118,kind:'roof'}
  ],[]);
- const stairFlights=useMemo(()=>[
-  {x:282,yBottom:700,yTop:560,dir:1,steps:7,w:36},
-  {x:82,yBottom:560,yTop:420,dir:1,steps:7,w:34},
-  {x:266,yBottom:420,yTop:280,dir:1,steps:7,w:34},
-  {x:204,yBottom:280,yTop:145,dir:1,steps:7,w:34},
-  {x:698,yBottom:560,yTop:420,dir:1,steps:7,w:34},
-  {x:674,yBottom:420,yTop:280,dir:1,steps:7,w:34},
-  {x:748,yBottom:280,yTop:145,dir:1,steps:7,w:34}
+ const ladders=useMemo(()=>[
+  {id:'lad1',x:270,top:548,bottom:684,w:48},
+  {id:'lad2',x:578,top:405,bottom:548,w:48},
+  {id:'lad3',x:205,top:260,bottom:405,w:48},
+  {id:'lad4',x:758,top:118,bottom:260,w:48}
  ],[]);
- const stairSurfaces=useMemo(()=>stairFlights.flatMap(f=>{
-  const rise=(f.yBottom-f.yTop)/f.steps;
-  return Array.from({length:f.steps},(_,i)=>({x1:f.x+i*f.w*f.dir,x2:f.x+(i+1)*f.w*f.dir,y:f.yBottom-(i+1)*rise,step:true}));
- }),[stairFlights]);
- const surfaces=useMemo(()=>[...platforms,...stairSurfaces],[platforms,stairSurfaces]);
  const kites=useMemo(()=>[
-  {id:1,x:900,y:510},{id:2,x:82,y:370},{id:3,x:805,y:92}
+  {id:1,x:900,y:485},{id:2,x:80,y:198},{id:3,x:900,y:58}
  ],[]);
  const facts=useMemo(()=>shuffle(AFGHAN_FACTS).slice(0,3),[roundSeed]);
+ useEffect(()=>{factsRef.current=facts},[facts]);
+ useEffect(()=>{secondsRef.current=seconds},[seconds]);
+ useEffect(()=>{phaseRef.current=phase},[phase]);
 
- const resetPlayer=()=>{playerRef.current={x:118,y:625,w:52,h:70,vx:0,vy:0,onGround:false,invuln:1.05}};
- const startRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=.7;setCollected(0);setSeconds(60);setFact(null);setHitNote(false);resetPlayer();setPhase('playing')};
- const restart=()=>{setRoundSeed(s=>s+1);startRound()};
- const finish=()=>{setPhase('done');keysRef.current={left:false,right:false,action:false}};
- const playFact=f=>{if(f)speak(`${f.title}. ${f.text}`,.9)};
+ const sprite=(pose)=>`/images/game-v8/${character}-${pose}.png`;
+ const resetPlayer=()=>{playerRef.current={x:82,y:590,w:68,h:94,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:1.0}};
+ const resetRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=1.2;keysRef.current={left:false,right:false};actionLatchRef.current=false;setCollected(0);setSeconds(60);secondsRef.current=60;setFact(null);setHitNote(false);resetPlayer();setFrame({player:{x:82,y:590,pose:'idle',dir:1},melons:[]})};
+ const startRound=()=>{resetRound();setPhase('playing')};
+ const restart=()=>{setRoundSeed(v=>v+1);resetRound();setPhase('playing')};
+ const finish=()=>{keysRef.current={left:false,right:false};setPhase('done')};
+ const togglePause=()=>{if(phaseRef.current==='playing')setPhase('paused');else if(phaseRef.current==='paused')setPhase('playing')};
+ const playFact=f=>f&&speak(`${f.title}. ${f.text}`,.9);
  const continueFromFact=()=>{setFact(null);setPhase(collectedRef.current.size>=3?'done':'playing')};
 
- useEffect(()=>{if(phase!=='playing')return;const t=setInterval(()=>setSeconds(s=>{if(s<=1){setPhase('done');return 0}return s-1}),1000);return()=>clearInterval(t)},[phase]);
+ useEffect(()=>{if(phase!=='playing')return;const timer=setInterval(()=>setSeconds(s=>{const n=Math.max(0,s-1);secondsRef.current=n;if(n===0)setPhase('done');return n}),1000);return()=>clearInterval(timer)},[phase]);
 
  useEffect(()=>{
-  const canvas=canvasRef.current;if(!canvas)return;const ctx=canvas.getContext('2d');const DPR=Math.min(2,window.devicePixelRatio||1);canvas.width=1000*DPR;canvas.height=760*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+  const keyDown=e=>{if(['ArrowLeft','a','A'].includes(e.key))keysRef.current.left=true;if(['ArrowRight','d','D'].includes(e.key))keysRef.current.right=true;if(['ArrowUp',' ','w','W'].includes(e.key)){e.preventDefault();actionLatchRef.current=true}};
+  const keyUp=e=>{if(['ArrowLeft','a','A'].includes(e.key))keysRef.current.left=false;if(['ArrowRight','d','D'].includes(e.key))keysRef.current.right=false};
+  window.addEventListener('keydown',keyDown);window.addEventListener('keyup',keyUp);return()=>{window.removeEventListener('keydown',keyDown);window.removeEventListener('keyup',keyUp)}
+ },[]);
 
-  const supportY=(x,bottom,prevBottom)=>{
-   let best=null;
-   for(const p of surfaces){const left=Math.min(p.x1,p.x2),right=Math.max(p.x1,p.x2);if(x>=left-8&&x<=right+8&&prevBottom<=p.y+7&&bottom>=p.y){if(best===null||p.y<best)best=p.y}}
-   return best;
+ useEffect(()=>{
+  const supportAt=(cx,bottom,prevBottom)=>{let best=null;for(const pl of platforms){if(cx>=pl.x1-5&&cx<=pl.x2+5&&prevBottom<=pl.y+8&&bottom>=pl.y){if(best===null||pl.y<best)best=pl.y}}return best};
+  const ladderCandidate=(p)=>{const cx=p.x+p.w/2,feet=p.y+p.h;return ladders.find(l=>Math.abs(cx-l.x)<54&&(Math.abs(feet-l.bottom)<30||Math.abs(feet-l.top)<30||p.mode==='climb'&&Math.abs(cx-l.x)<62))};
+  const startAction=()=>{
+   if(phaseRef.current!=='playing')return;const p=playerRef.current;if(p.mode==='climb')return;const l=ladderCandidate(p);const feet=p.y+p.h;
+   if(l){const fromBottom=Math.abs(feet-l.bottom)<=Math.abs(feet-l.top);p.mode='climb';p.vx=0;p.vy=0;p.x=l.x-p.w/2;p.climbTarget=fromBottom?l.top-p.h:l.bottom-p.h;return}
+   if(p.onGround){p.vy=-470;p.onGround=false}
   };
-  const melonSupport=(m,prevBottom)=>{
-   let y=null;
-   for(const p of platforms){if(m.x>=p.x1+m.r*.12&&m.x<=p.x2-m.r*.12&&prevBottom<=p.y+5&&m.y+m.r>=p.y){if(y===null||p.y<y)y=p.y}}
-   return y;
+  const updateMelons=(dt,elapsed)=>{
+   const spawnEvery=Math.max(1.9,4.3-elapsed*.042),speed=115+elapsed*1.6;spawnRef.current-=dt;
+   if(spawnRef.current<=0){const fromLeft=elapsed>24&&Math.random()>.58;melonsRef.current.push({id:`m${Date.now()}${Math.random()}`,x:fromLeft?182:900,y:78,r:30,vx:fromLeft?speed:-speed,vy:0,rot:0});spawnRef.current=spawnEvery*(.82+Math.random()*.35)}
+   melonsRef.current.forEach(m=>{const prevBottom=m.y+m.r;m.vy+=930*dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.vx*dt/Math.max(1,m.r);let support=null;for(const pl of platforms){if(m.x>=pl.x1+m.r*.15&&m.x<=pl.x2-m.r*.15&&prevBottom<=pl.y+7&&m.y+m.r>=pl.y){if(support===null||pl.y<support)support=pl.y}}if(support!==null&&m.vy>=0){m.y=support-m.r;m.vy=0}if(m.x<20){m.x=20;m.vx=Math.abs(m.vx)}if(m.x>980){m.x=980;m.vx=-Math.abs(m.vx)}});
+   melonsRef.current=melonsRef.current.filter(m=>m.y<WORLD_H+100);
   };
-  const rr=(x,y,w,h,r,fill,stroke=null)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}};
-  const line=(x1,y1,x2,y2,color,width=1)=>{ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()};
-
-  const drawBackground=()=>{
-   const sky=ctx.createLinearGradient(0,0,0,760);sky.addColorStop(0,'#93c5da');sky.addColorStop(.34,'#cce0da');sky.addColorStop(.62,'#ead8b6');sky.addColorStop(1,'#c89f72');ctx.fillStyle=sky;ctx.fillRect(0,0,1000,760);
-   const sun=ctx.createRadialGradient(842,78,10,842,78,190);sun.addColorStop(0,'rgba(255,249,212,.98)');sun.addColorStop(.22,'rgba(255,226,157,.52)');sun.addColorStop(1,'rgba(255,222,158,0)');ctx.fillStyle=sun;ctx.fillRect(620,0,380,300);
-   ctx.fillStyle='rgba(255,255,255,.54)';[[120,78,58],[178,68,43],[238,88,54],[760,72,55],[822,62,42],[900,86,58]].forEach(([x,y,r])=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()});
-   const ridge=(pts,c1,c2,base=360)=>{const g=ctx.createLinearGradient(0,100,0,base);g.addColorStop(0,c1);g.addColorStop(1,c2);ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,base);pts.forEach(([x,y])=>ctx.lineTo(x,y));ctx.lineTo(1000,base);ctx.closePath();ctx.fill()};
-   ridge([[0,290],[70,230],[125,185],[190,240],[260,160],[330,226],[404,130],[478,214],[565,120],[640,198],[725,110],[802,190],[885,122],[1000,212]],'#8fa2a4','#6c7d79',380);
-   ridge([[0,350],[95,252],[165,318],[255,212],[360,322],[470,218],[590,330],[710,225],[820,320],[925,220],[1000,286]],'#6b8076','#53695d',405);
-   ctx.fillStyle='rgba(249,247,234,.94)';[[404,130,44],[565,120,46],[725,110,48],[885,122,42],[260,160,34]].forEach(([x,y,w])=>{ctx.beginPath();ctx.moveTo(x-w,y+58);ctx.lineTo(x,y);ctx.lineTo(x+w,y+60);ctx.lineTo(x+w*.48,y+40);ctx.lineTo(x+w*.12,y+50);ctx.lineTo(x-w*.16,y+36);ctx.lineTo(x-w*.52,y+50);ctx.closePath();ctx.fill()});
-   const haze=ctx.createLinearGradient(0,250,0,540);haze.addColorStop(0,'rgba(244,228,203,.22)');haze.addColorStop(1,'rgba(212,184,146,.8)');ctx.fillStyle=haze;ctx.fillRect(0,250,1000,300);
-   const city=[];for(let i=0;i<20;i++){const x=i*52-15,w=40+(i%3)*11,h=75+(i*29)%120,y=500-h;city.push([x,y,w,h])}
-   city.forEach((b,i)=>{const g=ctx.createLinearGradient(0,b[1],0,b[1]+b[3]);g.addColorStop(0,i%4===0?'#dfc9aa':i%4===1?'#cdb28f':i%4===2?'#d8bea0':'#c2a17c');g.addColorStop(1,'#a98763');ctx.fillStyle=g;ctx.fillRect(...b);ctx.fillStyle='rgba(47,68,58,.30)';for(let yy=b[1]+16;yy<b[1]+b[3]-9;yy+=24)for(let xx=b[0]+9;xx<b[0]+b[2]-7;xx+=17){ctx.beginPath();ctx.roundRect(xx,yy,5,8,2);ctx.fill()}});
-   ctx.fillStyle='#678b85';ctx.beginPath();ctx.arc(482,430,28,Math.PI,0);ctx.fill();ctx.fillRect(454,430,56,20);ctx.fillStyle='#b68d63';ctx.fillRect(445,450,74,56);
-   ctx.fillStyle='#718f89';ctx.fillRect(530,344,7,136);ctx.beginPath();ctx.arc(533.5,342,9,Math.PI,0);ctx.fill();ctx.beginPath();ctx.arc(533.5,328,4,0,Math.PI*2);ctx.fill();
-   ctx.fillStyle='#4e7457';for(let i=0;i<34;i++){const x=8+i*31+(i%3)*6,y=520+(i%4)*4;ctx.beginPath();ctx.arc(x,y,8+(i%4)*2,0,Math.PI*2);ctx.fill()}
-  };
-
-  const drawBuilding=(b)=>{
-   const {x,y,w,h,tone=0,accent=false}=b;const palette=[['#d9bd91','#b4885f'],['#dfc79d','#b7966b'],['#d3b182','#a67c55'],['#e4cfac','#b89a72']][tone%4];
-   const g=ctx.createLinearGradient(x,y,x,y+h);g.addColorStop(0,palette[0]);g.addColorStop(1,palette[1]);rr(x,y,w,h,7,g);
-   ctx.fillStyle='rgba(82,58,39,.075)';for(let yy=y+18;yy<y+h-8;yy+=27)for(let xx=x+14+(yy%2?9:0);xx<x+w-12;xx+=39)rr(xx,yy,24,3,2,'rgba(82,58,39,.075)');
-   for(let wx=x+20;wx<x+w-20;wx+=62){const wy=y+34+((wx/10)%2)*10;ctx.fillStyle='#6f7d69';ctx.beginPath();ctx.arc(wx+8,wy+7,8,Math.PI,0);ctx.rect(wx,wy+7,16,24);ctx.fill();ctx.fillStyle='rgba(209,224,211,.24)';ctx.fillRect(wx+4,wy+7,3,10)}
-   if(accent){rr(x+18,y+12,Math.min(92,w-36),15,2,'#8c4339');ctx.strokeStyle='#e0ad67';ctx.lineWidth=1.2;for(let i=0;i<70&&i<w-50;i+=14){ctx.beginPath();ctx.moveTo(x+24+i,y+15);ctx.lineTo(x+30+i,y+24);ctx.moveTo(x+30+i,y+15);ctx.lineTo(x+24+i,y+24);ctx.stroke()}}
-  };
-  const drawArchitecture=()=>{
-   ctx.save();
-   const buildings=[
-    {x:-18,y:420,w:180,h:280,tone:1,accent:true},{x:170,y:515,w:190,h:185,tone:3},{x:378,y:560,w:150,h:140,tone:0,accent:true},{x:548,y:420,w:175,h:280,tone:2},{x:740,y:505,w:278,h:195,tone:1,accent:true},
-    {x:42,y:280,w:146,h:140,tone:0},{x:205,y:280,w:126,h:140,tone:2,accent:true},{x:440,y:280,w:160,h:140,tone:3},{x:626,y:280,w:134,h:140,tone:0,accent:true},{x:806,y:280,w:174,h:140,tone:2},
-    {x:178,y:145,w:180,h:135,tone:1,accent:true},{x:520,y:145,w:155,h:135,tone:3},{x:690,y:145,w:172,h:135,tone:1,accent:true}
-   ];
-   buildings.forEach(drawBuilding);
-   // carved doors and balcony details
-   const door=(x,y,w=38,h=58)=>{rr(x,y,w,h,5,'#40594d');ctx.strokeStyle='#c28d58';ctx.lineWidth=3;ctx.strokeRect(x+6,y+6,w-12,h-12);ctx.fillStyle='#d6a76f';ctx.beginPath();ctx.arc(x+w-9,y+h/2,2,0,Math.PI*2);ctx.fill()};
-   door(48,626,42,60);door(610,625,40,61);door(865,630,42,56);
-   rr(390,560,128,22,3,'#6e4a33');ctx.fillStyle='#8d493e';ctx.fillRect(397,565,114,12);ctx.strokeStyle='#dda967';for(let x=402;x<505;x+=18){ctx.beginPath();ctx.moveTo(x,567);ctx.lineTo(x+8,575);ctx.moveTo(x+8,567);ctx.lineTo(x,575);ctx.stroke()}
-   // open courtyard arch
-   ctx.fillStyle='#6f8f87';ctx.beginPath();ctx.arc(484,560,34,Math.PI,0);ctx.fill();ctx.fillRect(450,560,68,56);ctx.fillStyle='#9e7855';ctx.beginPath();ctx.arc(484,562,23,Math.PI,0);ctx.fill();ctx.fillRect(461,562,46,54);
-   // balcony pergola and greenery
-   ctx.fillStyle='#64432f';ctx.fillRect(676,152,6,120);ctx.fillRect(820,152,6,120);ctx.fillRect(670,158,160,7);rr(671,247,158,9,5,'rgba(45,86,52,.72)');
-   const pot=(x,y,s=1)=>{rr(x-9*s,y,18*s,13*s,3*s,'#9b6847');ctx.fillStyle='#4d724f';ctx.beginPath();ctx.arc(x,y-8*s,13*s,0,Math.PI*2);ctx.fill();ctx.fillStyle='#79986d';ctx.beginPath();ctx.arc(x-8*s,y-13*s,7*s,0,Math.PI*2);ctx.arc(x+8*s,y-13*s,7*s,0,Math.PI*2);ctx.fill()};
-   [[120,410,1],[300,550,.9],[578,410,1],[715,270,.9],[840,550,1],[322,270,.8],[792,136,1],[936,270,.8]].forEach(([x,y,s])=>pot(x,y,s));
-   // solar panel + rooftop water tank: subtle modern-Afghanistan details
-   ctx.save();ctx.translate(570,124);ctx.rotate(-.07);rr(0,0,72,30,3,'#375c69','#89a9ad');ctx.strokeStyle='#89a9ad';ctx.lineWidth=1;for(let x=12;x<68;x+=14)line(x,2,x,28,'#89a9ad',1);for(let y=10;y<28;y+=9)line(2,y,70,y,'#89a9ad',1);ctx.restore();
-   rr(885,224,34,43,10,'#a9774f');rr(879,221,46,7,3,'#775136');
-   ctx.restore();
-  };
-
-  const drawPlatform=p=>{
-   if(p.kind==='street'){
-    const g=ctx.createLinearGradient(0,p.y-5,0,p.y+26);g.addColorStop(0,'#b58a5b');g.addColorStop(.4,'#8c623f');g.addColorStop(1,'#66452f');rr(p.x1,p.y-5,p.x2-p.x1,24,5,g);ctx.fillStyle='rgba(255,230,183,.5)';ctx.fillRect(p.x1+4,p.y-4,p.x2-p.x1-8,3);return;
+  const update=dt=>{
+   if(phaseRef.current!=='playing')return;const p=playerRef.current,keys=keysRef.current,prevBottom=p.y+p.h;
+   if(p.invuln>0)p.invuln-=dt;if(actionLatchRef.current){actionLatchRef.current=false;startAction()}
+   if(p.mode==='climb'){
+    const target=p.climbTarget??p.y;const delta=target-p.y;const step=Math.sign(delta)*190*dt;if(Math.abs(delta)<=Math.abs(step)+2){p.y=target;p.mode='normal';p.climbTarget=null;p.vy=0;p.onGround=true}else p.y+=step;
+   }else{
+    if(keys.left&&!keys.right){p.vx=-235;p.dir=-1}else if(keys.right&&!keys.left){p.vx=235;p.dir=1}else p.vx*=Math.pow(.001,dt);
+    p.vy+=980*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const bottom=p.y+p.h;const support=supportAt(p.x+p.w/2,bottom,prevBottom);if(p.vy>=0&&support!==null){p.y=support-p.h;p.vy=0;p.onGround=true}else p.onGround=false;
    }
-   const g=ctx.createLinearGradient(0,p.y-6,0,p.y+20);g.addColorStop(0,'#d7aa68');g.addColorStop(.25,'#b87941');g.addColorStop(.66,'#86512f');g.addColorStop(1,'#5b3827');rr(p.x1,p.y-6,p.x2-p.x1,20,5,g);ctx.fillStyle='rgba(255,231,180,.68)';ctx.fillRect(p.x1+4,p.y-5,p.x2-p.x1-8,3);ctx.strokeStyle='rgba(63,39,26,.45)';ctx.lineWidth=1.2;for(let x=p.x1+28;x<p.x2-10;x+=46){ctx.beginPath();ctx.moveTo(x,p.y-1);ctx.lineTo(x-9,p.y+12);ctx.stroke()}
+   p.x=Math.max(5,Math.min(WORLD_W-p.w-5,p.x));if(p.y>WORLD_H+80)resetPlayer();
+   const elapsed=60-secondsRef.current;updateMelons(dt,elapsed);
+   const pcx=p.x+p.w/2,pcy=p.y+p.h/2;
+   for(const m of melonsRef.current){if(p.invuln<=0&&Math.hypot(pcx-m.x,pcy-m.y)<m.r+30){setHitNote(true);window.setTimeout(()=>setHitNote(false),950);resetPlayer();break}}
+   for(const k of kites){if(collectedRef.current.has(k.id))continue;if(Math.hypot(pcx-k.x,pcy-k.y)<63){collectedRef.current.add(k.id);const n=collectedRef.current.size;setCollected(n);setFact(factsRef.current[n-1]||factsRef.current[0]);keysRef.current={left:false,right:false};setPhase('fact');break}}
   };
-  const drawStairs=()=>{
-   stairFlights.forEach(f=>{const rise=(f.yBottom-f.yTop)/f.steps;for(let i=0;i<f.steps;i++){const x=f.x+i*f.w*f.dir,y=f.yBottom-(i+1)*rise;const g=ctx.createLinearGradient(0,y,0,y+rise+18);g.addColorStop(0,'#c99b61');g.addColorStop(1,'#7f5738');rr(x,y,f.w+3,rise+15,2,g);ctx.fillStyle='rgba(255,228,178,.65)';ctx.fillRect(x+2,y+1,f.w-1,3);ctx.strokeStyle='rgba(78,47,30,.30)';ctx.strokeRect(x,y,f.w+3,rise+15)}})
+  const paint=time=>{
+   const dt=Math.min(.03,(time-lastRef.current)/1000||.016);lastRef.current=time;update(dt);
+   if(time-lastPaintRef.current>33){lastPaintRef.current=time;const p=playerRef.current;let pose='idle';if(p.mode==='climb')pose='climb';else if(!p.onGround)pose='jump';else if(Math.abs(p.vx)>35)pose='run';setFrame({player:{x:p.x,y:p.y,pose,dir:p.dir,invuln:p.invuln},melons:melonsRef.current.map(m=>({...m}))})}
+   rafRef.current=requestAnimationFrame(paint)
   };
-  const drawKite=k=>{if(collectedRef.current.has(k.id))return;const bob=Math.sin(performance.now()/520+k.id)*4;ctx.save();ctx.translate(k.x,k.y+bob);ctx.rotate(-.10+Math.sin(performance.now()/800+k.id)*.025);const glow=ctx.createRadialGradient(0,0,5,0,0,55);glow.addColorStop(0,'rgba(255,240,145,.78)');glow.addColorStop(1,'rgba(255,230,115,0)');ctx.fillStyle=glow;ctx.fillRect(-60,-60,120,120);ctx.shadowColor='#f5d661';ctx.shadowBlur=20;ctx.fillStyle='#1f5037';ctx.beginPath();ctx.moveTo(0,-30);ctx.lineTo(27,0);ctx.lineTo(0,31);ctx.lineTo(-27,0);ctx.closePath();ctx.fill();ctx.fillStyle='#df8b37';ctx.beginPath();ctx.moveTo(0,-30);ctx.lineTo(27,0);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.fillStyle='#c94a3a';ctx.beginPath();ctx.moveTo(-27,0);ctx.lineTo(0,31);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.fillStyle='#edc04f';ctx.beginPath();ctx.moveTo(0,-30);ctx.lineTo(-27,0);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#5a3e2f';ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(0,31);ctx.bezierCurveTo(30,42,-14,60,16,78);ctx.stroke();ctx.fillStyle='#d66b4a';for(let y=43;y<75;y+=9){ctx.save();ctx.translate(8,y);ctx.rotate(.55);ctx.fillRect(-4,-2,8,4);ctx.restore()}ctx.restore()};
-  const drawMelon=m=>{ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.rot);ctx.shadowColor='rgba(23,43,29,.30)';ctx.shadowBlur=10;ctx.shadowOffsetY=5;const mg=ctx.createRadialGradient(-9,-12,4,0,0,m.r);mg.addColorStop(0,'#9ad15c');mg.addColorStop(.48,'#4f933f');mg.addColorStop(1,'#1f5931');ctx.fillStyle=mg;ctx.beginPath();ctx.arc(0,0,m.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#bada69';ctx.lineWidth=2.7;for(let a=-.95;a<=.95;a+=.32){ctx.beginPath();ctx.ellipse(a*6,0,4,m.r-2,a*.48,0,Math.PI*2);ctx.stroke()}ctx.fillStyle='rgba(255,255,255,.30)';ctx.beginPath();ctx.arc(-9,-10,5,0,Math.PI*2);ctx.fill();ctx.restore();if(Math.abs(m.vx)>120){ctx.strokeStyle='rgba(255,255,255,.50)';ctx.lineWidth=3;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(m.x-Math.sign(m.vx)*(m.r+10+i*10),m.y-8+i*8);ctx.lineTo(m.x-Math.sign(m.vx)*(m.r+28+i*11),m.y-8+i*8);ctx.stroke()}}};
-  const drawPlayer=p=>{ctx.save();ctx.globalAlpha=p.invuln>0&&Math.floor(p.invuln*12)%2===0?.60:1;const cx=p.x+p.w/2,base=p.y+p.h;ctx.fillStyle='rgba(27,42,31,.28)';ctx.beginPath();ctx.ellipse(cx,base+6,27,8,0,0,Math.PI*2);ctx.fill();const run=Math.abs(p.vx)>8?Math.sin(performance.now()/78)*7:0;ctx.strokeStyle='#4b3428';ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx-9,p.y+45);ctx.lineTo(cx-12-run,base);ctx.moveTo(cx+9,p.y+45);ctx.lineTo(cx+12+run,base);ctx.stroke();ctx.strokeStyle='#252321';ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(cx-17-run,base);ctx.lineTo(cx-5-run,base);ctx.moveTo(cx+5+run,base);ctx.lineTo(cx+17+run,base);ctx.stroke();ctx.fillStyle='#f7efe2';rr(cx-17,p.y+22,34,31,9,'#f7efe2');rr(cx-24,p.y+22,9,32,4,'#315b43');rr(cx+15,p.y+22,9,32,4,'#315b43');rr(cx-14,p.y+23,28,30,7,'#244c36');ctx.fillStyle='#c86f4b';ctx.fillRect(cx-2,p.y+25,4,25);ctx.fillStyle='#d7ad67';for(let yy=p.y+27;yy<p.y+48;yy+=8){ctx.fillRect(cx-10,yy,3,2);ctx.fillRect(cx+7,yy,3,2)}ctx.fillStyle='#edb17d';ctx.beginPath();ctx.arc(cx,p.y+12,15,0,Math.PI*2);ctx.fill();if(character==='girl'){ctx.fillStyle='#26221f';ctx.beginPath();ctx.arc(cx,p.y+8,18,Math.PI,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx-15,p.y+18,7,0,Math.PI*2);ctx.arc(cx+15,p.y+18,7,0,Math.PI*2);ctx.fill()}else{ctx.fillStyle='#795035';ctx.beginPath();ctx.ellipse(cx,p.y,18,8,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#c08a58';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(cx,p.y,13,4,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#26221f';ctx.beginPath();ctx.arc(cx,p.y+7,15,Math.PI,Math.PI*2);ctx.fill()}ctx.fillStyle='#2a2724';ctx.beginPath();ctx.arc(cx-5,p.y+11,1.8,0,Math.PI*2);ctx.arc(cx+5,p.y+11,1.8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#814d35';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(cx,p.y+16,5,0,Math.PI);ctx.stroke();ctx.strokeStyle='rgba(255,250,240,.96)';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(cx-26,p.y-10,52,72,20);ctx.stroke();ctx.restore()};
-  const drawForeground=()=>{ctx.strokeStyle='rgba(49,88,53,.55)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(0,744);ctx.bezierCurveTo(85,715,115,754,190,730);ctx.moveTo(1000,742);ctx.bezierCurveTo(915,715,890,753,820,730);ctx.stroke();ctx.fillStyle='#4f744f';[[18,730,20],[55,748,28],[96,734,18],[984,730,22],[948,750,29],[900,736,18]].forEach(([x,y,r])=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()});const vg=ctx.createRadialGradient(500,350,260,500,380,690);vg.addColorStop(.62,'rgba(28,39,31,0)');vg.addColorStop(1,'rgba(28,39,31,.15)');ctx.fillStyle=vg;ctx.fillRect(0,0,1000,760)};
+  rafRef.current=requestAnimationFrame(paint);return()=>cancelAnimationFrame(rafRef.current)
+ },[platforms,ladders,kites]);
 
-  const draw=()=>{drawBackground();drawArchitecture();platforms.forEach(drawPlatform);drawStairs();kites.forEach(drawKite);melonsRef.current.forEach(drawMelon);drawForeground();drawPlayer(playerRef.current);rr(18,18,116,44,18,'rgba(252,247,238,.95)');ctx.fillStyle='#274b38';ctx.font='700 18px Inter, sans-serif';ctx.fillText(`🪁 ${collectedRef.current.size}/3`,39,46);rr(846,18,136,44,18,'rgba(252,247,238,.95)');ctx.fillStyle='#274b38';ctx.fillText(`◷ ${seconds}s`,872,46)};
-  const update=(dt)=>{
-   const p=playerRef.current,k=keysRef.current;const move=205;p.vx=(k.left?-move:k.right?move:0);if(k.action&&!prevActionRef.current&&p.onGround){p.vy=-405;p.onGround=false}prevActionRef.current=k.action;
-   const prevBottom=p.y+p.h;p.vy+=720*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.x=Math.max(2,Math.min(946,p.x));if(p.vy>=0){const sy=supportY(p.x+p.w/2,p.y+p.h,prevBottom);if(sy!==null){p.y=sy-p.h;p.vy=0;p.onGround=true}else p.onGround=false}if(p.y>780)resetPlayer();if(p.invuln>0)p.invuln-=dt;
-   const elapsed=60-seconds;spawnRef.current-=dt;const interval=elapsed<18?4.2:elapsed<38?3.05:2.2;if(spawnRef.current<=0){const tier=elapsed<24?0:(Math.random()>.55?0:1);const dir=Math.random()>.5?1:-1;const y=tier===0?108:243;const x=dir>0?(tier===0?70:200):(tier===0?825:920);melonsRef.current.push({x,y,r:22,vx:dir*(105+elapsed*1.55),vy:0,rot:0});spawnRef.current=interval}
-   melonsRef.current.forEach(m=>{const prev=m.y+m.r;m.vy+=690*dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.vx*dt/24;const sy=melonSupport(m,prev);if(m.vy>=0&&sy!==null){m.y=sy-m.r;m.vy=0}if(m.x<m.r){m.x=m.r;m.vx=Math.abs(m.vx)}if(m.x>1000-m.r){m.x=1000-m.r;m.vx=-Math.abs(m.vx)}});melonsRef.current=melonsRef.current.filter(m=>m.y<820);
-   if(p.invuln<=0){for(const m of melonsRef.current){const dx=(p.x+p.w/2)-m.x,dy=(p.y+p.h/2)-m.y;if(Math.hypot(dx,dy)<m.r+20){resetPlayer();setHitNote(true);setTimeout(()=>setHitNote(false),950);break}}}
-   for(const kite of kites){if(collectedRef.current.has(kite.id))continue;const dx=(p.x+p.w/2)-kite.x,dy=(p.y+p.h/2)-kite.y;if(Math.hypot(dx,dy)<43){collectedRef.current.add(kite.id);setCollected(collectedRef.current.size);const f=facts[kite.id-1];setFact(f);setPhase('fact');setTimeout(()=>playFact(f),180);break}}
-  };
-  const loop=t=>{const dt=Math.min(.032,(t-(lastRef.current||t))/1000);lastRef.current=t;if(phase==='playing')update(dt);draw();rafRef.current=requestAnimationFrame(loop)};rafRef.current=requestAnimationFrame(loop);return()=>cancelAnimationFrame(rafRef.current)
- },[phase,seconds,character,facts,platforms,stairFlights,stairSurfaces,surfaces,kites]);
-
- const press=(key,val)=>{keysRef.current[key]=val};
- const buttonProps=key=>({onPointerDown:e=>{e.preventDefault();e.currentTarget.setPointerCapture?.(e.pointerId);press(key,true)},onPointerUp:e=>{e.preventDefault();press(key,false)},onPointerCancel:()=>press(key,false),onPointerLeave:e=>{if(e.buttons===0)press(key,false)}});
- return <section className={`kite-adventure-shell kite-v6 phase-${phase}`}>
-   <div className="kite-game-topbar"><button className="kite-exit" onClick={onExit}><X/> Stoppen</button><div className="kite-title"><small>SPELEN</small><b>Vlieger Avontuur</b></div><button className="kite-skip" onClick={finish}><SkipForward/> Overslaan</button></div>
-   <div className="kite-game-stage">
-    <canvas ref={canvasRef} className="kite-canvas" aria-label="Vlieger Avontuur spel"/>
-    <div className="kite-stage-gloss" aria-hidden="true"/>
-    {hitNote&&<div className="kite-hit-note">🍉 Oeps! Probeer de andere trap.</div>}
-    {phase==='playing'&&<div className="kite-controls kite-controls-overlay"><button {...buttonProps('left')} aria-label="Links"><ChevronLeft/></button><button {...buttonProps('right')} aria-label="Rechts"><ChevronRight/></button><button className="kite-action" {...buttonProps('action')} aria-label="Spring"><span>↑</span><small>SPRING</small></button></div>}
-    {phase==='select'&&<div className="kite-overlay kite-select"><div className="kite-panel kite-select-panel"><span className="kite-eyebrow">KIES JE AVONTURIER</span><h2>Wie gaat de vliegers zoeken?</h2><p>Vind je route via de daken en trappen. Iedere vlieger vertelt je iets nieuws over Afghanistan.</p><div className="character-choice"><button className={character==='girl'?'active':''} onClick={()=>setCharacter('girl')}><span className="character-preview girl">👧🏻</span><b>Meisje</b></button><button className={character==='boy'?'active':''} onClick={()=>setCharacter('boy')}><span className="character-preview boy">👦🏻</span><b>Jongen</b></button></div><button className="kite-start" onClick={startRound}><Play/> Start avontuur</button></div></div>}
-    {phase==='fact'&&fact&&<div className="kite-overlay kite-fact"><div className="kite-panel kite-fact-panel"><div className="kite-ribbon">Vlieger gevonden!</div><span className="fact-kite premium-kite">🪁</span><h2>Wist je dat?</h2><div className="kite-fact-divider"><i/><span>✦</span><i/></div><h3>{fact.title}</h3><p>{fact.text}</p><div className="kite-fact-actions"><button className="fact-listen" onClick={()=>playFact(fact)} aria-label="Luister naar weetje"><Volume2/></button><button className="kite-start" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div></div>}
-    {phase==='done'&&<div className="kite-overlay kite-done"><div className="kite-panel kite-done-panel"><div className="kite-ribbon done-ribbon">Mooi gespeeld!</div><div className="done-character-wrap"><span className="done-character">{character==='girl'?'👧🏻':'👦🏻'}</span></div><h2>Je avontuur is klaar</h2><p>Je hebt vandaag <b>{collected}</b> {collected===1?'nieuw weetje':'nieuwe weetjes'} over Afghanistan ontdekt.</p><div className="kite-confetti" aria-hidden="true">✦　◆　✦　◇　◆</div><div className="kite-done-actions"><button onClick={onExit}>Terug naar Spelen</button><button className="kite-start" onClick={restart}><Play/> Volgende ronde</button></div></div></div>}
-   </div>
-   {phase==='select'&&<div className="kite-howto"><span>🪁 <b>Pak 3 vliegers</b></span><span>🍉 <b>Ontwijk wat rolt</b></span><span>🪜 <b>Gebruik de trappen</b></span><span>⏱️ <b>Het wordt moeilijker</b></span></div>}
-  </section>
+ const hold=(key,value)=>e=>{e.preventDefault();keysRef.current[key]=value};
+ const action=e=>{e.preventDefault();actionLatchRef.current=true};
+ const worldStyle={aspectRatio:`${WORLD_W}/${WORLD_H}`};
+ const renderBuilding=pl=>{
+  const cls=`v8-platform v8-${pl.kind}`;const h=pl.kind==='bridge'||pl.kind==='balcony'?22:Math.min(150,WORLD_H-pl.y+8);return <div key={pl.id} className={cls} style={{left:`${pl.x1/WORLD_W*100}%`,top:`${pl.y/WORLD_H*100}%`,width:`${(pl.x2-pl.x1)/WORLD_W*100}%`,height:`${h/WORLD_H*100}%`}}><i/><b/><em/></div>
+ };
+ return <section className={`kite-v8 phase-${phase}`}>
+  <header className="v8-header">
+   <button onClick={onExit}><X/><span>Stoppen</span></button>
+   <div><small>SPELEN</small><strong>Vlieger Avontuur</strong></div>
+   <div className="v8-header-actions"><button className="v8-pause" onClick={togglePause} disabled={!['playing','paused'].includes(phase)}>{phase==='paused'?'▶':'Ⅱ'}</button><button onClick={finish}><SkipForward/><span>Overslaan</span></button></div>
+  </header>
+  <div className="v8-stage" style={worldStyle}>
+   <div className="v8-sky"/><div className="v8-sun"/><div className="v8-mountains v8-mountains-a"/><div className="v8-mountains v8-mountains-b"/><div className="v8-city-silhouette"/><div className="v8-city-haze"/>
+   {platforms.map(renderBuilding)}
+   {ladders.map(l=><div key={l.id} className="v8-ladder" style={{left:`${(l.x-l.w/2)/WORLD_W*100}%`,top:`${l.top/WORLD_H*100}%`,width:`${l.w/WORLD_W*100}%`,height:`${(l.bottom-l.top)/WORLD_H*100}%`}}><span/></div>)}
+   <div className="v8-decor rug-one"/><div className="v8-decor rug-two"/><div className="v8-decor plant-one"/><div className="v8-decor plant-two"/><div className="v8-decor solar"/><div className="v8-decor door"/>
+   {kites.map((k,i)=>!collectedRef.current.has(k.id)&&<img key={k.id} className="v8-kite" src="/images/game-v8/kite.svg" style={{left:`${(k.x-42)/WORLD_W*100}%`,top:`${(k.y-54)/WORLD_H*100}%`,animationDelay:`${i*.35}s`}}/>)}
+   {frame.melons.map(m=><img key={m.id} className="v8-melon" src="/images/game-v8/watermelon.png" style={{left:`${(m.x-m.r)/WORLD_W*100}%`,top:`${(m.y-m.r)/WORLD_H*100}%`,width:`${m.r*2/WORLD_W*100}%`,transform:`rotate(${m.rot}rad)`}}/>)}
+   <img className={`v8-player pose-${frame.player.pose}`} src={sprite(frame.player.pose)} style={{left:`${frame.player.x/WORLD_W*100}%`,top:`${frame.player.y/WORLD_H*100}%`,width:`${playerRef.current.w/WORLD_W*100}%`,opacity:frame.player.invuln>0&&Math.floor(frame.player.invuln*12)%2===0?.55:1,transform:`scaleX(${frame.player.dir<0?-1:1})`}}/>
+   <div className="v8-hud"><span><img src="/images/game-v8/kite.svg"/>{collected}/3</span><span>⏱ {String(Math.floor(seconds/60)).padStart(2,'0')}:{String(seconds%60).padStart(2,'0')}</span></div>
+   {hitNote&&<div className="v8-hit">🍉 Oeps! Probeer een andere route.</div>}
+   {phase==='playing'&&<div className="v8-controls"><div className="v8-directions"><button onPointerDown={hold('left',true)} onPointerUp={hold('left',false)} onPointerCancel={hold('left',false)} aria-label="Links"><ChevronLeft/></button><button onPointerDown={hold('right',true)} onPointerUp={hold('right',false)} onPointerCancel={hold('right',false)} aria-label="Rechts"><ChevronRight/></button></div><button className="v8-action" onPointerDown={action}><span>↑</span><small>SPRING / KLIM</small></button></div>}
+   {phase==='select'&&<div className="v8-overlay v8-select"><div className="v8-panel"><small>KIES JE AVONTURIER</small><h2>Wie gaat de vliegers zoeken?</h2><p>Pak drie vliegers, ontwijk rollende watermeloenen en vind via de ladders je route.</p><div className="v8-character-cards"><button className={character==='boy'?'selected':''} onClick={()=>setCharacter('boy')}><img src="/images/game-v8/boy-idle.png"/><b>Jongen</b></button><button className={character==='girl'?'selected':''} onClick={()=>setCharacter('girl')}><img src="/images/game-v8/girl-idle.png"/><b>Meisje</b></button></div><button className="primary-game v8-start" onClick={startRound}><Play/> Start avontuur</button><div className="v8-rules"><span>🪁 3 vliegers</span><span>🍉 Echt rollend</span><span>🪜 Ladders</span><span>🔊 Weetjes</span></div></div></div>}
+   {phase==='paused'&&<div className="v8-overlay"><div className="v8-panel v8-small"><small>PAUZE</small><h2>Even gestopt</h2><button className="primary-game" onClick={togglePause}>Verder spelen</button></div></div>}
+   {phase==='fact'&&fact&&<div className="v8-overlay"><div className="v8-panel v8-fact"><div className="v8-ribbon">Vlieger gepakt!</div><img className="v8-prize" src="/images/game-v8/kite.svg"/><small>WIST JE DAT?</small><h2>{fact.title}</h2><p>{fact.text}</p><button className="v8-listen" onClick={()=>playFact(fact)}><Volume2/> Luister naar het weetje</button><button className="primary-game" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div>}
+   {phase==='done'&&<div className="v8-overlay"><div className="v8-panel v8-done"><div className="v8-ribbon">Mooi gespeeld!</div><img src={sprite('idle')} className="v8-done-character"/><h2>Je avontuur is klaar</h2><p>Je hebt vandaag <b>{collected}</b> {collected===1?'weetje':'weetjes'} over Afghanistan ontdekt.</p><div className="v8-done-actions"><button onClick={onExit}>Terug naar Spelen</button><button className="primary-game" onClick={restart}><Play/> Volgende ronde</button></div></div></div>}
+  </div>
+ </section>
 }
 
 
-function Badges({app,game}){const a=[['Eerste stap','25 woorden',app.knownIds.size>=25,'🌱'],['Woordenkenner','100 woorden',app.knownIds.size>=100,'📚'],['Op stoom','500 XP',game.xp>=500,'⭐'],['Doorzetter','7 dagen',(app.progress.streak||0)>=7,'🔥'],['Taalheld','2500 XP',game.xp>=2500,'🏆']];return <div className="badges-grid">{a.map(([n,s,u,e])=><div key={n} className={`badge-card ${u?'unlocked':''}`}><span>{e}</span><b>{n}</b><small>{s}</small>{u&&<Medal/>}</div>)}</div>}
 function Games({app,game,go}){const[type,setType]=useState(game.game.lastGame||'sentence');const choose=t=>{setType(t);game.updateGame(g=>({...g,lastGame:t}))};return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="SPELEN & LEREN" title="Challenges" sub="Oefen kort, ontdek Afghanistan en verbeter wat nog lastig is." badge={<><Trophy/> Level {game.level}</>}/>{type!=='kite'&&<GameSummary game={game}/>}<div className="games-tabs games-tabs-minimal"><button className={type==='sentence'?'active':''} onClick={()=>choose('sentence')}><BookText/><span>Bouw de zin</span></button><button className={type==='listen'?'active':''} onClick={()=>choose('listen')}><Headphones/><span>Luisteren</span></button><button className={type==='picture'?'active':''} onClick={()=>choose('picture')}><Layers3/><span>Plaatjes</span></button><button className={type==='speed'?'active':''} onClick={()=>choose('speed')}><Zap/><span>Snelle ronde</span></button><button className={type==='kite'?'active':''} onClick={()=>choose('kite')}><Sparkles/><span>Vlieger</span></button></div>{type==='sentence'?<SentenceBuilder game={game}/>:type==='listen'?<ListeningQuiz game={game}/>:type==='picture'?<PictureQuiz game={game}/>:type==='speed'?<SpeedRound game={game}/>:<KiteAdventure onExit={()=>choose('sentence')}/>} {type!=='kite'&&<><SectionTitle title="Badges"/><Badges app={app} game={game}/></>}</div>}
 
 function Words({app,game,go,selectedLesson,clearSelectedLesson}){const[query,setQuery]=useState(''),[idx,setIdx]=useState(game.game.positions?.words||0),[revealed,setRevealed]=useState(false),[dragX,setDragX]=useState(0),[dragging,setDragging]=useState(false),start=useRef(null),[exit,setExit]=useState(null);const filtered=useMemo(()=>{const ids=selectedLesson?new Set(selectedLesson.words.map(x=>x.id)):null;return vocab.filter(v=>(!ids||ids.has(v.id))&&(!query||`${v.dutch} ${v.spoken} ${v.latin}`.toLowerCase().includes(query.toLowerCase())))},[query,selectedLesson]);const w=filtered[idx%Math.max(1,filtered.length)]||vocab[0],nextW=filtered[(idx+1)%Math.max(1,filtered.length)]||w,known=app.knownIds.has(w.id);const finish=right=>{if(exit)return;app.update(p=>{const set=new Set(p.known||[]),was=set.has(w.id);right?set.add(w.id):set.delete(w.id);return{...p,known:[...set]}});practice(game,`word:${w.id}`,right);if(right&&!known)awardXP(game,10,'woord geleerd');setExit(right?'right':'left');setDragX(right?700:-700);setTimeout(()=>{const n=(idx+1)%filtered.length;setIdx(n);remember(game,'words',n);setRevealed(false);setDragX(0);setExit(null)},270)};return <div className="screen focus-screen words-focus"><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="1000+ WOORDEN" title="Woorden" sub="Swipe rechts: Ken ik. Links: Nog oefenen." badge={<>{idx+1} / {filtered.length}</>}/>{selectedLesson&&<div className="review-banner"><div className="seal">{selectedLesson.emoji}</div><div><b>Les {selectedLesson.number} · {selectedLesson.title}</b><span>{selectedLesson.words.length} woorden</span></div><button onClick={clearSelectedLesson}><X/></button></div>}<div className="word-toolbar"><label><Search/><input value={query} onChange={e=>{setQuery(e.target.value);setIdx(0)}} placeholder="Zoek Nederlands of fonetisch…"/></label></div><div className="swipe-stage"><article className="premium-flashcard swipe-card swipe-card-under"><WordIllustration word={nextW}/></article><article className="premium-flashcard swipe-card swipe-card-top" style={{transform:`translateX(${dragX}px) rotate(${dragX/24}deg)`,transition:dragging?'none':'transform .27s'}} onPointerDown={e=>{start.current=e.clientX;setDragging(true)}} onPointerMove={e=>{if(start.current!==null)setDragX(Math.max(-220,Math.min(220,e.clientX-start.current)))}} onPointerUp={()=>{setDragging(false);start.current=null;if(Math.abs(dragX)>85)finish(dragX>0);else setDragX(0)}} onClick={()=>Math.abs(dragX)<8&&setRevealed(r=>!r)}><div className={`swipe-stamp learn ${dragX<-25?'show':''}`}>NOG OEFENEN</div><div className={`swipe-stamp know ${dragX>25?'show':''}`}>KEN IK!</div><div className="card-top"><span>{labelFor(w.category)}</span></div><WordIllustration word={w}/><div className="word-copy"><small>NEDERLANDS</small><h2>{w.dutch}</h2>{revealed?<><small>ZO ZEG JE HET</small><h3>{w.spoken||w.latin}</h3><button className="sound-btn" onClick={e=>{e.stopPropagation();speak(w.spoken||w.latin,.88,'word',w.id)}}><Volume2/> Luister</button></>:<div className="reveal-hint"><Eye/> Tik voor vertaling</div>}</div></article></div><div className="card-nav swipe-actions-row"><button onClick={()=>finish(false)}><X/> Nog oefenen</button><button onClick={()=>finish(true)}><Check/> Ken ik! +10 XP</button></div></div>}
