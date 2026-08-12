@@ -2730,3 +2730,25 @@
  .kite-controls-overlay .kite-action{width:94px!important;height:56px!important;border-radius:23px!important}
 }
 @media(max-width:390px){.kite-game-stage{border-radius:24px!important}.kite-controls-overlay{grid-template-columns:56px 56px 1fr!important}.kite-controls-overlay button{height:54px!important}.kite-controls-overlay .kite-action{width:88px!important;height:54px!important}}
+
+
+/* =========================================================
+   Vlieger Avontuur v4 — open, organic mobile scene
+   Controls live outside the game viewport so the character
+   can never disappear behind them.
+   ========================================================= */
+.kite-game-stage{border-radius:30px!important;overflow:hidden!important;border:1px solid rgba(53,76,57,.12)!important;box-shadow:0 18px 44px rgba(44,60,47,.14)!important;background:#c9e1e3!important}
+.kite-canvas{display:block!important;width:100%!important;aspect-ratio:900/620!important;object-fit:contain!important}
+.kite-controls-dock{position:relative!important;inset:auto!important;z-index:2!important;max-width:560px!important;width:100%!important;margin:2px auto 0!important;padding:0 2px!important;display:grid!important;grid-template-columns:76px 76px minmax(150px,1fr)!important;gap:10px!important;pointer-events:auto!important}
+.kite-controls-dock button{height:60px!important;border-radius:20px!important;background:#fffaf0!important;border:1px solid #dccbb2!important;box-shadow:0 8px 18px rgba(52,54,43,.08)!important;color:#315b43!important;pointer-events:auto!important}
+.kite-controls-dock .kite-action{justify-self:stretch!important;width:auto!important;background:#315b43!important;color:#fff!important;border-color:#315b43!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:0!important}
+.kite-controls-dock .kite-action small{color:#fff!important;font-size:9px!important;letter-spacing:.08em!important}.kite-controls-dock .kite-action>span{font-size:25px!important;line-height:21px!important}
+.kite-game-stage:after{border-radius:inherit!important}
+@media(max-width:700px){
+ .kite-game-stage{border-radius:26px!important;margin-top:2px!important}
+ .kite-canvas{aspect-ratio:900/620!important}
+ .kite-controls-dock{grid-template-columns:68px 68px 1fr!important;gap:8px!important;margin-top:8px!important}
+ .kite-controls-dock button{height:56px!important;border-radius:18px!important}
+ .kite-controls-dock .kite-action{height:56px!important;width:auto!important;border-radius:18px!important}
+}
+@media(max-width:390px){.kite-game-stage{border-radius:22px!important}.kite-controls-dock{grid-template-columns:62px 62px 1fr!important}.kite-controls-dock button{height:54px!important}}

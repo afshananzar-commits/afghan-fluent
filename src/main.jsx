@@ -453,7 +453,7 @@ function KiteAdventure({onExit}){
  ],[]);
  const facts=useMemo(()=>shuffle(AFGHAN_FACTS).slice(0,3),[roundSeed]);
 
- const resetPlayer=()=>{playerRef.current={x:150,y:516,w:34,h:48,vx:0,vy:0,onGround:false,invuln:1.05}};
+ const resetPlayer=()=>{playerRef.current={x:88,y:516,w:38,h:52,vx:0,vy:0,onGround:false,invuln:1.05}};
  const startRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=0;setCollected(0);setSeconds(60);setFact(null);setHitNote(false);resetPlayer();setPhase('playing');};
  const restart=()=>{setRoundSeed(s=>s+1);startRound()};
  const finish=()=>{setPhase('done');keysRef.current={left:false,right:false,action:false}};
@@ -491,31 +491,34 @@ function KiteAdventure({onExit}){
    ctx.fillStyle='#5d755e';for(let i=0;i<18;i++){const x=22+i*52+(i%3)*7,y=460+(i%4)*8;ctx.beginPath();ctx.arc(x,y,9+(i%3)*3,0,Math.PI*2);ctx.fill()};ctx.fillStyle='#8d6043';ctx.fillRect(18,420,92,45);ctx.fillStyle='#c6784e';ctx.fillRect(18,420,92,8);ctx.fillStyle='#f0d09a';for(let x=26;x<102;x+=18){ctx.fillRect(x,434,10,4)}ctx.fillStyle='#477354';for(const [x,y] of [[62,405],[96,413],[744,416],[826,398]]){ctx.beginPath();ctx.arc(x,y,12,0,Math.PI*2);ctx.fill()}ctx.fillStyle='#a24e3f';ctx.fillRect(34,392,52,8);ctx.fillStyle='#e0a664';for(let x=36;x<84;x+=12){ctx.fillRect(x,392,5,8)}
   };
   const drawArchitecture=()=>{
-   // De speelroutes voelen als daken, terrassen en binnenplaatsen in plaats van losse balken.
-   const wall=(x1,x2,top,bottom,fill,accent='#8f6b4e')=>{
-    ctx.save();const w=x2-x1,h=bottom-top;const g=ctx.createLinearGradient(x1,top,x2,bottom);g.addColorStop(0,fill);g.addColorStop(1,'#cbb18b');ctx.fillStyle=g;
-    ctx.beginPath();ctx.moveTo(x1,top+8);ctx.quadraticCurveTo(x1+18,top-3,x1+38,top+4);ctx.lineTo(x2-24,top+4);ctx.quadraticCurveTo(x2-8,top+2,x2,top+12);ctx.lineTo(x2,bottom);ctx.lineTo(x1,bottom);ctx.closePath();ctx.fill();
-    ctx.fillStyle='rgba(255,247,225,.22)';ctx.fillRect(x1+8,top+16,Math.max(0,w-16),3);
-    // kleine ramen/nissen
-    for(let xx=x1+26;xx<x2-22;xx+=72){const yy=top+34+((xx/72)%2)*13;ctx.fillStyle='rgba(49,74,59,.38)';ctx.beginPath();ctx.roundRect(xx,yy,18,24,6);ctx.fill();ctx.fillStyle='rgba(245,221,175,.28)';ctx.fillRect(xx+4,yy+5,10,3)}
-    ctx.strokeStyle=accent;ctx.globalAlpha=.23;ctx.lineWidth=1;for(let yy=top+12;yy<bottom;yy+=30){ctx.beginPath();ctx.moveTo(x1+8,yy);ctx.lineTo(x2-8,yy);ctx.stroke()}ctx.restore();
-   };
-   wall(25,325,120,223,'#d8c3a0');
-   wall(440,820,120,218,'#d2b991');
-   wall(145,560,235,338,'#d9c39f');
-   wall(650,875,235,338,'#cdb18b');
-   wall(25,330,350,452,'#d6bd96');
-   wall(420,730,350,452,'#dec8a5');
-   wall(130,430,465,558,'#ceb08a');
-   wall(515,875,465,558,'#d8c19d');
-
-   // zachte traditionele accenten: tapijt, planten, moderne balkonrand.
+   // Organische stadslaag: daken, terrassen en binnenplaatsen in plaats van rechthoekige blokken.
    ctx.save();
-   const rug=(x,y,w)=>{ctx.fillStyle='#9e4e3f';ctx.fillRect(x,y,w,13);ctx.fillStyle='#dfaa65';for(let i=5;i<w-5;i+=14){ctx.fillRect(x+i,y+3,6,2);ctx.fillRect(x+i+3,y+8,6,2)}};
-   rug(53,184,82);rug(676,302,76);
-   const pot=(x,y)=>{ctx.fillStyle='#9a6748';ctx.beginPath();ctx.roundRect(x-7,y,14,12,3);ctx.fill();ctx.fillStyle='#557653';ctx.beginPath();ctx.arc(x,y-6,11,0,Math.PI*2);ctx.fill();ctx.fillStyle='#75936b';ctx.beginPath();ctx.arc(x-7,y-11,6,0,Math.PI*2);ctx.arc(x+7,y-12,6,0,Math.PI*2);ctx.fill()};
-   [[96,220],[500,334],[706,334],[802,104],[285,449],[828,449]].forEach(([x,y])=>pot(x,y));
-   ctx.fillStyle='rgba(39,76,55,.74)';ctx.beginPath();ctx.roundRect(727,88,78,12,6);ctx.fill();
+   const adobe=(pts,fill,shade='#b89568')=>{
+    const g=ctx.createLinearGradient(0,170,0,575);g.addColorStop(0,fill);g.addColorStop(1,shade);ctx.fillStyle=g;
+    ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(const [x,y] of pts.slice(1))ctx.lineTo(x,y);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(95,72,46,.18)';ctx.lineWidth=2;ctx.stroke();
+   };
+   // Linker wooncluster met verspringende daken.
+   adobe([[0,350],[78,350],[78,318],[155,318],[155,350],[245,350],[245,570],[0,570]],'#d7bd93');
+   adobe([[108,235],[250,235],[250,204],[325,204],[325,350],[108,350]],'#dec7a2');
+   // Middengebouw met binnenplaats en boog.
+   adobe([[330,350],[382,350],[382,304],[510,304],[510,330],[575,330],[575,570],[330,570]],'#ceb085');
+   ctx.fillStyle='#789b96';ctx.beginPath();ctx.arc(446,350,34,Math.PI,0);ctx.fill();ctx.fillRect(412,350,68,55);ctx.fillStyle='#b88d61';ctx.beginPath();ctx.arc(446,353,24,Math.PI,0);ctx.fill();ctx.fillRect(422,353,48,52);
+   // Rechts: moderner terrasgebouw met groen balkon.
+   adobe([[590,235],[704,235],[704,210],[818,210],[818,235],[900,235],[900,570],[590,570]],'#d4bc96');
+   ctx.fillStyle='rgba(48,83,58,.72)';ctx.beginPath();ctx.roundRect(690,300,110,10,5);ctx.fill();
+   // Kleine dakterrassen en borstweringen.
+   const parapet=(x,y,w)=>{ctx.fillStyle='#a9794f';ctx.beginPath();ctx.roundRect(x,y,w,12,5);ctx.fill();ctx.fillStyle='#e7c996';for(let i=10;i<w-8;i+=26)ctx.fillRect(x+i,y+2,9,5)};
+   parapet(32,338,86);parapet(176,338,82);parapet(620,223,84);parapet(742,223,84);
+   // Tapijten en deuren.
+   const rug=(x,y,w)=>{ctx.fillStyle='#9e4e3f';ctx.beginPath();ctx.roundRect(x,y,w,14,3);ctx.fill();ctx.fillStyle='#e3ad68';for(let i=6;i<w-5;i+=14){ctx.fillRect(x+i,y+3,6,2);ctx.fillRect(x+i+3,y+9,6,2)}};
+   rug(54,376,74);rug(676,272,74);
+   ctx.fillStyle='rgba(64,75,58,.35)';for(const [x,y] of [[28,402],[115,390],[203,390],[612,386],[770,372],[844,390]]){ctx.beginPath();ctx.roundRect(x,y,18,29,6);ctx.fill()}
+   // Groen in potten, waardoor het land levendiger oogt.
+   const pot=(x,y)=>{ctx.fillStyle='#986847';ctx.beginPath();ctx.roundRect(x-7,y,14,12,3);ctx.fill();ctx.fillStyle='#557653';ctx.beginPath();ctx.arc(x,y-7,12,0,Math.PI*2);ctx.fill();ctx.fillStyle='#78966c';ctx.beginPath();ctx.arc(x-7,y-12,6,0,Math.PI*2);ctx.arc(x+7,y-13,6,0,Math.PI*2);ctx.fill()};
+   [[93,326],[291,222],[530,320],[655,222],[792,198],[865,222],[236,450]].forEach(([x,y])=>pot(x,y));
+   // Een subtiele moderne straatlaag in de verte.
+   ctx.fillStyle='rgba(241,229,202,.50)';for(const [x,w,h] of [[8,70,92],[92,54,74],[156,82,102],[248,61,67],[690,58,82],[758,66,99],[835,52,71]]){ctx.fillRect(x,470-h,w,h)}
    ctx.restore();
   };
   const drawForeground=()=>{
@@ -550,7 +553,7 @@ function KiteAdventure({onExit}){
    // helder randje zodat het poppetje niet wegvalt tegen muren
    ctx.strokeStyle='rgba(255,250,239,.8)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(cx-18,p.y-5,36,51,16);ctx.stroke();ctx.restore()};
   const drawMelon=m=>{ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.rot);ctx.shadowColor='rgba(31,55,35,.28)';ctx.shadowBlur=7;ctx.shadowOffsetY=3;const mg=ctx.createRadialGradient(-6,-8,4,0,0,m.r);mg.addColorStop(0,'#77a94e');mg.addColorStop(.55,'#3e7e3f');mg.addColorStop(1,'#1f5633');ctx.fillStyle=mg;ctx.beginPath();ctx.arc(0,0,m.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#a8cf63';ctx.lineWidth=2.6;for(let a=-.72;a<=.72;a+=.36){ctx.beginPath();ctx.ellipse(a*7,0,4,m.r-3,a*.8,0,Math.PI*2);ctx.stroke()}ctx.fillStyle='rgba(255,255,255,.22)';ctx.beginPath();ctx.arc(-6,-8,4,0,Math.PI*2);ctx.fill();ctx.restore()};
-  const draw=()=>{drawBackground();drawArchitecture();ramps.forEach(drawRamp);platforms.forEach(drawPlatform);ladders.forEach(drawLadder);kites.forEach(drawKite);melonsRef.current.forEach(drawMelon);drawPlayer(playerRef.current);drawForeground();ctx.fillStyle='rgba(252,247,238,.94)';ctx.beginPath();ctx.roundRect(18,17,110,42,18);ctx.fill();ctx.fillStyle='#274b38';ctx.font='700 18px Inter, sans-serif';ctx.fillText(`🪁 ${collectedRef.current.size}/3`,39,44);ctx.beginPath();ctx.roundRect(760,17,122,42,18);ctx.fill();ctx.fillStyle='#274b38';ctx.fillText(`◷ ${seconds}s`,784,44)};
+  const draw=()=>{drawBackground();drawArchitecture();ramps.forEach(drawRamp);platforms.forEach(drawPlatform);ladders.forEach(drawLadder);kites.forEach(drawKite);melonsRef.current.forEach(drawMelon);drawForeground();drawPlayer(playerRef.current);ctx.fillStyle='rgba(252,247,238,.94)';ctx.beginPath();ctx.roundRect(18,17,110,42,18);ctx.fill();ctx.fillStyle='#274b38';ctx.font='700 18px Inter, sans-serif';ctx.fillText(`🪁 ${collectedRef.current.size}/3`,39,44);ctx.beginPath();ctx.roundRect(760,17,122,42,18);ctx.fill();ctx.fillStyle='#274b38';ctx.fillText(`◷ ${seconds}s`,784,44)};
   const update=(dt)=>{
    const p=playerRef.current,k=keysRef.current;const move=175;p.vx=(k.left?-move:k.right?move:0);const center=p.x+p.w/2;const ladder=ladders.find(l=>Math.abs(center-l.x)<25&&p.y+p.h>l.top-8&&p.y<l.bottom+5);
    if(k.action&&!prevActionRef.current&&!ladder&&p.onGround){p.vy=-355;p.onGround=false}
@@ -575,11 +578,11 @@ function KiteAdventure({onExit}){
     <canvas ref={canvasRef} className="kite-canvas" aria-label="Vlieger Avontuur spel"/>
     <div className="kite-stage-gloss" aria-hidden="true"/>
     {hitNote&&<div className="kite-hit-note">🍉 Oeps! Kies snel een andere route.</div>}
-    {phase==='playing'&&<div className="kite-controls kite-controls-overlay"><button {...buttonProps('left')} aria-label="Links"><ChevronLeft/></button><button {...buttonProps('right')} aria-label="Rechts"><ChevronRight/></button><button className="kite-action" {...buttonProps('action')} aria-label="Spring of klim"><span>↑</span><small>SPRING</small></button></div>}
     {phase==='select'&&<div className="kite-overlay kite-select"><div className="kite-panel kite-select-panel"><span className="kite-eyebrow">KIES JE AVONTURIER</span><h2>Wie gaat de vliegers zoeken?</h2><p>Kies je avonturier. Daarna begint je tocht door de stad en de bergen.</p><div className="character-choice"><button className={character==='girl'?'active':''} onClick={()=>setCharacter('girl')}><span className="character-preview girl">👧🏻</span><b>Meisje</b></button><button className={character==='boy'?'active':''} onClick={()=>setCharacter('boy')}><span className="character-preview boy">👦🏻</span><b>Jongen</b></button></div><button className="kite-start" onClick={startRound}><Play/> Start avontuur</button></div></div>}
     {phase==='fact'&&fact&&<div className="kite-overlay kite-fact"><div className="kite-panel kite-fact-panel"><div className="kite-ribbon">Vlieger gevonden!</div><span className="fact-kite premium-kite">🪁</span><h2>Wist je dat?</h2><div className="kite-fact-divider"><i/><span>✦</span><i/></div><h3>{fact.title}</h3><p>{fact.text}</p><div className="kite-fact-actions"><button className="fact-listen" onClick={()=>playFact(fact)} aria-label="Luister naar weetje"><Volume2/></button><button className="kite-start" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div></div>}
     {phase==='done'&&<div className="kite-overlay kite-done"><div className="kite-panel kite-done-panel"><div className="kite-ribbon done-ribbon">Mooi gespeeld!</div><div className="done-character-wrap"><span className="done-character">{character==='girl'?'👧🏻':'👦🏻'}</span></div><h2>Je avontuur is klaar</h2><p>Je hebt vandaag <b>{collected}</b> {collected===1?'nieuw weetje':'nieuwe weetjes'} over Afghanistan ontdekt.</p><div className="kite-confetti" aria-hidden="true">✦　◆　✦　◇　◆</div><div className="kite-done-actions"><button onClick={onExit}>Terug naar Spelen</button><button className="kite-start" onClick={restart}><Play/> Volgende ronde</button></div></div></div>}
    </div>
+   {phase==='playing'&&<div className="kite-controls kite-controls-dock"><button {...buttonProps('left')} aria-label="Links"><ChevronLeft/></button><button {...buttonProps('right')} aria-label="Rechts"><ChevronRight/></button><button className="kite-action" {...buttonProps('action')} aria-label="Spring of klim"><span>↑</span><small>SPRING / KLIM</small></button></div>}
    {phase==='select'&&<div className="kite-howto"><span>🪁 <b>Pak 3 vliegers</b></span><span>🍉 <b>Ontwijk watermeloenen</b></span><span>🧩 <b>Vind je route</b></span><span>⏱️ <b>Steeds iets moeilijker</b></span></div>}
   </section>
 }
