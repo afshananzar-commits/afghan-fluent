@@ -453,127 +453,71 @@ class KiteGameErrorBoundary extends React.Component{
 }
 
 function KiteAdventure({onExit}){
- const WORLD_W=1000,WORLD_H=720;
- const rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(1.4),keysRef=useRef({left:false,right:false}),actionLatchRef=useRef(false);
- const playerRef=useRef({x:82,y:574,w:72,h:110,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:0});
+ const WORLD_W=1536,WORLD_H=717;
+ const rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(1.8),keysRef=useRef({left:false,right:false}),actionLatchRef=useRef(false);
+ const playerRef=useRef({x:265,y:566,w:72,h:112,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:0});
  const melonsRef=useRef([]),collectedRef=useRef(new Set()),phaseRef=useRef('select'),secondsRef=useRef(60),factsRef=useRef([]),lastPaintRef=useRef(0);
- const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[frame,setFrame]=useState({player:{x:82,y:574,pose:'idle',dir:1,invuln:0},melons:[]});
+ const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[frame,setFrame]=useState({player:{x:265,y:566,pose:'idle',dir:1},melons:[]});
  const setPhase=p=>{phaseRef.current=p;setPhaseState(p)};
 
+ // Collision follows the illustrated rooftops; it is no longer rendered as block-shaped buildings.
  const platforms=useMemo(()=>[
-  {id:'ground',x1:28,x2:972,y:684,kind:'courtyard'},
-  {id:'l1a',x1:45,x2:430,y:548,kind:'roof'},{id:'l1b',x1:535,x2:960,y:548,kind:'roof'},
-  {id:'l2a',x1:125,x2:620,y:405,kind:'terrace'},{id:'l2b',x1:708,x2:958,y:405,kind:'balcony'},
-  {id:'l3a',x1:42,x2:350,y:260,kind:'roof'},{id:'l3b',x1:430,x2:842,y:260,kind:'bridge'},
-  {id:'topa',x1:150,x2:545,y:118,kind:'balcony'},{id:'topb',x1:655,x2:962,y:118,kind:'roof'}
+  {id:'ground',x1:210,x2:905,y:680},
+  {id:'leftRoof',x1:0,x2:420,y:315},
+  {id:'midRoof',x1:455,x2:805,y:500},
+  {id:'topFloat',x1:515,x2:840,y:166},
+  {id:'rightMid',x1:1015,x2:1530,y:456},
+  {id:'rightTop',x1:1170,x2:1530,y:120},
+  {id:'bridge',x1:790,x2:1065,y:500}
  ],[]);
  const ladders=useMemo(()=>[
-  {id:'lad1',x:270,top:548,bottom:684,w:48},
-  {id:'lad2',x:578,top:405,bottom:548,w:48},
-  {id:'lad3',x:205,top:260,bottom:405,w:48},
-  {id:'lad4',x:758,top:118,bottom:260,w:48}
+  {id:'lad1',x:755,top:500,bottom:680,w:48},
+  {id:'lad2',x:790,top:166,bottom:500,w:48},
+  {id:'lad3',x:1212,top:120,bottom:456,w:48}
  ],[]);
  const kites=useMemo(()=>[
-  {id:1,x:900,y:485},{id:2,x:80,y:198},{id:3,x:900,y:58}
+  {id:1,x:150,y:245},{id:2,x:690,y:100},{id:3,x:1435,y:60}
  ],[]);
  const facts=useMemo(()=>shuffle(AFGHAN_FACTS).slice(0,3),[roundSeed]);
- useEffect(()=>{factsRef.current=facts},[facts]);
- useEffect(()=>{secondsRef.current=seconds},[seconds]);
- useEffect(()=>{phaseRef.current=phase},[phase]);
-
- const sprite=(pose)=>`/images/game/${character}-${pose}.png`;
- const resetPlayer=()=>{playerRef.current={x:82,y:574,w:72,h:110,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:1.0}};
- const resetRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=1.2;keysRef.current={left:false,right:false};actionLatchRef.current=false;setCollected(0);setSeconds(60);secondsRef.current=60;setFact(null);setHitNote(false);resetPlayer();setFrame({player:{x:82,y:574,pose:'idle',dir:1},melons:[]})};
- const startRound=()=>{setRuntimeError('');resetRound();setPhase('playing')};
- const restart=()=>{setRuntimeError('');setRoundSeed(v=>v+1);resetRound();setPhase('playing')};
- const finish=()=>{keysRef.current={left:false,right:false};setPhase('done')};
- const togglePause=()=>{if(phaseRef.current==='playing')setPhase('paused');else if(phaseRef.current==='paused')setPhase('playing')};
- const playFact=f=>f&&speak(`${f.title}. ${f.text}`,.9);
- const continueFromFact=()=>{setFact(null);setPhase(collectedRef.current.size>=3?'done':'playing')};
-
+ useEffect(()=>{factsRef.current=facts},[facts]);useEffect(()=>{secondsRef.current=seconds},[seconds]);useEffect(()=>{phaseRef.current=phase},[phase]);
+ const sprite=pose=>`/images/game/${character}-${pose}.png`;
+ const resetPlayer=()=>{playerRef.current={x:265,y:566,w:72,h:112,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:.9}};
+ const resetRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=1.6;keysRef.current={left:false,right:false};actionLatchRef.current=false;setCollected(0);setSeconds(60);secondsRef.current=60;setFact(null);setHitNote(false);resetPlayer();setFrame({player:{x:265,y:566,pose:'idle',dir:1},melons:[]})};
+ const startRound=()=>{setRuntimeError('');resetRound();setPhase('playing')};const restart=()=>{setRuntimeError('');setRoundSeed(v=>v+1);resetRound();setPhase('playing')};const finish=()=>{keysRef.current={left:false,right:false};setPhase('done')};
+ const togglePause=()=>{if(phaseRef.current==='playing')setPhase('paused');else if(phaseRef.current==='paused')setPhase('playing')};const playFact=f=>f&&speak(`${f.title}. ${f.text}`,.9);const continueFromFact=()=>{setFact(null);setPhase(collectedRef.current.size>=3?'done':'playing')};
  useEffect(()=>{if(phase!=='playing')return;const timer=setInterval(()=>setSeconds(s=>{const n=Math.max(0,s-1);secondsRef.current=n;if(n===0)setPhase('done');return n}),1000);return()=>clearInterval(timer)},[phase]);
-
+ useEffect(()=>{const down=e=>{if(['ArrowLeft','a','A'].includes(e.key))keysRef.current.left=true;if(['ArrowRight','d','D'].includes(e.key))keysRef.current.right=true;if(['ArrowUp',' ','w','W'].includes(e.key)){e.preventDefault();actionLatchRef.current=true}};const up=e=>{if(['ArrowLeft','a','A'].includes(e.key))keysRef.current.left=false;if(['ArrowRight','d','D'].includes(e.key))keysRef.current.right=false};window.addEventListener('keydown',down);window.addEventListener('keyup',up);return()=>{window.removeEventListener('keydown',down);window.removeEventListener('keyup',up)}},[]);
  useEffect(()=>{
-  const keyDown=e=>{if(['ArrowLeft','a','A'].includes(e.key))keysRef.current.left=true;if(['ArrowRight','d','D'].includes(e.key))keysRef.current.right=true;if(['ArrowUp',' ','w','W'].includes(e.key)){e.preventDefault();actionLatchRef.current=true}};
-  const keyUp=e=>{if(['ArrowLeft','a','A'].includes(e.key))keysRef.current.left=false;if(['ArrowRight','d','D'].includes(e.key))keysRef.current.right=false};
-  window.addEventListener('keydown',keyDown);window.addEventListener('keyup',keyUp);return()=>{window.removeEventListener('keydown',keyDown);window.removeEventListener('keyup',keyUp)}
- },[]);
-
- useEffect(()=>{
-  const supportAt=(cx,bottom,prevBottom)=>{let best=null;for(const pl of platforms){if(cx>=pl.x1-5&&cx<=pl.x2+5&&prevBottom<=pl.y+8&&bottom>=pl.y){if(best===null||pl.y<best)best=pl.y}}return best};
-  const ladderCandidate=(p)=>{const cx=p.x+p.w/2,feet=p.y+p.h;return ladders.find(l=>Math.abs(cx-l.x)<54&&(Math.abs(feet-l.bottom)<30||Math.abs(feet-l.top)<30||p.mode==='climb'&&Math.abs(cx-l.x)<62))};
-  const startAction=()=>{
-   if(phaseRef.current!=='playing')return;const p=playerRef.current;if(p.mode==='climb')return;const l=ladderCandidate(p);const feet=p.y+p.h;
-   if(l){const fromBottom=Math.abs(feet-l.bottom)<=Math.abs(feet-l.top);p.mode='climb';p.vx=0;p.vy=0;p.x=l.x-p.w/2;p.climbTarget=fromBottom?l.top-p.h:l.bottom-p.h;return}
-   if(p.onGround){p.vy=-470;p.onGround=false}
-  };
-  const updateMelons=(dt,elapsed)=>{
-   const spawnEvery=Math.max(1.9,4.3-elapsed*.042),speed=115+elapsed*1.6;spawnRef.current-=dt;
-   if(spawnRef.current<=0){const fromLeft=elapsed>24&&Math.random()>.58;melonsRef.current.push({id:`m${Date.now()}${Math.random()}`,x:fromLeft?182:900,y:78,r:30,vx:fromLeft?speed:-speed,vy:0,rot:0});spawnRef.current=spawnEvery*(.82+Math.random()*.35)}
-   melonsRef.current.forEach(m=>{const prevBottom=m.y+m.r;m.vy+=930*dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.vx*dt/Math.max(1,m.r);let support=null;for(const pl of platforms){if(m.x>=pl.x1+m.r*.15&&m.x<=pl.x2-m.r*.15&&prevBottom<=pl.y+7&&m.y+m.r>=pl.y){if(support===null||pl.y<support)support=pl.y}}if(support!==null&&m.vy>=0){m.y=support-m.r;m.vy=0}if(m.x<20){m.x=20;m.vx=Math.abs(m.vx)}if(m.x>980){m.x=980;m.vx=-Math.abs(m.vx)}});
-   melonsRef.current=melonsRef.current.filter(m=>m.y<WORLD_H+100);
-  };
-  const update=dt=>{
-   if(phaseRef.current!=='playing')return;const p=playerRef.current,keys=keysRef.current,prevBottom=p.y+p.h;
-   if(p.invuln>0)p.invuln-=dt;if(actionLatchRef.current){actionLatchRef.current=false;startAction()}
-   if(p.mode==='climb'){
-    const target=p.climbTarget??p.y;const delta=target-p.y;const step=Math.sign(delta)*190*dt;if(Math.abs(delta)<=Math.abs(step)+2){p.y=target;p.mode='normal';p.climbTarget=null;p.vy=0;p.onGround=true}else p.y+=step;
-   }else{
-    if(keys.left&&!keys.right){p.vx=-235;p.dir=-1}else if(keys.right&&!keys.left){p.vx=235;p.dir=1}else p.vx*=Math.pow(.001,dt);
-    p.vy+=980*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const bottom=p.y+p.h;const support=supportAt(p.x+p.w/2,bottom,prevBottom);if(p.vy>=0&&support!==null){p.y=support-p.h;p.vy=0;p.onGround=true}else p.onGround=false;
-   }
-   p.x=Math.max(5,Math.min(WORLD_W-p.w-5,p.x));if(p.y>WORLD_H+80)resetPlayer();
-   const elapsed=60-secondsRef.current;updateMelons(dt,elapsed);
-   const pcx=p.x+p.w/2,pcy=p.y+p.h/2;
-   for(const m of melonsRef.current){if(p.invuln<=0&&Math.hypot(pcx-m.x,pcy-m.y)<m.r+30){setHitNote(true);window.setTimeout(()=>setHitNote(false),950);resetPlayer();break}}
-   for(const k of kites){if(collectedRef.current.has(k.id))continue;if(Math.hypot(pcx-k.x,pcy-k.y)<63){collectedRef.current.add(k.id);const n=collectedRef.current.size;setCollected(n);setFact(factsRef.current[n-1]||factsRef.current[0]);keysRef.current={left:false,right:false};setPhase('fact');break}}
-  };
-  const paint=time=>{
-   try{
-    const dt=Math.min(.03,(time-lastRef.current)/1000||.016);lastRef.current=time;update(dt);
-    if(time-lastPaintRef.current>33){lastPaintRef.current=time;const p=playerRef.current;let pose='idle';if(p.mode==='climb')pose='climb';else if(!p.onGround)pose='jump';else if(Math.abs(p.vx)>35)pose='run';setFrame({player:{x:p.x,y:p.y,pose,dir:p.dir,invuln:p.invuln||0},melons:melonsRef.current.map(m=>({...m}))})}
-    rafRef.current=requestAnimationFrame(paint)
-   }catch(err){
-    console.error('Vlieger Avontuur runtimefout:',err);
-    setRuntimeError(String(err?.message||err||'Onbekende runtimefout'));
-    setPhase('error');
-   }
-  };
-  rafRef.current=requestAnimationFrame(paint);return()=>cancelAnimationFrame(rafRef.current)
+  const supportAt=(cx,bottom,prevBottom)=>{let best=null;for(const pl of platforms){if(cx>=pl.x1-6&&cx<=pl.x2+6&&prevBottom<=pl.y+9&&bottom>=pl.y){if(best===null||pl.y<best)best=pl.y}}return best};
+  const ladderCandidate=p=>{const cx=p.x+p.w/2,feet=p.y+p.h;return ladders.find(l=>Math.abs(cx-l.x)<58&&(Math.abs(feet-l.bottom)<34||Math.abs(feet-l.top)<34||p.mode==='climb'))};
+  const startAction=()=>{if(phaseRef.current!=='playing')return;const p=playerRef.current;if(p.mode==='climb')return;const l=ladderCandidate(p),feet=p.y+p.h;if(l){const fromBottom=Math.abs(feet-l.bottom)<=Math.abs(feet-l.top);p.mode='climb';p.vx=0;p.vy=0;p.x=l.x-p.w/2;p.climbTarget=fromBottom?l.top-p.h:l.bottom-p.h;return}if(p.onGround){p.vy=-455;p.onGround=false}};
+  const updateMelons=(dt,elapsed)=>{const spawnEvery=Math.max(2.2,4.8-elapsed*.04),speed=125+elapsed*1.35;spawnRef.current-=dt;if(spawnRef.current<=0){const side=Math.random()>.45;melonsRef.current.push({id:`m${Date.now()}${Math.random()}`,x:side?1450:600,y:70,r:28,vx:side?-speed:speed,vy:0,rot:0});spawnRef.current=spawnEvery*(.85+Math.random()*.3)}melonsRef.current.forEach(m=>{const prevBottom=m.y+m.r;m.vy+=910*dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.vx*dt/m.r;let support=null;for(const pl of platforms){if(m.x>=pl.x1+m.r*.1&&m.x<=pl.x2-m.r*.1&&prevBottom<=pl.y+8&&m.y+m.r>=pl.y){if(support===null||pl.y<support)support=pl.y}}if(support!==null&&m.vy>=0){m.y=support-m.r;m.vy=0}if(m.x<15){m.x=15;m.vx=Math.abs(m.vx)}if(m.x>WORLD_W-15){m.x=WORLD_W-15;m.vx=-Math.abs(m.vx)}});melonsRef.current=melonsRef.current.filter(m=>m.y<WORLD_H+120)};
+  const update=dt=>{if(phaseRef.current!=='playing')return;const p=playerRef.current,keys=keysRef.current,prevBottom=p.y+p.h;if(p.invuln>0)p.invuln-=dt;if(actionLatchRef.current){actionLatchRef.current=false;startAction()}if(p.mode==='climb'){const target=p.climbTarget??p.y,delta=target-p.y,step=Math.sign(delta)*205*dt;if(Math.abs(delta)<=Math.abs(step)+2){p.y=target;p.mode='normal';p.climbTarget=null;p.vy=0;p.onGround=true}else p.y+=step}else{if(keys.left&&!keys.right){p.vx=-250;p.dir=-1}else if(keys.right&&!keys.left){p.vx=250;p.dir=1}else p.vx*=Math.pow(.001,dt);p.vy+=980*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const bottom=p.y+p.h,support=supportAt(p.x+p.w/2,bottom,prevBottom);if(p.vy>=0&&support!==null){p.y=support-p.h;p.vy=0;p.onGround=true}else p.onGround=false}p.x=Math.max(4,Math.min(WORLD_W-p.w-4,p.x));if(p.y>WORLD_H+90)resetPlayer();const elapsed=60-secondsRef.current;updateMelons(dt,elapsed);const pcx=p.x+p.w/2,pcy=p.y+p.h/2;for(const m of melonsRef.current){if(p.invuln<=0&&Math.hypot(pcx-m.x,pcy-m.y)<m.r+28){setHitNote(true);window.setTimeout(()=>setHitNote(false),900);resetPlayer();break}}for(const k of kites){if(collectedRef.current.has(k.id))continue;if(Math.hypot(pcx-k.x,pcy-k.y)<58){collectedRef.current.add(k.id);const n=collectedRef.current.size;setCollected(n);setFact(factsRef.current[n-1]||factsRef.current[0]);keysRef.current={left:false,right:false};setPhase('fact');break}}};
+  const paint=time=>{try{const dt=Math.min(.03,(time-lastRef.current)/1000||.016);lastRef.current=time;update(dt);if(time-lastPaintRef.current>33){lastPaintRef.current=time;const p=playerRef.current;let pose='idle';if(p.mode==='climb')pose='climb';else if(!p.onGround)pose='jump';else if(Math.abs(p.vx)>35)pose='run';setFrame({player:{x:p.x,y:p.y,pose,dir:p.dir},melons:melonsRef.current.map(m=>({...m}))})}rafRef.current=requestAnimationFrame(paint)}catch(err){console.error('Vlieger Avontuur runtimefout:',err);setRuntimeError(String(err?.message||err||'Onbekende runtimefout'));setPhase('error')}};rafRef.current=requestAnimationFrame(paint);return()=>cancelAnimationFrame(rafRef.current)
  },[platforms,ladders,kites]);
-
- const hold=(key,value)=>e=>{e.preventDefault();keysRef.current[key]=value};
- const action=e=>{e.preventDefault();actionLatchRef.current=true};
- const worldStyle={aspectRatio:`${WORLD_W}/${WORLD_H}`};
- const renderBuilding=pl=>{
-  const cls=`v8-platform v8-${pl.kind}`;const h=pl.kind==='bridge'||pl.kind==='balcony'?22:Math.min(150,WORLD_H-pl.y+8);return <div key={pl.id} className={cls} style={{left:`${pl.x1/WORLD_W*100}%`,top:`${pl.y/WORLD_H*100}%`,width:`${(pl.x2-pl.x1)/WORLD_W*100}%`,height:`${h/WORLD_H*100}%`}}><i/><b/><em/></div>
- };
- return <section className={`kite-v8 phase-${phase}`}>
-  <header className="v8-header">
-   <button onClick={onExit}><X/><span>Stoppen</span></button>
-   <div><small>SPELEN</small><strong>Vlieger Avontuur</strong></div>
-   <div className="v8-header-actions"><button className="v8-pause" onClick={togglePause} disabled={!['playing','paused'].includes(phase)}>{phase==='paused'?'▶':'Ⅱ'}</button><button onClick={finish}><SkipForward/><span>Overslaan</span></button></div>
-  </header>
-  <div className="v8-stage" style={worldStyle}>
-   <div className="v8-sky v10-city-background"/>
-   {platforms.map(pl=><div key={pl.id} className="v10-walkway" style={{left:`${pl.x1/WORLD_W*100}%`,top:`${pl.y/WORLD_H*100}%`,width:`${(pl.x2-pl.x1)/WORLD_W*100}%`}} />)}
-   {ladders.map(l=><div key={l.id} className="v8-ladder" style={{left:`${(l.x-l.w/2)/WORLD_W*100}%`,top:`${l.top/WORLD_H*100}%`,width:`${l.w/WORLD_W*100}%`,height:`${(l.bottom-l.top)/WORLD_H*100}%`}}><span/></div>)}
-   {kites.map((k,i)=>!collectedRef.current.has(k.id)&&<img key={k.id} className="v8-kite" src="/images/game/kite.png" style={{left:`${(k.x-42)/WORLD_W*100}%`,top:`${(k.y-54)/WORLD_H*100}%`,animationDelay:`${i*.35}s`}}/>)}
-   {frame.melons.map(m=><img key={m.id} className="v8-melon" src="/images/game/watermelon.png" style={{left:`${(m.x-m.r)/WORLD_W*100}%`,top:`${(m.y-m.r)/WORLD_H*100}%`,width:`${m.r*2/WORLD_W*100}%`,transform:`rotate(${m.rot}rad)`}}/>)}
-   <img className={`v8-player pose-${frame.player.pose}`} src={sprite(frame.player.pose)} style={{left:`${(frame.player.x+playerRef.current.w/2)/WORLD_W*100}%`,top:`${frame.player.y/WORLD_H*100}%`,height:`${playerRef.current.h/WORLD_H*100}%`,opacity:frame.player.invuln>0&&Math.floor(frame.player.invuln*12)%2===0?.55:1,transform:`translateX(-50%) scaleX(${frame.player.dir<0?-1:1})`}}/>
-   <div className="v8-hud"><span><img src="/images/game/kite.png"/>{collected}/3</span><span>⏱ {String(Math.floor(seconds/60)).padStart(2,'0')}:{String(seconds%60).padStart(2,'0')}</span></div>
-   {hitNote&&<div className="v8-hit">🍉 Oeps! Probeer een andere route.</div>}
-   
-   {phase==='select'&&<div className="v8-overlay v8-select"><div className="v8-panel"><small>KIES JE AVONTURIER</small><h2>Wie gaat de vliegers zoeken?</h2><p>Pak drie vliegers, ontwijk rollende watermeloenen en vind via de ladders je route.</p><div className="v8-character-cards"><button className={character==='boy'?'selected':''} onClick={()=>setCharacter('boy')}><img src="/images/game/boy-idle.png"/><b>Jongen</b></button><button className={character==='girl'?'selected':''} onClick={()=>setCharacter('girl')}><img src="/images/game/girl-idle.png"/><b>Meisje</b></button></div><button className="primary-game v8-start" onClick={startRound}><Play/> Start avontuur</button><div className="v8-rules"><span>🪁 3 vliegers</span><span>🍉 Echt rollend</span><span>🪜 Ladders</span><span>🔊 Weetjes</span></div></div></div>}
-   {phase==='paused'&&<div className="v8-overlay"><div className="v8-panel v8-small"><small>PAUZE</small><h2>Even gestopt</h2><button className="primary-game" onClick={togglePause}>Verder spelen</button></div></div>}
-   {phase==='fact'&&fact&&<div className="v8-overlay"><div className="v8-panel v8-fact"><div className="v8-ribbon">Vlieger gepakt!</div><img className="v8-prize" src="/images/game/kite.png"/><small>WIST JE DAT?</small><h2>{fact.title}</h2><p>{fact.text}</p><button className="v8-listen" onClick={()=>playFact(fact)}><Volume2/> Luister naar het weetje</button><button className="primary-game" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div>}
-   {phase==='error'&&<div className="v8-overlay"><div className="v8-panel v8-fact"><small>SPEL KON NIET STARTEN</small><h2>Er ging iets mis</h2><p>{runtimeError||'Onbekende fout.'}</p><button className="primary-game" onClick={onExit}>Terug naar Spelen</button></div></div>}
-   {phase==='done'&&<div className="v8-overlay"><div className="v8-panel v8-done"><div className="v8-ribbon">Mooi gespeeld!</div><img src={sprite('idle')} className="v8-done-character"/><h2>Je avontuur is klaar</h2><p>Je hebt vandaag <b>{collected}</b> {collected===1?'weetje':'weetjes'} over Afghanistan ontdekt.</p><div className="v8-done-actions"><button onClick={onExit}>Terug naar Spelen</button><button className="primary-game" onClick={restart}><Play/> Volgende ronde</button></div></div></div>}
+ const hold=(key,value)=>e=>{e.preventDefault();keysRef.current[key]=value};const action=e=>{e.preventDefault();actionLatchRef.current=true};
+ const camera=Math.max(0,Math.min(70,(frame.player.x/WORLD_W)*100-17));
+ return <section className={`kite-v11 phase-${phase}`}>
+  <header className="v11-header"><button onClick={onExit}><X/></button><div><small>SPELEN</small><strong>Vlieger Avontuur</strong></div><div className="v11-header-actions"><button onClick={togglePause} disabled={!['playing','paused'].includes(phase)}>{phase==='paused'?'▶':'Ⅱ'}</button><button onClick={finish}><SkipForward/></button></div></header>
+  <div className="v11-stage">
+   <div className="v11-world" style={{'--camera':camera}}>
+    <img className="v11-background" src="/images/game/afghan-city.jpg" alt=""/>
+    {ladders.map(l=><div key={l.id} className="v11-ladder" style={{left:`${(l.x-l.w/2)/WORLD_W*100}%`,top:`${l.top/WORLD_H*100}%`,width:`${l.w/WORLD_W*100}%`,height:`${(l.bottom-l.top)/WORLD_H*100}%`}}><span/></div>)}
+    {kites.map((k,i)=>!collectedRef.current.has(k.id)&&<img key={k.id} className="v11-kite" src="/images/game/kite.png" style={{left:`${(k.x-45)/WORLD_W*100}%`,top:`${(k.y-55)/WORLD_H*100}%`,animationDelay:`${i*.3}s`}}/>)}
+    {frame.melons.map(m=><img key={m.id} className="v11-melon" src="/images/game/watermelon.png" style={{left:`${(m.x-m.r)/WORLD_W*100}%`,top:`${(m.y-m.r)/WORLD_H*100}%`,width:`${m.r*2/WORLD_W*100}%`,transform:`rotate(${m.rot}rad)`}}/>)}
+    <img className={`v11-player pose-${frame.player.pose}`} src={sprite(frame.player.pose)} style={{left:`${(frame.player.x+playerRef.current.w/2)/WORLD_W*100}%`,top:`${frame.player.y/WORLD_H*100}%`,height:`${playerRef.current.h/WORLD_H*100}%`,transform:`translateX(-50%) scaleX(${frame.player.dir<0?-1:1})`}}/>
+   </div>
+   <div className="v11-hud"><span><img src="/images/game/kite.png"/>{collected}/3</span><span>⏱ {String(Math.floor(seconds/60)).padStart(2,'0')}:{String(seconds%60).padStart(2,'0')}</span></div>
+   {hitNote&&<div className="v11-hit">🍉 Oeps! Probeer een andere route.</div>}
+   {phase==='select'&&<div className="v11-overlay"><div className="v11-panel"><small>KIES JE AVONTURIER</small><h2>Wie gaat de vliegers zoeken?</h2><p>Vind drie vliegers, gebruik de ladders en ontwijk de watermeloenen.</p><div className="v11-characters"><button className={character==='boy'?'selected':''} onClick={()=>setCharacter('boy')}><img src="/images/game/boy-idle.png"/><b>Jongen</b></button><button className={character==='girl'?'selected':''} onClick={()=>setCharacter('girl')}><img src="/images/game/girl-idle.png"/><b>Meisje</b></button></div><button className="primary-game" onClick={startRound}><Play/> Start avontuur</button></div></div>}
+   {phase==='paused'&&<div className="v11-overlay"><div className="v11-panel v11-small"><small>PAUZE</small><h2>Even gestopt</h2><button className="primary-game" onClick={togglePause}>Verder spelen</button></div></div>}
+   {phase==='fact'&&fact&&<div className="v11-overlay"><div className="v11-panel v11-fact"><div className="v11-ribbon">Vlieger gepakt!</div><img className="v11-prize" src="/images/game/kite.png"/><small>WIST JE DAT?</small><h2>{fact.title}</h2><p>{fact.text}</p><button className="v11-listen" onClick={()=>playFact(fact)}><Volume2/> Luister</button><button className="primary-game" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div>}
+   {phase==='error'&&<div className="v11-overlay"><div className="v11-panel"><h2>Er ging iets mis</h2><p>{runtimeError}</p><button className="primary-game" onClick={onExit}>Terug naar Spelen</button></div></div>}
+   {phase==='done'&&<div className="v11-overlay"><div className="v11-panel"><div className="v11-ribbon">Mooi gespeeld!</div><img src={sprite('idle')} className="v11-finish-character"/><h2>Je avontuur is klaar</h2><p>Je hebt <b>{collected}</b> {collected===1?'weetje':'weetjes'} ontdekt.</p><button className="primary-game" onClick={restart}><Play/> Volgende ronde</button><button className="v11-secondary" onClick={onExit}>Terug naar Spelen</button></div></div>}
   </div>
-  {phase==='playing'&&<div className="v8-controls v8-controls-below"><div className="v8-directions"><button onPointerDown={hold('left',true)} onPointerUp={hold('left',false)} onPointerLeave={hold('left',false)} onPointerCancel={hold('left',false)} aria-label="Links"><ChevronLeft/></button><button onPointerDown={hold('right',true)} onPointerUp={hold('right',false)} onPointerLeave={hold('right',false)} onPointerCancel={hold('right',false)} aria-label="Rechts"><ChevronRight/></button></div><button className="v8-action" onPointerDown={action} aria-label="Spring of klim"><span>↑</span><small>SPRING / KLIM</small></button></div>}
+  {phase==='playing'&&<div className="v11-controls"><div className="v11-directions"><button onPointerDown={hold('left',true)} onPointerUp={hold('left',false)} onPointerLeave={hold('left',false)} onPointerCancel={hold('left',false)}><ChevronLeft/></button><button onPointerDown={hold('right',true)} onPointerUp={hold('right',false)} onPointerLeave={hold('right',false)} onPointerCancel={hold('right',false)}><ChevronRight/></button></div><button className="v11-action" onPointerDown={action}><span>↑</span><small>SPRING / KLIM</small></button></div>}
  </section>
 }
-
 
 function Games({app,game,go}){
  const[type,setType]=useState(null);
