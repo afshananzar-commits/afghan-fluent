@@ -455,9 +455,9 @@ class KiteGameErrorBoundary extends React.Component{
 function KiteAdventure({onExit}){
  const WORLD_W=1000,WORLD_H=720;
  const rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(1.4),keysRef=useRef({left:false,right:false}),actionLatchRef=useRef(false);
- const playerRef=useRef({x:82,y:590,w:68,h:94,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:0});
+ const playerRef=useRef({x:82,y:574,w:72,h:110,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:0});
  const melonsRef=useRef([]),collectedRef=useRef(new Set()),phaseRef=useRef('select'),secondsRef=useRef(60),factsRef=useRef([]),lastPaintRef=useRef(0);
- const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[frame,setFrame]=useState({player:{x:82,y:590,pose:'idle',dir:1,invuln:0},melons:[]});
+ const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[frame,setFrame]=useState({player:{x:82,y:574,pose:'idle',dir:1,invuln:0},melons:[]});
  const setPhase=p=>{phaseRef.current=p;setPhaseState(p)};
 
  const platforms=useMemo(()=>[
@@ -482,8 +482,8 @@ function KiteAdventure({onExit}){
  useEffect(()=>{phaseRef.current=phase},[phase]);
 
  const sprite=(pose)=>`/images/game/${character}-${pose}.png`;
- const resetPlayer=()=>{playerRef.current={x:82,y:590,w:68,h:94,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:1.0}};
- const resetRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=1.2;keysRef.current={left:false,right:false};actionLatchRef.current=false;setCollected(0);setSeconds(60);secondsRef.current=60;setFact(null);setHitNote(false);resetPlayer();setFrame({player:{x:82,y:590,pose:'idle',dir:1},melons:[]})};
+ const resetPlayer=()=>{playerRef.current={x:82,y:574,w:72,h:110,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:1.0}};
+ const resetRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=1.2;keysRef.current={left:false,right:false};actionLatchRef.current=false;setCollected(0);setSeconds(60);secondsRef.current=60;setFact(null);setHitNote(false);resetPlayer();setFrame({player:{x:82,y:574,pose:'idle',dir:1},melons:[]})};
  const startRound=()=>{setRuntimeError('');resetRound();setPhase('playing')};
  const restart=()=>{setRuntimeError('');setRoundSeed(v=>v+1);resetRound();setPhase('playing')};
  const finish=()=>{keysRef.current={left:false,right:false};setPhase('done')};
@@ -561,16 +561,17 @@ function KiteAdventure({onExit}){
    <div className="v8-decor rug-one"/><div className="v8-decor rug-two"/><div className="v8-decor plant-one"/><div className="v8-decor plant-two"/><div className="v8-decor solar"/><div className="v8-decor door"/>
    {kites.map((k,i)=>!collectedRef.current.has(k.id)&&<img key={k.id} className="v8-kite" src="/images/game/kite.png" style={{left:`${(k.x-42)/WORLD_W*100}%`,top:`${(k.y-54)/WORLD_H*100}%`,animationDelay:`${i*.35}s`}}/>)}
    {frame.melons.map(m=><img key={m.id} className="v8-melon" src="/images/game/watermelon.png" style={{left:`${(m.x-m.r)/WORLD_W*100}%`,top:`${(m.y-m.r)/WORLD_H*100}%`,width:`${m.r*2/WORLD_W*100}%`,transform:`rotate(${m.rot}rad)`}}/>)}
-   <img className={`v8-player pose-${frame.player.pose}`} src={sprite(frame.player.pose)} style={{left:`${frame.player.x/WORLD_W*100}%`,top:`${frame.player.y/WORLD_H*100}%`,width:`${playerRef.current.w/WORLD_W*100}%`,opacity:frame.player.invuln>0&&Math.floor(frame.player.invuln*12)%2===0?.55:1,transform:`scaleX(${frame.player.dir<0?-1:1})`}}/>
+   <img className={`v8-player pose-${frame.player.pose}`} src={sprite(frame.player.pose)} style={{left:`${(frame.player.x+playerRef.current.w/2)/WORLD_W*100}%`,top:`${frame.player.y/WORLD_H*100}%`,height:`${playerRef.current.h/WORLD_H*100}%`,opacity:frame.player.invuln>0&&Math.floor(frame.player.invuln*12)%2===0?.55:1,transform:`translateX(-50%) scaleX(${frame.player.dir<0?-1:1})`}}/>
    <div className="v8-hud"><span><img src="/images/game/kite.png"/>{collected}/3</span><span>⏱ {String(Math.floor(seconds/60)).padStart(2,'0')}:{String(seconds%60).padStart(2,'0')}</span></div>
    {hitNote&&<div className="v8-hit">🍉 Oeps! Probeer een andere route.</div>}
-   {phase==='playing'&&<div className="v8-controls"><div className="v8-directions"><button onPointerDown={hold('left',true)} onPointerUp={hold('left',false)} onPointerCancel={hold('left',false)} aria-label="Links"><ChevronLeft/></button><button onPointerDown={hold('right',true)} onPointerUp={hold('right',false)} onPointerCancel={hold('right',false)} aria-label="Rechts"><ChevronRight/></button></div><button className="v8-action" onPointerDown={action}><span>↑</span><small>SPRING / KLIM</small></button></div>}
+   
    {phase==='select'&&<div className="v8-overlay v8-select"><div className="v8-panel"><small>KIES JE AVONTURIER</small><h2>Wie gaat de vliegers zoeken?</h2><p>Pak drie vliegers, ontwijk rollende watermeloenen en vind via de ladders je route.</p><div className="v8-character-cards"><button className={character==='boy'?'selected':''} onClick={()=>setCharacter('boy')}><img src="/images/game/boy-idle.png"/><b>Jongen</b></button><button className={character==='girl'?'selected':''} onClick={()=>setCharacter('girl')}><img src="/images/game/girl-idle.png"/><b>Meisje</b></button></div><button className="primary-game v8-start" onClick={startRound}><Play/> Start avontuur</button><div className="v8-rules"><span>🪁 3 vliegers</span><span>🍉 Echt rollend</span><span>🪜 Ladders</span><span>🔊 Weetjes</span></div></div></div>}
    {phase==='paused'&&<div className="v8-overlay"><div className="v8-panel v8-small"><small>PAUZE</small><h2>Even gestopt</h2><button className="primary-game" onClick={togglePause}>Verder spelen</button></div></div>}
    {phase==='fact'&&fact&&<div className="v8-overlay"><div className="v8-panel v8-fact"><div className="v8-ribbon">Vlieger gepakt!</div><img className="v8-prize" src="/images/game/kite.png"/><small>WIST JE DAT?</small><h2>{fact.title}</h2><p>{fact.text}</p><button className="v8-listen" onClick={()=>playFact(fact)}><Volume2/> Luister naar het weetje</button><button className="primary-game" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div>}
    {phase==='error'&&<div className="v8-overlay"><div className="v8-panel v8-fact"><small>SPEL KON NIET STARTEN</small><h2>Er ging iets mis</h2><p>{runtimeError||'Onbekende fout.'}</p><button className="primary-game" onClick={onExit}>Terug naar Spelen</button></div></div>}
    {phase==='done'&&<div className="v8-overlay"><div className="v8-panel v8-done"><div className="v8-ribbon">Mooi gespeeld!</div><img src={sprite('idle')} className="v8-done-character"/><h2>Je avontuur is klaar</h2><p>Je hebt vandaag <b>{collected}</b> {collected===1?'weetje':'weetjes'} over Afghanistan ontdekt.</p><div className="v8-done-actions"><button onClick={onExit}>Terug naar Spelen</button><button className="primary-game" onClick={restart}><Play/> Volgende ronde</button></div></div></div>}
   </div>
+  {phase==='playing'&&<div className="v8-controls v8-controls-below"><div className="v8-directions"><button onPointerDown={hold('left',true)} onPointerUp={hold('left',false)} onPointerLeave={hold('left',false)} onPointerCancel={hold('left',false)} aria-label="Links"><ChevronLeft/></button><button onPointerDown={hold('right',true)} onPointerUp={hold('right',false)} onPointerLeave={hold('right',false)} onPointerCancel={hold('right',false)} aria-label="Rechts"><ChevronRight/></button></div><button className="v8-action" onPointerDown={action} aria-label="Spring of klim"><span>↑</span><small>SPRING / KLIM</small></button></div>}
  </section>
 }
 

@@ -2923,3 +2923,31 @@
 .challenge-error-card{margin:22px auto;width:min(560px,94%);padding:28px;border:1px solid #dfc9ac;border-radius:28px;background:#fff8ec;text-align:center;color:#234a36;box-shadow:0 18px 45px rgba(60,45,25,.1)}
 .challenge-error-card small{display:block;color:#b56b4b;letter-spacing:.15em;font-weight:800;margin-bottom:8px}.challenge-error-card h2{font-family:Georgia,serif;font-size:30px;margin:0 0 10px}.challenge-error-card p{color:#766e63;overflow-wrap:anywhere}
 @media(max-width:520px){.games-safe-grid{grid-template-columns:1fr 1fr;gap:10px}.games-safe-grid>button{min-height:132px;padding:16px 13px;border-radius:20px}.games-safe-grid>button b{font-size:16px}.games-safe-grid>button small{font-size:12px}}
+
+
+/* Vlieger Avontuur V9 — verhoudingen, karakteranker en moderne achtergrond */
+.kite-v8{display:flex;flex-direction:column;gap:8px;min-height:0}
+.v8-stage{background:#8ed0e8}
+.v8-sky{filter:saturate(1.14) contrast(1.04) brightness(1.03);background-size:cover;background-position:center center}
+.v8-player{width:auto!important;max-width:none;object-fit:contain;object-position:center bottom;transform-origin:50% 100%!important;margin:0!important;animation:none!important;filter:drop-shadow(0 5px 5px rgba(38,31,22,.24))}
+.v8-player.pose-run{animation:none!important}
+.v8-controls-below{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;z-index:40;width:100%;padding:0 12px 4px;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.v8-controls-below .v8-directions{display:flex;gap:10px}
+.v8-controls-below button{pointer-events:auto;background:rgba(255,250,239,.97);box-shadow:0 8px 18px rgba(55,42,28,.15);border:1px solid rgba(72,61,47,.14)}
+@media(max-width:620px){
+ .games-focus.kite-game-active{padding:0 0 74px!important}
+ .kite-v8{height:calc(100dvh - 74px);overflow:hidden;padding:0 6px 4px!important;gap:6px}
+ .v8-header{flex:0 0 61px}
+ .v8-stage{flex:1 1 auto;height:auto!important;min-height:0!important;aspect-ratio:auto!important;border-radius:24px}
+ .v8-controls-below{flex:0 0 82px;padding:0 10px 4px}
+ .v8-controls-below button{width:72px;height:72px;border-radius:24px}
+ .v8-controls-below .v8-action{width:138px;height:72px}
+ .v8-action>span{font-size:38px;line-height:28px}
+ .v8-action small{font-size:10px}
+ .v8-sky{background-size:cover!important;background-position:center 38%!important}
+}
+@media(max-width:390px){
+ .v8-controls-below{flex-basis:76px}
+ .v8-controls-below button{width:66px;height:66px;border-radius:22px}
+ .v8-controls-below .v8-action{width:126px;height:66px}
+}
