@@ -555,10 +555,9 @@ function KiteAdventure({onExit}){
    <div className="v8-header-actions"><button className="v8-pause" onClick={togglePause} disabled={!['playing','paused'].includes(phase)}>{phase==='paused'?'▶':'Ⅱ'}</button><button onClick={finish}><SkipForward/><span>Overslaan</span></button></div>
   </header>
   <div className="v8-stage" style={worldStyle}>
-   <div className="v8-sky"/><div className="v8-sun"/><div className="v8-mountains v8-mountains-a"/><div className="v8-mountains v8-mountains-b"/><div className="v8-city-silhouette"/><div className="v8-city-haze"/>
-   {platforms.map(renderBuilding)}
+   <div className="v8-sky v10-city-background"/>
+   {platforms.map(pl=><div key={pl.id} className="v10-walkway" style={{left:`${pl.x1/WORLD_W*100}%`,top:`${pl.y/WORLD_H*100}%`,width:`${(pl.x2-pl.x1)/WORLD_W*100}%`}} />)}
    {ladders.map(l=><div key={l.id} className="v8-ladder" style={{left:`${(l.x-l.w/2)/WORLD_W*100}%`,top:`${l.top/WORLD_H*100}%`,width:`${l.w/WORLD_W*100}%`,height:`${(l.bottom-l.top)/WORLD_H*100}%`}}><span/></div>)}
-   <div className="v8-decor rug-one"/><div className="v8-decor rug-two"/><div className="v8-decor plant-one"/><div className="v8-decor plant-two"/><div className="v8-decor solar"/><div className="v8-decor door"/>
    {kites.map((k,i)=>!collectedRef.current.has(k.id)&&<img key={k.id} className="v8-kite" src="/images/game/kite.png" style={{left:`${(k.x-42)/WORLD_W*100}%`,top:`${(k.y-54)/WORLD_H*100}%`,animationDelay:`${i*.35}s`}}/>)}
    {frame.melons.map(m=><img key={m.id} className="v8-melon" src="/images/game/watermelon.png" style={{left:`${(m.x-m.r)/WORLD_W*100}%`,top:`${(m.y-m.r)/WORLD_H*100}%`,width:`${m.r*2/WORLD_W*100}%`,transform:`rotate(${m.rot}rad)`}}/>)}
    <img className={`v8-player pose-${frame.player.pose}`} src={sprite(frame.player.pose)} style={{left:`${(frame.player.x+playerRef.current.w/2)/WORLD_W*100}%`,top:`${frame.player.y/WORLD_H*100}%`,height:`${playerRef.current.h/WORLD_H*100}%`,opacity:frame.player.invuln>0&&Math.floor(frame.player.invuln*12)%2===0?.55:1,transform:`translateX(-50%) scaleX(${frame.player.dir<0?-1:1})`}}/>

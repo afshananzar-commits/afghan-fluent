@@ -2951,3 +2951,59 @@
  .v8-controls-below button{width:66px;height:66px;border-radius:22px}
  .v8-controls-below .v8-action{width:126px;height:66px}
 }
+
+
+/* =========================================================
+   VLIEGER AVONTUUR V10 — ILLUSTRATED WORLD
+   Physics/collision rectangles remain in JS, but are no
+   longer rendered as block-shaped buildings.
+   ========================================================= */
+.v10-city-background{
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  background-image:
+    linear-gradient(180deg,rgba(255,247,224,.02),rgba(39,72,55,.05)),
+    url('/images/game/afghan-city-v10.jpg')!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  filter:saturate(1.04) contrast(1.01) brightness(1.035)!important;
+}
+.v8-sun,.v8-mountains,.v8-city-silhouette,.v8-city-haze,.v8-decor{display:none!important}
+.v8-platform{display:none!important}
+
+/* Only real traversable surfaces are drawn; no fake rectangular buildings. */
+.v10-walkway{
+  position:absolute;
+  z-index:7;
+  height:14px;
+  transform:translateY(-7px);
+  border-radius:8px;
+  background:
+    linear-gradient(180deg,#d6a363 0 16%,#a86835 18% 48%,#744326 50% 100%);
+  box-shadow:
+    inset 0 2px rgba(255,231,184,.55),
+    inset 0 -2px rgba(67,37,20,.25),
+    0 5px 8px rgba(54,36,22,.22);
+}
+.v10-walkway:after{
+  content:"";
+  position:absolute;
+  inset:2px 5px;
+  opacity:.28;
+  background:repeating-linear-gradient(90deg,transparent 0 42px,rgba(61,35,20,.55) 43px 45px);
+}
+.v8-ladder{z-index:10!important}
+.v8-player{z-index:18!important;transform-origin:50% 100%!important}
+.v8-player.pose-run{animation:none!important;margin-top:0!important}
+.v8-kite{z-index:16!important}
+.v8-melon{z-index:17!important}
+.v8-hud{z-index:26!important}
+
+@media(max-width:620px){
+  .v10-city-background{
+    background-size:auto 100%!important;
+    background-position:center center!important;
+  }
+  .v10-walkway{height:11px;transform:translateY(-5px)}
+}
