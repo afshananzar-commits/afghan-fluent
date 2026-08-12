@@ -2655,3 +2655,59 @@
   .kite-select .character-choice button{min-height:96px;padding:7px}
   .kite-select .character-preview{width:52px;height:52px;font-size:34px}
 }
+
+/* =========================================================
+   VLIEGER AVONTUUR v2 — premium mockup look & stable overlays
+   ========================================================= */
+.kite-adventure-shell{gap:10px}
+.kite-game-topbar{background:linear-gradient(180deg,#fffaf1 0%,#f7ecdc 100%);border:1px solid #e0cfb7;box-shadow:0 10px 28px rgba(66,48,31,.10);border-radius:22px;height:58px;padding:8px 10px}
+.kite-game-topbar button{border:1px solid rgba(178,144,105,.14);background:#f1e6d5;color:#2c523b;border-radius:15px;font-family:Fraunces,serif;font-size:12px}
+.kite-game-topbar .kite-skip{background:#f6eadc;color:#8c6857}.kite-title small{font-size:9px}.kite-title b{font-size:22px}
+.kite-game-stage{border-radius:28px;border:1px solid rgba(44,73,53,.22);box-shadow:0 20px 48px rgba(39,60,46,.18),inset 0 0 0 1px rgba(255,255,255,.35);background:#c8dfdf;isolation:isolate}
+.kite-canvas{aspect-ratio:900/620}
+.kite-stage-gloss{position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(255,255,255,.12),transparent 22%,transparent 76%,rgba(38,68,48,.08));box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+.kite-overlay{z-index:8;background:rgba(23,43,33,.58);backdrop-filter:blur(7px) saturate(.9);-webkit-backdrop-filter:blur(7px) saturate(.9);padding:22px}
+.kite-panel{position:relative;width:min(500px,92%);border-radius:30px;padding:34px 32px 28px;background:radial-gradient(circle at 50% 0,#fffdf7 0,#fff8eb 52%,#f7ead9 100%);border:1px solid #ead6b9;box-shadow:0 30px 80px rgba(16,31,23,.38),inset 0 1px 0 rgba(255,255,255,.9);gap:12px}
+.kite-panel:after{content:"";position:absolute;inset:8px;border:1px solid rgba(190,150,103,.14);border-radius:24px;pointer-events:none}
+.kite-panel h2{font-size:36px;line-height:1.02;letter-spacing:-.02em}.kite-panel h3{font-size:19px}.kite-panel p{font-size:14px;line-height:1.6;color:#66655f}
+.kite-ribbon{position:relative;justify-self:center;margin-top:-56px;margin-bottom:2px;background:linear-gradient(180deg,#4f864f,#37683f);color:#fff;font-family:Fraunces,serif;font-size:24px;font-weight:850;padding:11px 31px 12px;border-radius:7px 7px 13px 13px;transform:rotate(-1deg);box-shadow:0 8px 18px rgba(44,82,49,.28);text-shadow:0 1px 1px rgba(0,0,0,.12)}
+.kite-ribbon:before,.kite-ribbon:after{content:"";position:absolute;top:10px;width:24px;height:40px;background:#2d5935;z-index:-1}.kite-ribbon:before{left:-18px;transform:skewY(24deg)}.kite-ribbon:after{right:-18px;transform:skewY(-24deg)}
+.done-ribbon{font-size:27px;padding-inline:36px}
+.premium-kite{font-size:62px;margin-top:0;animation:kiteFloat 2.3s ease-in-out infinite;filter:drop-shadow(0 8px 12px rgba(218,162,60,.32))}
+@keyframes kiteFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-7px) rotate(4deg)}}
+.kite-fact-divider{display:flex;align-items:center;justify-content:center;gap:9px;color:#315b43;opacity:.65}.kite-fact-divider i{width:46px;height:1px;background:#cdbb9d}.kite-fact-divider span{font-size:11px}
+.kite-fact-actions{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:center;margin-top:8px}.kite-fact-actions .fact-listen{width:52px;height:52px;padding:0;display:grid;place-items:center;background:#315b43;color:#fff;border:0;box-shadow:0 7px 18px rgba(49,91,67,.22)}.kite-fact-actions .fact-listen svg{width:21px}
+.kite-fact-actions .kite-start{height:52px}
+.done-character-wrap{width:112px;height:112px;border-radius:50%;justify-self:center;display:grid;place-items:center;background:linear-gradient(180deg,#d7e8e3,#f4e8cf);border:4px solid #fff7e9;box-shadow:0 8px 26px rgba(49,91,67,.16);margin-top:2px}.done-character{font-size:72px;line-height:1}.kite-confetti{color:#d07b55;font-size:18px;letter-spacing:.22em;opacity:.75}.kite-done-actions{grid-template-columns:1fr 1.25fr;gap:10px}.kite-done-actions>button{min-height:52px}.kite-done-actions>button:first-child{background:#efe3d2;border-color:#dcc6a8;color:#735d50}
+.kite-select-panel{padding-top:28px}.kite-select-panel .kite-eyebrow{font-size:11px}.kite-select-panel h2{font-size:34px}.character-choice button{min-height:145px;background:linear-gradient(180deg,#fbf5e9,#f0e5d4);border:1px solid #ddcdb7;box-shadow:0 5px 14px rgba(79,61,42,.05)}.character-choice button.active{background:linear-gradient(180deg,#eaf2e8,#dbe9df);box-shadow:0 9px 25px rgba(49,91,67,.15)}.character-preview{width:88px;height:88px;font-size:57px;box-shadow:inset 0 0 0 1px rgba(49,91,67,.08)}
+.kite-controls-overlay{position:absolute;left:18px;right:18px;bottom:18px;z-index:6;margin:0;max-width:none;width:auto;display:grid;grid-template-columns:84px 84px 1fr;gap:10px;pointer-events:none}.kite-controls-overlay button{pointer-events:auto;height:72px;border-radius:28px;background:rgba(255,249,238,.92);border:1px solid rgba(232,216,190,.9);box-shadow:0 10px 24px rgba(37,50,40,.22),inset 0 1px 0 rgba(255,255,255,.9);backdrop-filter:blur(7px)}.kite-controls-overlay .kite-action{justify-self:end;width:118px;border-radius:30px;background:rgba(255,249,238,.94);color:#315b43;border-color:#e1cfb5}.kite-controls-overlay .kite-action>span{font-size:30px}.kite-controls-overlay .kite-action small{font-size:9px;color:#315b43}
+.kite-hit-note{top:74px;z-index:7;background:#fff4df;border-color:#dfbf8f;padding:10px 16px}
+.phase-fact .kite-howto,.phase-done .kite-howto,.phase-playing .kite-howto{display:none!important}
+.kite-howto{grid-template-columns:repeat(4,1fr);margin-top:2px}.kite-howto span{background:#faf1e5;box-shadow:0 4px 12px rgba(65,52,38,.04)}
+
+@media(max-width:700px){
+  .kite-game-active{padding-left:0!important;padding-right:0!important}
+  .kite-adventure-shell{gap:8px}
+  .kite-game-topbar{margin:0 0 0;border-radius:18px;height:54px;padding:7px 8px}
+  .kite-game-topbar button{height:38px;border-radius:14px;font-size:10px}.kite-title b{font-size:19px}
+  .kite-game-stage{border-radius:0 0 26px 26px;border-left:0;border-right:0;min-height:auto!important;overflow:hidden!important}
+  .kite-canvas{aspect-ratio:900/680;object-fit:cover}
+  .kite-overlay{position:absolute!important;inset:0!important;min-height:0!important;border-radius:0!important;overflow:hidden!important;padding:16px!important;align-items:center!important}
+  .kite-panel{width:min(430px,94%)!important;margin:0 auto!important;padding:27px 20px 22px!important;border-radius:27px!important;gap:9px!important}
+  .kite-panel h2{font-size:30px!important}.kite-panel h3{font-size:17px}.kite-panel p{font-size:13px!important;line-height:1.48!important}
+  .kite-ribbon{font-size:21px;margin-top:-44px;padding:9px 26px 10px}.done-ribbon{font-size:23px}.premium-kite{font-size:54px}
+  .kite-fact-actions{grid-template-columns:48px 1fr}.kite-fact-actions .fact-listen{width:48px;height:48px}.kite-fact-actions .kite-start{height:48px}
+  .done-character-wrap{width:94px;height:94px}.done-character{font-size:60px}.kite-done-actions{grid-template-columns:1fr!important}.kite-done-actions>button{min-height:46px}
+  .kite-controls-overlay{left:12px;right:12px;bottom:12px;grid-template-columns:64px 64px 1fr;gap:8px}.kite-controls-overlay button{height:62px;border-radius:22px}.kite-controls-overlay .kite-action{width:98px;height:62px;border-radius:24px}.kite-controls-overlay svg{width:26px}.kite-controls-overlay .kite-action>span{font-size:28px}
+  .kite-hit-note{top:60px;font-size:10px;padding:8px 12px}
+  .phase-select .kite-game-stage{min-height:465px!important}
+  .phase-select .kite-select{position:absolute!important;inset:0!important;min-height:0!important;background:rgba(20,42,32,.44)!important;padding:14px!important}
+  .phase-select .kite-select-panel{padding:22px 18px 18px!important}.phase-select .kite-select-panel h2{font-size:29px!important}.phase-select .character-choice{margin:5px 0 4px}.phase-select .character-choice button{min-height:118px;padding:8px}.phase-select .character-preview{width:66px;height:66px;font-size:43px}.phase-select .kite-start{min-height:47px}
+  .phase-select .kite-howto{display:grid!important;grid-template-columns:1fr 1fr}.phase-select .kite-howto span{font-size:9px;padding:7px}
+}
+@media(max-width:390px){
+  .kite-game-topbar button span{display:inline}.kite-game-topbar button{padding:0 8px}.kite-title b{font-size:17px}.kite-game-topbar .kite-title small{display:block}
+  .kite-panel{padding:24px 16px 18px!important}.kite-panel h2{font-size:27px!important}.kite-ribbon{font-size:19px}.done-ribbon{font-size:21px}
+  .kite-controls-overlay{grid-template-columns:58px 58px 1fr}.kite-controls-overlay button{height:58px}.kite-controls-overlay .kite-action{width:92px;height:58px}
+  .phase-select .kite-game-stage{min-height:445px!important}.phase-select .character-choice button{min-height:108px}.phase-select .character-preview{width:60px;height:60px;font-size:40px}.phase-select .kite-howto{display:none!important}
+}
