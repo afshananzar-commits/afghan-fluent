@@ -432,12 +432,32 @@ const AFGHAN_FACTS=[
  {title:'Steden en bergen',text:'Moderne steden, oude bazaars, dorpen en hoge bergen liggen in Afghanistan soms verrassend dicht bij elkaar.'}
 ];
 
+
+class KiteGameErrorBoundary extends React.Component{
+ constructor(props){super(props);this.state={error:null}}
+ static getDerivedStateFromError(error){return{error}}
+ componentDidCatch(error,info){console.error('Vlieger Avontuur renderfout:',error,info)}
+ render(){
+  if(this.state.error){
+   return <section className="kite-v8 kite-v8-error">
+    <div className="v8-error-card">
+     <small>SPEL KON NIET STARTEN</small>
+     <h2>Vlieger Avontuur liep vast</h2>
+     <p>{String(this.state.error?.message||this.state.error||'Onbekende fout')}</p>
+     <button className="primary-game" onClick={this.props.onReset}>Terug naar Spelen</button>
+    </div>
+   </section>
+  }
+  return this.props.children
+ }
+}
+
 function KiteAdventure({onExit}){
  const WORLD_W=1000,WORLD_H=720;
  const rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(1.4),keysRef=useRef({left:false,right:false}),actionLatchRef=useRef(false);
  const playerRef=useRef({x:82,y:590,w:68,h:94,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:0});
  const melonsRef=useRef([]),collectedRef=useRef(new Set()),phaseRef=useRef('select'),secondsRef=useRef(60),factsRef=useRef([]),lastPaintRef=useRef(0);
- const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[frame,setFrame]=useState({player:{x:82,y:590,pose:'idle',dir:1},melons:[]});
+ const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[frame,setFrame]=useState({player:{x:82,y:590,pose:'idle',dir:1,invuln:0},melons:[]});
  const setPhase=p=>{phaseRef.current=p;setPhaseState(p)};
 
  const platforms=useMemo(()=>[
@@ -461,11 +481,11 @@ function KiteAdventure({onExit}){
  useEffect(()=>{secondsRef.current=seconds},[seconds]);
  useEffect(()=>{phaseRef.current=phase},[phase]);
 
- const sprite=(pose)=>`/images/game-v8/${character}-${pose}.png`;
+ const sprite=(pose)=>`/images/game/${character}-${pose}.png`;
  const resetPlayer=()=>{playerRef.current={x:82,y:590,w:68,h:94,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:1.0}};
  const resetRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=1.2;keysRef.current={left:false,right:false};actionLatchRef.current=false;setCollected(0);setSeconds(60);secondsRef.current=60;setFact(null);setHitNote(false);resetPlayer();setFrame({player:{x:82,y:590,pose:'idle',dir:1},melons:[]})};
- const startRound=()=>{resetRound();setPhase('playing')};
- const restart=()=>{setRoundSeed(v=>v+1);resetRound();setPhase('playing')};
+ const startRound=()=>{setRuntimeError('');resetRound();setPhase('playing')};
+ const restart=()=>{setRuntimeError('');setRoundSeed(v=>v+1);resetRound();setPhase('playing')};
  const finish=()=>{keysRef.current={left:false,right:false};setPhase('done')};
  const togglePause=()=>{if(phaseRef.current==='playing')setPhase('paused');else if(phaseRef.current==='paused')setPhase('playing')};
  const playFact=f=>f&&speak(`${f.title}. ${f.text}`,.9);
@@ -509,9 +529,15 @@ function KiteAdventure({onExit}){
    for(const k of kites){if(collectedRef.current.has(k.id))continue;if(Math.hypot(pcx-k.x,pcy-k.y)<63){collectedRef.current.add(k.id);const n=collectedRef.current.size;setCollected(n);setFact(factsRef.current[n-1]||factsRef.current[0]);keysRef.current={left:false,right:false};setPhase('fact');break}}
   };
   const paint=time=>{
-   const dt=Math.min(.03,(time-lastRef.current)/1000||.016);lastRef.current=time;update(dt);
-   if(time-lastPaintRef.current>33){lastPaintRef.current=time;const p=playerRef.current;let pose='idle';if(p.mode==='climb')pose='climb';else if(!p.onGround)pose='jump';else if(Math.abs(p.vx)>35)pose='run';setFrame({player:{x:p.x,y:p.y,pose,dir:p.dir,invuln:p.invuln},melons:melonsRef.current.map(m=>({...m}))})}
-   rafRef.current=requestAnimationFrame(paint)
+   try{
+    const dt=Math.min(.03,(time-lastRef.current)/1000||.016);lastRef.current=time;update(dt);
+    if(time-lastPaintRef.current>33){lastPaintRef.current=time;const p=playerRef.current;let pose='idle';if(p.mode==='climb')pose='climb';else if(!p.onGround)pose='jump';else if(Math.abs(p.vx)>35)pose='run';setFrame({player:{x:p.x,y:p.y,pose,dir:p.dir,invuln:p.invuln||0},melons:melonsRef.current.map(m=>({...m}))})}
+    rafRef.current=requestAnimationFrame(paint)
+   }catch(err){
+    console.error('Vlieger Avontuur runtimefout:',err);
+    setRuntimeError(String(err?.message||err||'Onbekende runtimefout'));
+    setPhase('error');
+   }
   };
   rafRef.current=requestAnimationFrame(paint);return()=>cancelAnimationFrame(rafRef.current)
  },[platforms,ladders,kites]);
@@ -533,22 +559,23 @@ function KiteAdventure({onExit}){
    {platforms.map(renderBuilding)}
    {ladders.map(l=><div key={l.id} className="v8-ladder" style={{left:`${(l.x-l.w/2)/WORLD_W*100}%`,top:`${l.top/WORLD_H*100}%`,width:`${l.w/WORLD_W*100}%`,height:`${(l.bottom-l.top)/WORLD_H*100}%`}}><span/></div>)}
    <div className="v8-decor rug-one"/><div className="v8-decor rug-two"/><div className="v8-decor plant-one"/><div className="v8-decor plant-two"/><div className="v8-decor solar"/><div className="v8-decor door"/>
-   {kites.map((k,i)=>!collectedRef.current.has(k.id)&&<img key={k.id} className="v8-kite" src="/images/game-v8/kite.svg" style={{left:`${(k.x-42)/WORLD_W*100}%`,top:`${(k.y-54)/WORLD_H*100}%`,animationDelay:`${i*.35}s`}}/>)}
-   {frame.melons.map(m=><img key={m.id} className="v8-melon" src="/images/game-v8/watermelon.png" style={{left:`${(m.x-m.r)/WORLD_W*100}%`,top:`${(m.y-m.r)/WORLD_H*100}%`,width:`${m.r*2/WORLD_W*100}%`,transform:`rotate(${m.rot}rad)`}}/>)}
+   {kites.map((k,i)=>!collectedRef.current.has(k.id)&&<img key={k.id} className="v8-kite" src="/images/game/kite.png" style={{left:`${(k.x-42)/WORLD_W*100}%`,top:`${(k.y-54)/WORLD_H*100}%`,animationDelay:`${i*.35}s`}}/>)}
+   {frame.melons.map(m=><img key={m.id} className="v8-melon" src="/images/game/watermelon.png" style={{left:`${(m.x-m.r)/WORLD_W*100}%`,top:`${(m.y-m.r)/WORLD_H*100}%`,width:`${m.r*2/WORLD_W*100}%`,transform:`rotate(${m.rot}rad)`}}/>)}
    <img className={`v8-player pose-${frame.player.pose}`} src={sprite(frame.player.pose)} style={{left:`${frame.player.x/WORLD_W*100}%`,top:`${frame.player.y/WORLD_H*100}%`,width:`${playerRef.current.w/WORLD_W*100}%`,opacity:frame.player.invuln>0&&Math.floor(frame.player.invuln*12)%2===0?.55:1,transform:`scaleX(${frame.player.dir<0?-1:1})`}}/>
-   <div className="v8-hud"><span><img src="/images/game-v8/kite.svg"/>{collected}/3</span><span>⏱ {String(Math.floor(seconds/60)).padStart(2,'0')}:{String(seconds%60).padStart(2,'0')}</span></div>
+   <div className="v8-hud"><span><img src="/images/game/kite.png"/>{collected}/3</span><span>⏱ {String(Math.floor(seconds/60)).padStart(2,'0')}:{String(seconds%60).padStart(2,'0')}</span></div>
    {hitNote&&<div className="v8-hit">🍉 Oeps! Probeer een andere route.</div>}
    {phase==='playing'&&<div className="v8-controls"><div className="v8-directions"><button onPointerDown={hold('left',true)} onPointerUp={hold('left',false)} onPointerCancel={hold('left',false)} aria-label="Links"><ChevronLeft/></button><button onPointerDown={hold('right',true)} onPointerUp={hold('right',false)} onPointerCancel={hold('right',false)} aria-label="Rechts"><ChevronRight/></button></div><button className="v8-action" onPointerDown={action}><span>↑</span><small>SPRING / KLIM</small></button></div>}
-   {phase==='select'&&<div className="v8-overlay v8-select"><div className="v8-panel"><small>KIES JE AVONTURIER</small><h2>Wie gaat de vliegers zoeken?</h2><p>Pak drie vliegers, ontwijk rollende watermeloenen en vind via de ladders je route.</p><div className="v8-character-cards"><button className={character==='boy'?'selected':''} onClick={()=>setCharacter('boy')}><img src="/images/game-v8/boy-idle.png"/><b>Jongen</b></button><button className={character==='girl'?'selected':''} onClick={()=>setCharacter('girl')}><img src="/images/game-v8/girl-idle.png"/><b>Meisje</b></button></div><button className="primary-game v8-start" onClick={startRound}><Play/> Start avontuur</button><div className="v8-rules"><span>🪁 3 vliegers</span><span>🍉 Echt rollend</span><span>🪜 Ladders</span><span>🔊 Weetjes</span></div></div></div>}
+   {phase==='select'&&<div className="v8-overlay v8-select"><div className="v8-panel"><small>KIES JE AVONTURIER</small><h2>Wie gaat de vliegers zoeken?</h2><p>Pak drie vliegers, ontwijk rollende watermeloenen en vind via de ladders je route.</p><div className="v8-character-cards"><button className={character==='boy'?'selected':''} onClick={()=>setCharacter('boy')}><img src="/images/game/boy-idle.png"/><b>Jongen</b></button><button className={character==='girl'?'selected':''} onClick={()=>setCharacter('girl')}><img src="/images/game/girl-idle.png"/><b>Meisje</b></button></div><button className="primary-game v8-start" onClick={startRound}><Play/> Start avontuur</button><div className="v8-rules"><span>🪁 3 vliegers</span><span>🍉 Echt rollend</span><span>🪜 Ladders</span><span>🔊 Weetjes</span></div></div></div>}
    {phase==='paused'&&<div className="v8-overlay"><div className="v8-panel v8-small"><small>PAUZE</small><h2>Even gestopt</h2><button className="primary-game" onClick={togglePause}>Verder spelen</button></div></div>}
-   {phase==='fact'&&fact&&<div className="v8-overlay"><div className="v8-panel v8-fact"><div className="v8-ribbon">Vlieger gepakt!</div><img className="v8-prize" src="/images/game-v8/kite.svg"/><small>WIST JE DAT?</small><h2>{fact.title}</h2><p>{fact.text}</p><button className="v8-listen" onClick={()=>playFact(fact)}><Volume2/> Luister naar het weetje</button><button className="primary-game" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div>}
+   {phase==='fact'&&fact&&<div className="v8-overlay"><div className="v8-panel v8-fact"><div className="v8-ribbon">Vlieger gepakt!</div><img className="v8-prize" src="/images/game/kite.png"/><small>WIST JE DAT?</small><h2>{fact.title}</h2><p>{fact.text}</p><button className="v8-listen" onClick={()=>playFact(fact)}><Volume2/> Luister naar het weetje</button><button className="primary-game" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div>}
+   {phase==='error'&&<div className="v8-overlay"><div className="v8-panel v8-fact"><small>SPEL KON NIET STARTEN</small><h2>Er ging iets mis</h2><p>{runtimeError||'Onbekende fout.'}</p><button className="primary-game" onClick={onExit}>Terug naar Spelen</button></div></div>}
    {phase==='done'&&<div className="v8-overlay"><div className="v8-panel v8-done"><div className="v8-ribbon">Mooi gespeeld!</div><img src={sprite('idle')} className="v8-done-character"/><h2>Je avontuur is klaar</h2><p>Je hebt vandaag <b>{collected}</b> {collected===1?'weetje':'weetjes'} over Afghanistan ontdekt.</p><div className="v8-done-actions"><button onClick={onExit}>Terug naar Spelen</button><button className="primary-game" onClick={restart}><Play/> Volgende ronde</button></div></div></div>}
   </div>
  </section>
 }
 
 
-function Games({app,game,go}){const[type,setType]=useState(game.game.lastGame||'sentence');const choose=t=>{setType(t);game.updateGame(g=>({...g,lastGame:t}))};return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="SPELEN & LEREN" title="Challenges" sub="Oefen kort, ontdek Afghanistan en verbeter wat nog lastig is." badge={<><Trophy/> Level {game.level}</>}/>{type!=='kite'&&<GameSummary game={game}/>}<div className="games-tabs games-tabs-minimal"><button className={type==='sentence'?'active':''} onClick={()=>choose('sentence')}><BookText/><span>Bouw de zin</span></button><button className={type==='listen'?'active':''} onClick={()=>choose('listen')}><Headphones/><span>Luisteren</span></button><button className={type==='picture'?'active':''} onClick={()=>choose('picture')}><Layers3/><span>Plaatjes</span></button><button className={type==='speed'?'active':''} onClick={()=>choose('speed')}><Zap/><span>Snelle ronde</span></button><button className={type==='kite'?'active':''} onClick={()=>choose('kite')}><Sparkles/><span>Vlieger</span></button></div>{type==='sentence'?<SentenceBuilder game={game}/>:type==='listen'?<ListeningQuiz game={game}/>:type==='picture'?<PictureQuiz game={game}/>:type==='speed'?<SpeedRound game={game}/>:<KiteAdventure onExit={()=>choose('sentence')}/>} {type!=='kite'&&<><SectionTitle title="Badges"/><Badges app={app} game={game}/></>}</div>}
+function Games({app,game,go}){const savedGameType=game?.game?.lastGame;const[type,setType]=useState(savedGameType&&savedGameType!=='kite'?savedGameType:'sentence');const choose=t=>{setType(t);game.updateGame(g=>({...g,lastGame:t}))};return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="SPELEN & LEREN" title="Challenges" sub="Oefen kort, ontdek Afghanistan en verbeter wat nog lastig is." badge={<><Trophy/> Level {game.level}</>}/>{type!=='kite'&&<GameSummary game={game}/>}<div className="games-tabs games-tabs-minimal"><button className={type==='sentence'?'active':''} onClick={()=>choose('sentence')}><BookText/><span>Bouw de zin</span></button><button className={type==='listen'?'active':''} onClick={()=>choose('listen')}><Headphones/><span>Luisteren</span></button><button className={type==='picture'?'active':''} onClick={()=>choose('picture')}><Layers3/><span>Plaatjes</span></button><button className={type==='speed'?'active':''} onClick={()=>choose('speed')}><Zap/><span>Snelle ronde</span></button><button className={type==='kite'?'active':''} onClick={()=>choose('kite')}><Sparkles/><span>Vlieger</span></button></div>{type==='sentence'?<SentenceBuilder game={game}/>:type==='listen'?<ListeningQuiz game={game}/>:type==='picture'?<PictureQuiz game={game}/>:type==='speed'?<SpeedRound game={game}/>:<KiteGameErrorBoundary onReset={()=>choose('sentence')}><KiteAdventure onExit={()=>choose('sentence')}/></KiteGameErrorBoundary>} {type!=='kite'&&<><SectionTitle title="Badges"/><Badges app={app} game={game}/></>}</div>}
 
 function Words({app,game,go,selectedLesson,clearSelectedLesson}){const[query,setQuery]=useState(''),[idx,setIdx]=useState(game.game.positions?.words||0),[revealed,setRevealed]=useState(false),[dragX,setDragX]=useState(0),[dragging,setDragging]=useState(false),start=useRef(null),[exit,setExit]=useState(null);const filtered=useMemo(()=>{const ids=selectedLesson?new Set(selectedLesson.words.map(x=>x.id)):null;return vocab.filter(v=>(!ids||ids.has(v.id))&&(!query||`${v.dutch} ${v.spoken} ${v.latin}`.toLowerCase().includes(query.toLowerCase())))},[query,selectedLesson]);const w=filtered[idx%Math.max(1,filtered.length)]||vocab[0],nextW=filtered[(idx+1)%Math.max(1,filtered.length)]||w,known=app.knownIds.has(w.id);const finish=right=>{if(exit)return;app.update(p=>{const set=new Set(p.known||[]),was=set.has(w.id);right?set.add(w.id):set.delete(w.id);return{...p,known:[...set]}});practice(game,`word:${w.id}`,right);if(right&&!known)awardXP(game,10,'woord geleerd');setExit(right?'right':'left');setDragX(right?700:-700);setTimeout(()=>{const n=(idx+1)%filtered.length;setIdx(n);remember(game,'words',n);setRevealed(false);setDragX(0);setExit(null)},270)};return <div className="screen focus-screen words-focus"><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="1000+ WOORDEN" title="Woorden" sub="Swipe rechts: Ken ik. Links: Nog oefenen." badge={<>{idx+1} / {filtered.length}</>}/>{selectedLesson&&<div className="review-banner"><div className="seal">{selectedLesson.emoji}</div><div><b>Les {selectedLesson.number} · {selectedLesson.title}</b><span>{selectedLesson.words.length} woorden</span></div><button onClick={clearSelectedLesson}><X/></button></div>}<div className="word-toolbar"><label><Search/><input value={query} onChange={e=>{setQuery(e.target.value);setIdx(0)}} placeholder="Zoek Nederlands of fonetisch…"/></label></div><div className="swipe-stage"><article className="premium-flashcard swipe-card swipe-card-under"><WordIllustration word={nextW}/></article><article className="premium-flashcard swipe-card swipe-card-top" style={{transform:`translateX(${dragX}px) rotate(${dragX/24}deg)`,transition:dragging?'none':'transform .27s'}} onPointerDown={e=>{start.current=e.clientX;setDragging(true)}} onPointerMove={e=>{if(start.current!==null)setDragX(Math.max(-220,Math.min(220,e.clientX-start.current)))}} onPointerUp={()=>{setDragging(false);start.current=null;if(Math.abs(dragX)>85)finish(dragX>0);else setDragX(0)}} onClick={()=>Math.abs(dragX)<8&&setRevealed(r=>!r)}><div className={`swipe-stamp learn ${dragX<-25?'show':''}`}>NOG OEFENEN</div><div className={`swipe-stamp know ${dragX>25?'show':''}`}>KEN IK!</div><div className="card-top"><span>{labelFor(w.category)}</span></div><WordIllustration word={w}/><div className="word-copy"><small>NEDERLANDS</small><h2>{w.dutch}</h2>{revealed?<><small>ZO ZEG JE HET</small><h3>{w.spoken||w.latin}</h3><button className="sound-btn" onClick={e=>{e.stopPropagation();speak(w.spoken||w.latin,.88,'word',w.id)}}><Volume2/> Luister</button></>:<div className="reveal-hint"><Eye/> Tik voor vertaling</div>}</div></article></div><div className="card-nav swipe-actions-row"><button onClick={()=>finish(false)}><X/> Nog oefenen</button><button onClick={()=>finish(true)}><Check/> Ken ik! +10 XP</button></div></div>}
 
