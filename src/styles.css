@@ -2752,3 +2752,54 @@
  .kite-controls-dock .kite-action{height:56px!important;width:auto!important;border-radius:18px!important}
 }
 @media(max-width:390px){.kite-game-stage{border-radius:22px!important}.kite-controls-dock{grid-template-columns:62px 62px 1fr!important}.kite-controls-dock button{height:54px!important}}
+
+/* =========================================================
+   VLIEGER AVONTUUR V5 — CINEMATIC AFGHANISTAN
+   Visual target: illustrated modern Afghan city + Hindu Kush,
+   immersive stage, floating glass controls and richer depth.
+   ========================================================= */
+.games-focus.kite-game-active{padding-top:6px!important}
+.games-focus.kite-game-active>.page-head,
+.games-focus.kite-game-active>.focus-exit,
+.games-focus.kite-game-active>.games-tabs{display:none!important}
+.kite-adventure-shell{max-width:980px!important;margin:0 auto!important;gap:10px!important}
+.kite-game-topbar{height:62px!important;border-radius:24px!important;background:linear-gradient(180deg,rgba(255,250,241,.98),rgba(245,234,216,.98))!important;border:1px solid rgba(208,184,150,.72)!important;box-shadow:0 10px 28px rgba(67,48,29,.10)!important;padding:8px 10px!important}
+.kite-game-topbar button{height:44px!important;padding:0 14px!important;border-radius:17px!important;background:rgba(244,233,216,.92)!important;border:1px solid rgba(196,166,128,.2)!important}
+.kite-title b{font-size:24px!important}.kite-title small{letter-spacing:.22em!important;color:#c56f48!important}
+.kite-game-stage{position:relative!important;border-radius:32px!important;overflow:hidden!important;border:0!important;background:#b7d8df!important;box-shadow:0 24px 62px rgba(32,49,40,.22),0 0 0 1px rgba(53,76,57,.12)!important;isolation:isolate!important}
+.kite-canvas{display:block!important;width:100%!important;aspect-ratio:900/620!important;object-fit:cover!important;filter:saturate(1.08) contrast(1.03) brightness(1.01)!important}
+.kite-stage-gloss{position:absolute!important;inset:0!important;z-index:2!important;pointer-events:none!important;background:linear-gradient(155deg,rgba(255,255,255,.14),transparent 26%,transparent 72%,rgba(43,54,37,.10))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -30px 60px rgba(35,44,31,.08)!important}
+.kite-game-stage:after{content:""!important;position:absolute!important;inset:0!important;z-index:3!important;pointer-events:none!important;border-radius:inherit!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.30),inset 0 0 70px rgba(31,48,36,.08)!important}
+.kite-controls-overlay{position:absolute!important;left:18px!important;right:18px!important;bottom:18px!important;z-index:7!important;display:grid!important;grid-template-columns:82px 82px 1fr!important;gap:12px!important;max-width:none!important;width:auto!important;margin:0!important;padding:0!important;pointer-events:none!important}
+.kite-controls-overlay button{pointer-events:auto!important;height:78px!important;border-radius:31px!important;background:rgba(255,249,238,.80)!important;border:1px solid rgba(255,255,255,.62)!important;color:#24523b!important;box-shadow:0 10px 28px rgba(31,45,34,.20),inset 0 1px 0 rgba(255,255,255,.94)!important;backdrop-filter:blur(12px) saturate(1.12)!important;-webkit-backdrop-filter:blur(12px) saturate(1.12)!important}
+.kite-controls-overlay button:active{transform:translateY(2px) scale(.98)!important;background:rgba(255,250,241,.94)!important}
+.kite-controls-overlay svg{width:34px!important;height:34px!important;stroke-width:3!important}
+.kite-controls-overlay .kite-action{justify-self:end!important;width:132px!important;height:92px!important;border-radius:38px!important;background:rgba(255,248,232,.86)!important;color:#25543c!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important}
+.kite-controls-overlay .kite-action>span{font-size:42px!important;line-height:30px!important;font-weight:500!important}
+.kite-controls-overlay .kite-action small{font-size:11px!important;letter-spacing:.16em!important;color:#25543c!important;font-weight:900!important}
+.kite-hit-note{z-index:9!important;top:72px!important;background:rgba(255,247,228,.95)!important;backdrop-filter:blur(8px)!important;border:1px solid rgba(210,171,112,.6)!important;box-shadow:0 8px 22px rgba(60,45,27,.16)!important}
+.kite-overlay{z-index:10!important;border-radius:inherit!important;background:rgba(20,35,28,.46)!important;backdrop-filter:blur(8px) saturate(.92)!important;-webkit-backdrop-filter:blur(8px) saturate(.92)!important}
+.kite-panel{background:radial-gradient(circle at 50% 0,#fffdf7 0%,#fff8ea 56%,#f4e5d0 100%)!important;border:1px solid rgba(229,204,169,.95)!important;box-shadow:0 32px 90px rgba(18,31,24,.38),inset 0 1px 0 rgba(255,255,255,.95)!important}
+.phase-fact .kite-controls-overlay,.phase-done .kite-controls-overlay,.phase-select .kite-controls-overlay{display:none!important}
+
+@media(max-width:700px){
+ .games-focus.kite-game-active{padding-left:0!important;padding-right:0!important}
+ .kite-adventure-shell{gap:7px!important}
+ .kite-game-topbar{margin:0 8px!important;height:56px!important;border-radius:20px!important}
+ .kite-game-topbar button{height:40px!important;padding:0 10px!important;border-radius:15px!important;font-size:11px!important}
+ .kite-title b{font-size:20px!important}
+ .kite-game-stage{border-radius:28px!important;margin:0!important}
+ .kite-canvas{aspect-ratio:900/650!important}
+ .kite-controls-overlay{left:14px!important;right:14px!important;bottom:14px!important;grid-template-columns:68px 68px 1fr!important;gap:9px!important}
+ .kite-controls-overlay button{height:66px!important;border-radius:27px!important}
+ .kite-controls-overlay .kite-action{width:112px!important;height:76px!important;border-radius:31px!important}
+ .kite-controls-overlay .kite-action>span{font-size:34px!important;line-height:25px!important}
+ .kite-controls-overlay .kite-action small{font-size:9px!important}
+}
+@media(max-width:390px){
+ .kite-game-topbar{margin:0 6px!important}.kite-title b{font-size:18px!important}
+ .kite-game-stage{border-radius:24px!important}
+ .kite-controls-overlay{left:10px!important;right:10px!important;bottom:10px!important;grid-template-columns:60px 60px 1fr!important;gap:7px!important}
+ .kite-controls-overlay button{height:60px!important;border-radius:24px!important}
+ .kite-controls-overlay .kite-action{width:98px!important;height:68px!important;border-radius:28px!important}
+}

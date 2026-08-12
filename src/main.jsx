@@ -434,7 +434,7 @@ const AFGHAN_FACTS=[
 
 function KiteAdventure({onExit}){
  const canvasRef=useRef(null),rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(0),keysRef=useRef({left:false,right:false,action:false}),prevActionRef=useRef(false);
- const playerRef=useRef({x:150,y:516,w:34,h:48,vx:0,vy:0,onGround:false,invuln:0}),melonsRef=useRef([]),collectedRef=useRef(new Set());
+ const playerRef=useRef({x:150,y:512,w:42,h:56,vx:0,vy:0,onGround:false,invuln:0}),melonsRef=useRef([]),collectedRef=useRef(new Set());
  const[phase,setPhase]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[fact,setFact]=useState(null),[collected,setCollected]=useState(0),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0);
 
  const platforms=useMemo(()=>[
@@ -453,7 +453,7 @@ function KiteAdventure({onExit}){
  ],[]);
  const facts=useMemo(()=>shuffle(AFGHAN_FACTS).slice(0,3),[roundSeed]);
 
- const resetPlayer=()=>{playerRef.current={x:88,y:516,w:38,h:52,vx:0,vy:0,onGround:false,invuln:1.05}};
+ const resetPlayer=()=>{playerRef.current={x:178,y:510,w:42,h:56,vx:0,vy:0,onGround:false,invuln:1.05}};
  const startRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=0;setCollected(0);setSeconds(60);setFact(null);setHitNote(false);resetPlayer();setPhase('playing');};
  const restart=()=>{setRoundSeed(s=>s+1);startRound()};
  const finish=()=>{setPhase('done');keysRef.current={left:false,right:false,action:false}};
@@ -478,81 +478,89 @@ function KiteAdventure({onExit}){
   };
   const roundRect=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()};
   const drawBackground=()=>{
-   const sky=ctx.createLinearGradient(0,0,0,620);sky.addColorStop(0,'#bfe2ee');sky.addColorStop(.52,'#e9e2c8');sky.addColorStop(1,'#d9c29d');ctx.fillStyle=sky;ctx.fillRect(0,0,900,620);
-   ctx.fillStyle='rgba(255,255,255,.55)';for(const c of [[105,70,65],[175,55,52],[720,65,70],[790,80,55]]){ctx.beginPath();ctx.arc(c[0],c[1],c[2],0,Math.PI*2);ctx.fill()}
-   const mountain=(pts,color)=>{ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(0,pts[0][1]);for(const [x,y] of pts)ctx.lineTo(x,y);ctx.lineTo(900,360);ctx.lineTo(0,360);ctx.closePath();ctx.fill()};
-   mountain([[0,280],[110,175],[185,235],[300,125],[380,230],[520,145],[625,230],[755,135],[900,260]],'#90a98f');
-   mountain([[0,315],[150,220],[270,300],[400,185],[540,300],[675,205],[805,285],[900,225]],'#758a7a');
-   ctx.fillStyle='rgba(244,241,224,.9)';ctx.beginPath();ctx.moveTo(260,160);ctx.lineTo(300,125);ctx.lineTo(333,180);ctx.lineTo(304,165);ctx.lineTo(287,184);ctx.closePath();ctx.fill();ctx.beginPath();ctx.moveTo(724,165);ctx.lineTo(755,135);ctx.lineTo(788,185);ctx.lineTo(757,170);ctx.lineTo(742,187);ctx.closePath();ctx.fill();
-   // modern Afghan city silhouette
-   const buildings=[[15,315,88,170],[108,330,72,155],[190,300,68,185],[270,335,94,150],[375,295,72,190],[458,325,88,160],[560,300,72,185],[644,320,86,165],[742,285,62,200],[812,330,72,155]];
-   buildings.forEach((b,i)=>{ctx.fillStyle=i%2?'#d8c29d':'#cdb287';ctx.fillRect(b[0],b[1],b[2],b[3]);ctx.fillStyle='rgba(76,94,83,.34)';for(let yy=b[1]+18;yy<b[1]+b[3]-12;yy+=27)for(let xx=b[0]+12;xx<b[0]+b[2]-8;xx+=24)ctx.fillRect(xx,yy,8,11)});
-   ctx.fillStyle='#7ea4a0';ctx.beginPath();ctx.arc(414,306,28,Math.PI,0);ctx.fill();ctx.fillRect(386,306,56,28);ctx.fillStyle='#b58e62';ctx.fillRect(370,334,88,58);ctx.fillStyle='#789b96';ctx.fillRect(450,265,7,70);ctx.beginPath();ctx.arc(453.5,263,9,Math.PI,0);ctx.fill();
-   ctx.fillStyle='#5d755e';for(let i=0;i<18;i++){const x=22+i*52+(i%3)*7,y=460+(i%4)*8;ctx.beginPath();ctx.arc(x,y,9+(i%3)*3,0,Math.PI*2);ctx.fill()};ctx.fillStyle='#8d6043';ctx.fillRect(18,420,92,45);ctx.fillStyle='#c6784e';ctx.fillRect(18,420,92,8);ctx.fillStyle='#f0d09a';for(let x=26;x<102;x+=18){ctx.fillRect(x,434,10,4)}ctx.fillStyle='#477354';for(const [x,y] of [[62,405],[96,413],[744,416],[826,398]]){ctx.beginPath();ctx.arc(x,y,12,0,Math.PI*2);ctx.fill()}ctx.fillStyle='#a24e3f';ctx.fillRect(34,392,52,8);ctx.fillStyle='#e0a664';for(let x=36;x<84;x+=12){ctx.fillRect(x,392,5,8)}
+   // V5: cinematic Afghanistan scene — warm light, layered Hindu Kush and a lively modern city.
+   const sky=ctx.createLinearGradient(0,0,0,620);sky.addColorStop(0,'#9fd1e5');sky.addColorStop(.42,'#d7e7df');sky.addColorStop(.72,'#ead9b9');sky.addColorStop(1,'#c7a579');ctx.fillStyle=sky;ctx.fillRect(0,0,900,620);
+   const sun=ctx.createRadialGradient(785,60,8,785,60,155);sun.addColorStop(0,'rgba(255,248,205,.95)');sun.addColorStop(.18,'rgba(255,224,151,.55)');sun.addColorStop(1,'rgba(255,218,151,0)');ctx.fillStyle=sun;ctx.fillRect(590,0,310,250);
+   // soft clouds
+   ctx.fillStyle='rgba(255,255,255,.48)';[[96,62,52],[147,52,38],[205,70,47],[684,55,52],[742,48,38],[818,70,56]].forEach(([x,y,r])=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()});
+   const ridge=(pts,top,bottom)=>{const g=ctx.createLinearGradient(0,100,0,340);g.addColorStop(0,top);g.addColorStop(1,bottom);ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,340);for(const [x,y] of pts)ctx.lineTo(x,y);ctx.lineTo(900,340);ctx.closePath();ctx.fill()};
+   ridge([[0,260],[55,210],[103,178],[148,212],[205,158],[265,199],[330,130],[383,193],[456,126],[522,188],[592,104],[645,173],[708,120],[764,170],[835,102],[900,180]],'#8ca2a0','#667a72');
+   ridge([[0,310],[92,215],[155,278],[250,178],[330,270],[430,188],[532,290],[640,196],[746,280],[846,205],[900,252]],'#667c70','#53695d');
+   // snow caps
+   ctx.fillStyle='rgba(248,246,231,.92)';[[330,130,36],[592,104,42],[835,102,36],[250,178,28],[708,120,30]].forEach(([x,y,w])=>{ctx.beginPath();ctx.moveTo(x-w,y+48);ctx.lineTo(x,y);ctx.lineTo(x+w,y+50);ctx.lineTo(x+w*.45,y+34);ctx.lineTo(x+w*.1,y+42);ctx.lineTo(x-w*.18,y+30);ctx.lineTo(x-w*.52,y+43);ctx.closePath();ctx.fill()});
+   // distant modern Afghan skyline with warm depth haze
+   const haze=ctx.createLinearGradient(0,250,0,455);haze.addColorStop(0,'rgba(241,223,190,.38)');haze.addColorStop(1,'rgba(204,177,131,.88)');ctx.fillStyle=haze;ctx.fillRect(0,250,900,235);
+   const city=[[6,350,52,102],[62,325,60,127],[126,370,44,82],[174,314,78,138],[260,352,47,100],[312,298,68,154],[385,342,54,110],[446,305,72,147],[524,360,44,92],[572,318,72,134],[649,350,48,102],[704,292,68,160],[780,344,52,108],[838,310,58,142]];
+   city.forEach((b,i)=>{const gg=ctx.createLinearGradient(0,b[1],0,b[1]+b[3]);gg.addColorStop(0,i%3===0?'#d7c09c':i%3===1?'#cbb18b':'#dfcaab');gg.addColorStop(1,'#b99b72');ctx.fillStyle=gg;ctx.fillRect(...b);ctx.fillStyle='rgba(61,78,68,.32)';for(let yy=b[1]+16;yy<b[1]+b[3]-10;yy+=23)for(let xx=b[0]+10;xx<b[0]+b[2]-7;xx+=18){ctx.beginPath();ctx.roundRect(xx,yy,6,9,2);ctx.fill()}});
+   // skyline landmarks: a mosque dome and slim minaret for recognisable Afghan character
+   ctx.fillStyle='#668f89';ctx.beginPath();ctx.arc(424,328,24,Math.PI,0);ctx.fill();ctx.fillRect(400,328,48,18);ctx.fillStyle='#b58c62';ctx.fillRect(393,346,62,54);
+   ctx.fillStyle='#718f89';ctx.fillRect(467,265,6,112);ctx.beginPath();ctx.arc(470,263,8,Math.PI,0);ctx.fill();ctx.fillStyle='#6d8d86';ctx.beginPath();ctx.arc(470,251,4,0,Math.PI*2);ctx.fill();
+   // tree canopy through the city
+   ctx.fillStyle='#52765a';for(let i=0;i<28;i++){const x=15+i*34+(i%4)*7,y=430+(i%5)*5;ctx.beginPath();ctx.arc(x,y,8+(i%3)*4,0,Math.PI*2);ctx.fill()}
   };
   const drawArchitecture=()=>{
-   // Organische stadslaag: daken, terrassen en binnenplaatsen in plaats van rechthoekige blokken.
+   // V5: playable geometry disguised as joined rooftops, terraces and façades.
    ctx.save();
-   const adobe=(pts,fill,shade='#b89568')=>{
-    const g=ctx.createLinearGradient(0,170,0,575);g.addColorStop(0,fill);g.addColorStop(1,shade);ctx.fillStyle=g;
-    ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(const [x,y] of pts.slice(1))ctx.lineTo(x,y);ctx.closePath();ctx.fill();
-    ctx.strokeStyle='rgba(95,72,46,.18)';ctx.lineWidth=2;ctx.stroke();
-   };
-   // Linker wooncluster met verspringende daken.
-   adobe([[0,350],[78,350],[78,318],[155,318],[155,350],[245,350],[245,570],[0,570]],'#d7bd93');
-   adobe([[108,235],[250,235],[250,204],[325,204],[325,350],[108,350]],'#dec7a2');
-   // Middengebouw met binnenplaats en boog.
-   adobe([[330,350],[382,350],[382,304],[510,304],[510,330],[575,330],[575,570],[330,570]],'#ceb085');
-   ctx.fillStyle='#789b96';ctx.beginPath();ctx.arc(446,350,34,Math.PI,0);ctx.fill();ctx.fillRect(412,350,68,55);ctx.fillStyle='#b88d61';ctx.beginPath();ctx.arc(446,353,24,Math.PI,0);ctx.fill();ctx.fillRect(422,353,48,52);
-   // Rechts: moderner terrasgebouw met groen balkon.
-   adobe([[590,235],[704,235],[704,210],[818,210],[818,235],[900,235],[900,570],[590,570]],'#d4bc96');
-   ctx.fillStyle='rgba(48,83,58,.72)';ctx.beginPath();ctx.roundRect(690,300,110,10,5);ctx.fill();
-   // Kleine dakterrassen en borstweringen.
-   const parapet=(x,y,w)=>{ctx.fillStyle='#a9794f';ctx.beginPath();ctx.roundRect(x,y,w,12,5);ctx.fill();ctx.fillStyle='#e7c996';for(let i=10;i<w-8;i+=26)ctx.fillRect(x+i,y+2,9,5)};
-   parapet(32,338,86);parapet(176,338,82);parapet(620,223,84);parapet(742,223,84);
-   // Tapijten en deuren.
-   const rug=(x,y,w)=>{ctx.fillStyle='#9e4e3f';ctx.beginPath();ctx.roundRect(x,y,w,14,3);ctx.fill();ctx.fillStyle='#e3ad68';for(let i=6;i<w-5;i+=14){ctx.fillRect(x+i,y+3,6,2);ctx.fillRect(x+i+3,y+9,6,2)}};
-   rug(54,376,74);rug(676,272,74);
-   ctx.fillStyle='rgba(64,75,58,.35)';for(const [x,y] of [[28,402],[115,390],[203,390],[612,386],[770,372],[844,390]]){ctx.beginPath();ctx.roundRect(x,y,18,29,6);ctx.fill()}
-   // Groen in potten, waardoor het land levendiger oogt.
-   const pot=(x,y)=>{ctx.fillStyle='#986847';ctx.beginPath();ctx.roundRect(x-7,y,14,12,3);ctx.fill();ctx.fillStyle='#557653';ctx.beginPath();ctx.arc(x,y-7,12,0,Math.PI*2);ctx.fill();ctx.fillStyle='#78966c';ctx.beginPath();ctx.arc(x-7,y-12,6,0,Math.PI*2);ctx.arc(x+7,y-13,6,0,Math.PI*2);ctx.fill()};
-   [[93,326],[291,222],[530,320],[655,222],[792,198],[865,222],[236,450]].forEach(([x,y])=>pot(x,y));
-   // Een subtiele moderne straatlaag in de verte.
-   ctx.fillStyle='rgba(241,229,202,.50)';for(const [x,w,h] of [[8,70,92],[92,54,74],[156,82,102],[248,61,67],[690,58,82],[758,66,99],[835,52,71]]){ctx.fillRect(x,470-h,w,h)}
+   const wall=(x,y,w,h,c1='#d2b487',c2='#ad855b')=>{const g=ctx.createLinearGradient(x,y,x,y+h);g.addColorStop(0,c1);g.addColorStop(1,c2);ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(x,y,w,h,8);ctx.fill();ctx.strokeStyle='rgba(83,60,40,.18)';ctx.lineWidth=1.3;ctx.stroke()};
+   const stoneTexture=(x,y,w,h)=>{ctx.fillStyle='rgba(92,65,42,.09)';for(let yy=y+14;yy<y+h-6;yy+=26)for(let xx=x+12+(yy%2?8:0);xx<x+w-10;xx+=34){ctx.beginPath();ctx.roundRect(xx,yy,20,3,2);ctx.fill()}};
+   const window=(x,y,arched=false)=>{ctx.fillStyle='#6f806e';if(arched){ctx.beginPath();ctx.arc(x+8,y+8,8,Math.PI,0);ctx.rect(x,y+8,16,19);ctx.fill()}else{ctx.beginPath();ctx.roundRect(x,y,16,25,5);ctx.fill()}ctx.fillStyle='rgba(205,224,211,.30)';ctx.fillRect(x+4,y+4,3,10)};
+   const door=(x,y,w=34,h=50)=>{ctx.fillStyle='#4b594b';ctx.beginPath();ctx.roundRect(x,y,w,h,5);ctx.fill();ctx.strokeStyle='#b38151';ctx.lineWidth=3;ctx.strokeRect(x+5,y+5,w-10,h-10);ctx.fillStyle='#d19b5e';ctx.beginPath();ctx.arc(x+w-8,y+h/2,2,0,Math.PI*2);ctx.fill()};
+   const rug=(x,y,w,h=15)=>{ctx.fillStyle='#8d4337';ctx.beginPath();ctx.roundRect(x,y,w,h,2);ctx.fill();ctx.strokeStyle='#dba85f';ctx.lineWidth=1.2;for(let i=7;i<w-6;i+=14){ctx.beginPath();ctx.moveTo(x+i,y+3);ctx.lineTo(x+i+5,y+h-3);ctx.moveTo(x+i+5,y+3);ctx.lineTo(x+i,y+h-3);ctx.stroke()}};
+   const pot=(x,y,s=1)=>{ctx.fillStyle='#a06b46';ctx.beginPath();ctx.roundRect(x-8*s,y,16*s,13*s,3*s);ctx.fill();ctx.fillStyle='#4d754f';ctx.beginPath();ctx.arc(x,y-8*s,12*s,0,Math.PI*2);ctx.fill();ctx.fillStyle='#7e9e70';ctx.beginPath();ctx.arc(x-8*s,y-12*s,7*s,0,Math.PI*2);ctx.arc(x+8*s,y-13*s,7*s,0,Math.PI*2);ctx.fill()};
+   // major buildings align with the collision platforms, but use staggered silhouettes and open courtyards.
+   wall(-16,350,350,220,'#d8bd90','#b28d63');stoneTexture(0,350,334,220);
+   wall(112,235,448,230,'#dfc69a','#b79367');stoneTexture(112,235,448,230);
+   wall(388,350,350,220,'#d3b487','#aa8159');stoneTexture(388,350,350,220);
+   wall(612,235,315,335,'#d5b98e','#a98259');stoneTexture(612,235,288,335);
+   // upper terrace masses; left and right are intentionally disconnected like the reference.
+   wall(-18,120,345,115,'#d7bd93','#b58d61');stoneTexture(0,120,327,115);
+   wall(440,120,392,115,'#d8bf98','#b38a61');stoneTexture(440,120,392,115);
+   // open shaded courtyard / arch breaks the blocky feel
+   ctx.fillStyle='#728f86';ctx.beginPath();ctx.arc(442,350,31,Math.PI,0);ctx.fill();ctx.fillRect(411,350,62,44);ctx.fillStyle='#9d7653';ctx.beginPath();ctx.arc(442,352,21,Math.PI,0);ctx.fill();ctx.fillRect(421,352,42,42);
+   // distinct carved doors, rugs, windows and greenery
+   door(46,480,40,58);door(482,476,37,55);door(758,480,38,58);
+   [[25,165,1],[84,165,0],[170,270,1],[238,270,0],[484,166,0],[550,166,1],[660,270,0],[734,270,1],[816,270,0],[55,390,0],[125,390,1],[206,390,0],[440,390,0],[540,390,1],[654,390,0],[812,390,1]].forEach(([x,y,a])=>window(x,y,!!a));
+   rug(18,209,95);rug(642,314,100);rug(740,209,73);rug(220,448,80);
+   [[95,112,1],[294,227,.9],[533,342,.9],[686,226,1],[792,112,1],[850,225,.9],[247,454,.8],[590,454,.8]].forEach(([x,y,z])=>pot(x,y,z));
+   // wooden pergola beams / balcony edge under top-right platform
+   ctx.fillStyle='#6a4a31';ctx.fillRect(660,126,5,102);ctx.fillRect(786,126,5,102);ctx.fillRect(650,130,150,7);
+   ctx.fillStyle='rgba(50,90,56,.70)';ctx.beginPath();ctx.roundRect(650,205,150,10,5);ctx.fill();
+   // subtle flowers
+   ctx.fillStyle='#8c5270';for(const [x,y] of [[681,199],[699,198],[718,200],[810,218],[829,217]]){ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill()}
    ctx.restore();
   };
   const drawForeground=()=>{
-   // Voorgrond maakt de scène minder rechthoekig en geeft diepte.
    ctx.save();
-   const haze=ctx.createLinearGradient(0,500,0,620);haze.addColorStop(0,'rgba(242,229,201,0)');haze.addColorStop(1,'rgba(92,74,52,.18)');ctx.fillStyle=haze;ctx.fillRect(0,500,900,120);
-   ctx.fillStyle='#496b50';for(const [x,y,r] of [[10,587,28],[35,602,34],[875,590,31],[842,610,38]]){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
-   ctx.fillStyle='#7d9a70';for(const [x,y,r] of [[22,570,16],[58,590,18],[862,570,17],[824,596,20]]){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
-   // subtiele vignette, geen hard canvas-kader
-   const vg=ctx.createRadialGradient(450,285,250,450,310,570);vg.addColorStop(.65,'rgba(34,49,38,0)');vg.addColorStop(1,'rgba(34,49,38,.12)');ctx.fillStyle=vg;ctx.fillRect(0,0,900,620);ctx.restore();
+   // near-scene vines and soft vignette add depth like an illustrated game backdrop.
+   ctx.strokeStyle='rgba(55,91,58,.55)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(0,600);ctx.bezierCurveTo(80,575,95,610,162,592);ctx.moveTo(900,602);ctx.bezierCurveTo(835,570,812,612,750,588);ctx.stroke();
+   ctx.fillStyle='#4f744f';for(const [x,y,r] of [[16,586,18],[45,605,24],[82,594,16],[886,588,20],[854,607,26],[812,595,17]]){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+   const vg=ctx.createRadialGradient(450,290,230,450,315,590);vg.addColorStop(.60,'rgba(28,39,31,0)');vg.addColorStop(1,'rgba(28,39,31,.16)');ctx.fillStyle=vg;ctx.fillRect(0,0,900,620);
+   ctx.restore();
   };
-  const drawPlatform=p=>{const g=ctx.createLinearGradient(0,p.y,0,p.y+17);g.addColorStop(0,'#cf9a5a');g.addColorStop(.35,'#a96c37');g.addColorStop(1,'#77492d');ctx.fillStyle=g;ctx.fillRect(p.x1,p.y,p.x2-p.x1,16);ctx.fillStyle='rgba(255,222,166,.55)';ctx.fillRect(p.x1,p.y,p.x2-p.x1,3);ctx.strokeStyle='rgba(70,43,26,.5)';ctx.lineWidth=1.5;for(let x=p.x1+18;x<p.x2;x+=34){ctx.beginPath();ctx.moveTo(x,p.y+2);ctx.lineTo(x-8,p.y+15);ctx.stroke()}ctx.fillStyle='rgba(38,82,56,.35)';for(let x=p.x1+25;x<p.x2;x+=92){ctx.beginPath();ctx.arc(x,p.y+18,5,Math.PI,0);ctx.fill()}};
-  const drawRamp=r=>{ctx.save();ctx.lineCap='round';ctx.strokeStyle='#71462b';ctx.lineWidth=22;ctx.beginPath();ctx.moveTo(r.x1,r.y1);ctx.lineTo(r.x2,r.y2);ctx.stroke();ctx.strokeStyle='#b9783f';ctx.lineWidth=15;ctx.beginPath();ctx.moveTo(r.x1,r.y1-1);ctx.lineTo(r.x2,r.y2-1);ctx.stroke();ctx.strokeStyle='rgba(255,224,176,.6)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(r.x1,r.y1-5);ctx.lineTo(r.x2,r.y2-5);ctx.stroke();ctx.restore()};
-  const drawLadder=l=>{ctx.strokeStyle='#68462e';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(l.x-16,l.top);ctx.lineTo(l.x-16,l.bottom);ctx.moveTo(l.x+16,l.top);ctx.lineTo(l.x+16,l.bottom);ctx.stroke();ctx.strokeStyle='#ad7c4d';ctx.lineWidth=4;for(let y=l.top+12;y<l.bottom;y+=18){ctx.beginPath();ctx.moveTo(l.x-16,y);ctx.lineTo(l.x+16,y);ctx.stroke()}};
-  const drawKite=k=>{if(collectedRef.current.has(k.id))return;ctx.save();ctx.translate(k.x,k.y);ctx.rotate(-.16);ctx.shadowColor='#f4c850';ctx.shadowBlur=16;ctx.fillStyle='#1f4d37';ctx.beginPath();ctx.moveTo(0,-23);ctx.lineTo(20,0);ctx.lineTo(0,24);ctx.lineTo(-20,0);ctx.closePath();ctx.fill();ctx.fillStyle='#e58b3e';ctx.beginPath();ctx.moveTo(0,-23);ctx.lineTo(20,0);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.fillStyle='#c84b3d';ctx.beginPath();ctx.moveTo(-20,0);ctx.lineTo(0,24);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.strokeStyle='#654b38';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,24);ctx.quadraticCurveTo(18,38,7,55);ctx.stroke();ctx.shadowBlur=0;ctx.restore()};
-  const drawPlayer=p=>{ctx.save();ctx.globalAlpha=p.invuln>0&&Math.floor(p.invuln*12)%2===0?.52:1;const cx=p.x+p.w/2,base=p.y+p.h;ctx.translate(0,0);
-   // contact shadow makes the character easy to find against busy scenery
-   ctx.fillStyle='rgba(25,43,32,.20)';ctx.beginPath();ctx.ellipse(cx,base+3,19,6,0,0,Math.PI*2);ctx.fill();
-   ctx.shadowColor='rgba(22,44,31,.24)';ctx.shadowBlur=8;ctx.shadowOffsetY=3;
-   // benen / schoenen
-   ctx.strokeStyle='#49372c';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx-8,p.y+37);ctx.lineTo(cx-10,base-1);ctx.moveTo(cx+8,p.y+37);ctx.lineTo(cx+10,base-1);ctx.stroke();
-   ctx.strokeStyle='#2d2925';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(cx-12,base);ctx.lineTo(cx-5,base);ctx.moveTo(cx+5,base);ctx.lineTo(cx+13,base);ctx.stroke();
-   // lichaam
-   ctx.fillStyle='#f6efe1';ctx.beginPath();ctx.roundRect(cx-12,p.y+18,24,24,7);ctx.fill();
-   ctx.fillStyle='#315b43';ctx.beginPath();ctx.roundRect(cx-17,p.y+19,7,24,3);ctx.roundRect(cx+10,p.y+19,7,24,3);ctx.fill();
-   ctx.fillStyle='#bb654b';ctx.fillRect(cx-2,p.y+20,4,21);
-   // hoofd
-   ctx.fillStyle='#efb27d';ctx.beginPath();ctx.arc(cx,p.y+11,12,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
-   ctx.fillStyle='#25211f';if(character==='girl'){ctx.beginPath();ctx.arc(cx,p.y+8,15,Math.PI,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx-12,p.y+15,6,0,Math.PI*2);ctx.arc(cx+12,p.y+15,6,0,Math.PI*2);ctx.fill()}else{ctx.fillStyle='#6c4c34';ctx.beginPath();ctx.ellipse(cx,p.y+1,15,6,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#292421';ctx.beginPath();ctx.arc(cx,p.y+7,13,Math.PI,Math.PI*2);ctx.fill()}
-   // gezicht
-   ctx.fillStyle='#2b2724';ctx.beginPath();ctx.arc(cx-4,p.y+10,1.5,0,Math.PI*2);ctx.arc(cx+4,p.y+10,1.5,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#7b4b34';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,p.y+14,4,0,Math.PI);ctx.stroke();
-   // helder randje zodat het poppetje niet wegvalt tegen muren
-   ctx.strokeStyle='rgba(255,250,239,.8)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(cx-18,p.y-5,36,51,16);ctx.stroke();ctx.restore()};
-  const drawMelon=m=>{ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.rot);ctx.shadowColor='rgba(31,55,35,.28)';ctx.shadowBlur=7;ctx.shadowOffsetY=3;const mg=ctx.createRadialGradient(-6,-8,4,0,0,m.r);mg.addColorStop(0,'#77a94e');mg.addColorStop(.55,'#3e7e3f');mg.addColorStop(1,'#1f5633');ctx.fillStyle=mg;ctx.beginPath();ctx.arc(0,0,m.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#a8cf63';ctx.lineWidth=2.6;for(let a=-.72;a<=.72;a+=.36){ctx.beginPath();ctx.ellipse(a*7,0,4,m.r-3,a*.8,0,Math.PI*2);ctx.stroke()}ctx.fillStyle='rgba(255,255,255,.22)';ctx.beginPath();ctx.arc(-6,-8,4,0,Math.PI*2);ctx.fill();ctx.restore()};
+  const drawPlatform=p=>{
+   // rich roof edge instead of a flat game beam
+   const g=ctx.createLinearGradient(0,p.y-3,0,p.y+20);g.addColorStop(0,'#d5a15e');g.addColorStop(.22,'#b97a3e');g.addColorStop(.62,'#83512d');g.addColorStop(1,'#5d3826');ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(p.x1,p.y-3,p.x2-p.x1,18,5);ctx.fill();
+   ctx.fillStyle='rgba(255,226,172,.62)';ctx.fillRect(p.x1+3,p.y-2,p.x2-p.x1-6,3);
+   ctx.strokeStyle='rgba(61,35,24,.45)';ctx.lineWidth=1.3;for(let x=p.x1+24;x<p.x2-8;x+=42){ctx.beginPath();ctx.moveTo(x,p.y+1);ctx.lineTo(x-8,p.y+13);ctx.stroke()}
+   // hanging ivy / rug fringe, irregularly so it feels architectural
+   ctx.fillStyle='rgba(47,92,56,.50)';for(let x=p.x1+32;x<p.x2-20;x+=105){ctx.beginPath();ctx.arc(x,p.y+17,6,Math.PI,0);ctx.fill();ctx.fillRect(x-2,p.y+14,4,11)}
+  };
+  const drawRamp=r=>{ctx.save();ctx.lineCap='round';ctx.strokeStyle='#5a3828';ctx.lineWidth=24;ctx.beginPath();ctx.moveTo(r.x1,r.y1);ctx.lineTo(r.x2,r.y2);ctx.stroke();ctx.strokeStyle='#b9783f';ctx.lineWidth=18;ctx.stroke();ctx.strokeStyle='#dda567';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(r.x1+2,r.y1-5);ctx.lineTo(r.x2+2,r.y2-5);ctx.stroke();ctx.strokeStyle='rgba(79,46,27,.45)';ctx.lineWidth=2;for(let t=.12;t<.96;t+=.15){const x=r.x1+(r.x2-r.x1)*t,y=r.y1+(r.y2-r.y1)*t;ctx.beginPath();ctx.moveTo(x-8,y-7);ctx.lineTo(x+8,y+7);ctx.stroke()}ctx.restore()};
+  const drawLadder=l=>{ctx.save();ctx.strokeStyle='#4e3529';ctx.lineWidth=8;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(l.x-16,l.top-2);ctx.lineTo(l.x-16,l.bottom+2);ctx.moveTo(l.x+16,l.top-2);ctx.lineTo(l.x+16,l.bottom+2);ctx.stroke();ctx.strokeStyle='#ad7c4d';ctx.lineWidth=4.5;for(let y=l.top+11;y<l.bottom;y+=18){ctx.beginPath();ctx.moveTo(l.x-15,y);ctx.lineTo(l.x+15,y);ctx.stroke()}ctx.fillStyle='rgba(55,37,27,.15)';ctx.fillRect(l.x-24,l.top-2,48,l.bottom-l.top+5);ctx.restore()};
+  const drawKite=k=>{if(collectedRef.current.has(k.id))return;ctx.save();ctx.translate(k.x,k.y);ctx.rotate(-.10);const glow=ctx.createRadialGradient(0,0,5,0,0,46);glow.addColorStop(0,'rgba(255,236,131,.65)');glow.addColorStop(1,'rgba(255,230,115,0)');ctx.fillStyle=glow;ctx.fillRect(-52,-52,104,104);ctx.shadowColor='#f5d661';ctx.shadowBlur=18;ctx.fillStyle='#1f5037';ctx.beginPath();ctx.moveTo(0,-27);ctx.lineTo(24,0);ctx.lineTo(0,28);ctx.lineTo(-24,0);ctx.closePath();ctx.fill();ctx.fillStyle='#df8b37';ctx.beginPath();ctx.moveTo(0,-27);ctx.lineTo(24,0);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.fillStyle='#ca4a39';ctx.beginPath();ctx.moveTo(-24,0);ctx.lineTo(0,28);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.fillStyle='#f0c052';ctx.beginPath();ctx.moveTo(0,-27);ctx.lineTo(-24,0);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#583e2f';ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(0,28);ctx.quadraticCurveTo(22,39,5,60);ctx.stroke();ctx.fillStyle='#d66a49';for(let y=39;y<59;y+=8){ctx.save();ctx.translate(8,y);ctx.rotate(.5);ctx.fillRect(-4,-2,8,4);ctx.restore()}ctx.restore()};
+  const drawPlayer=p=>{ctx.save();ctx.globalAlpha=p.invuln>0&&Math.floor(p.invuln*12)%2===0?.62:1;const cx=p.x+p.w/2,base=p.y+p.h;
+   ctx.fillStyle='rgba(26,41,30,.24)';ctx.beginPath();ctx.ellipse(cx,base+4,22,7,0,0,Math.PI*2);ctx.fill();
+   ctx.shadowColor='rgba(22,38,28,.32)';ctx.shadowBlur=9;ctx.shadowOffsetY=4;
+   // animated-looking legs based on horizontal velocity
+   const stride=Math.abs(p.vx)>5?Math.sin(performance.now()/85)*5:0;ctx.strokeStyle='#4b3428';ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx-8,p.y+38);ctx.lineTo(cx-10-stride,base);ctx.moveTo(cx+8,p.y+38);ctx.lineTo(cx+10+stride,base);ctx.stroke();ctx.strokeStyle='#2b2926';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(cx-14-stride,base);ctx.lineTo(cx-5-stride,base);ctx.moveTo(cx+5+stride,base);ctx.lineTo(cx+14+stride,base);ctx.stroke();
+   // traditional-modern vest outfit
+   ctx.fillStyle='#f6efe2';ctx.beginPath();ctx.roundRect(cx-14,p.y+18,28,25,8);ctx.fill();ctx.fillStyle='#315b43';ctx.beginPath();ctx.roundRect(cx-20,p.y+18,8,27,4);ctx.roundRect(cx+12,p.y+18,8,27,4);ctx.fill();ctx.fillStyle='#244c36';ctx.beginPath();ctx.roundRect(cx-11,p.y+20,22,24,6);ctx.fill();ctx.fillStyle='#c8714d';ctx.fillRect(cx-2,p.y+21,4,21);ctx.fillStyle='#d5aa66';for(let yy=p.y+23;yy<p.y+40;yy+=7){ctx.fillRect(cx-8,yy,3,2);ctx.fillRect(cx+5,yy,3,2)}
+   ctx.fillStyle='#edb07b';ctx.beginPath();ctx.arc(cx,p.y+10,13,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+   ctx.fillStyle='#28221f';if(character==='girl'){ctx.beginPath();ctx.arc(cx,p.y+7,16,Math.PI,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(cx-13,p.y+15,6,0,Math.PI*2);ctx.arc(cx+13,p.y+15,6,0,Math.PI*2);ctx.fill()}else{ctx.fillStyle='#7b5034';ctx.beginPath();ctx.ellipse(cx,p.y-1,16,7,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#bb8352';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(cx,p.y-1,12,4,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#28221f';ctx.beginPath();ctx.arc(cx,p.y+6,13,Math.PI,Math.PI*2);ctx.fill()}
+   ctx.fillStyle='#2b2724';ctx.beginPath();ctx.arc(cx-4.5,p.y+9,1.7,0,Math.PI*2);ctx.arc(cx+4.5,p.y+9,1.7,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#7b4b34';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,p.y+14,4.5,0,Math.PI);ctx.stroke();
+   // clean outline keeps the avatar visible against detailed backgrounds
+   ctx.strokeStyle='rgba(255,250,240,.9)';ctx.lineWidth=2.6;ctx.beginPath();ctx.roundRect(cx-22,p.y-9,44,58,18);ctx.stroke();ctx.restore()};
+  const drawMelon=m=>{ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.rot);ctx.shadowColor='rgba(23,43,29,.34)';ctx.shadowBlur=8;ctx.shadowOffsetY=4;const mg=ctx.createRadialGradient(-7,-10,3,0,0,m.r);mg.addColorStop(0,'#96c557');mg.addColorStop(.48,'#4e8a3f');mg.addColorStop(1,'#1e5530');ctx.fillStyle=mg;ctx.beginPath();ctx.arc(0,0,m.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#b6d965';ctx.lineWidth=2.4;for(let a=-.8;a<=.8;a+=.32){ctx.beginPath();ctx.ellipse(a*6,0,3.8,m.r-2,a*.55,0,Math.PI*2);ctx.stroke()}ctx.fillStyle='rgba(255,255,255,.28)';ctx.beginPath();ctx.arc(-7,-9,4.5,0,Math.PI*2);ctx.fill();ctx.restore()};
   const draw=()=>{drawBackground();drawArchitecture();ramps.forEach(drawRamp);platforms.forEach(drawPlatform);ladders.forEach(drawLadder);kites.forEach(drawKite);melonsRef.current.forEach(drawMelon);drawForeground();drawPlayer(playerRef.current);ctx.fillStyle='rgba(252,247,238,.94)';ctx.beginPath();ctx.roundRect(18,17,110,42,18);ctx.fill();ctx.fillStyle='#274b38';ctx.font='700 18px Inter, sans-serif';ctx.fillText(`🪁 ${collectedRef.current.size}/3`,39,44);ctx.beginPath();ctx.roundRect(760,17,122,42,18);ctx.fill();ctx.fillStyle='#274b38';ctx.fillText(`◷ ${seconds}s`,784,44)};
   const update=(dt)=>{
    const p=playerRef.current,k=keysRef.current;const move=175;p.vx=(k.left?-move:k.right?move:0);const center=p.x+p.w/2;const ladder=ladders.find(l=>Math.abs(center-l.x)<25&&p.y+p.h>l.top-8&&p.y<l.bottom+5);
@@ -582,7 +590,7 @@ function KiteAdventure({onExit}){
     {phase==='fact'&&fact&&<div className="kite-overlay kite-fact"><div className="kite-panel kite-fact-panel"><div className="kite-ribbon">Vlieger gevonden!</div><span className="fact-kite premium-kite">🪁</span><h2>Wist je dat?</h2><div className="kite-fact-divider"><i/><span>✦</span><i/></div><h3>{fact.title}</h3><p>{fact.text}</p><div className="kite-fact-actions"><button className="fact-listen" onClick={()=>playFact(fact)} aria-label="Luister naar weetje"><Volume2/></button><button className="kite-start" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div></div>}
     {phase==='done'&&<div className="kite-overlay kite-done"><div className="kite-panel kite-done-panel"><div className="kite-ribbon done-ribbon">Mooi gespeeld!</div><div className="done-character-wrap"><span className="done-character">{character==='girl'?'👧🏻':'👦🏻'}</span></div><h2>Je avontuur is klaar</h2><p>Je hebt vandaag <b>{collected}</b> {collected===1?'nieuw weetje':'nieuwe weetjes'} over Afghanistan ontdekt.</p><div className="kite-confetti" aria-hidden="true">✦　◆　✦　◇　◆</div><div className="kite-done-actions"><button onClick={onExit}>Terug naar Spelen</button><button className="kite-start" onClick={restart}><Play/> Volgende ronde</button></div></div></div>}
    </div>
-   {phase==='playing'&&<div className="kite-controls kite-controls-dock"><button {...buttonProps('left')} aria-label="Links"><ChevronLeft/></button><button {...buttonProps('right')} aria-label="Rechts"><ChevronRight/></button><button className="kite-action" {...buttonProps('action')} aria-label="Spring of klim"><span>↑</span><small>SPRING / KLIM</small></button></div>}
+   {phase==='playing'&&<div className="kite-controls kite-controls-overlay"><button {...buttonProps('left')} aria-label="Links"><ChevronLeft/></button><button {...buttonProps('right')} aria-label="Rechts"><ChevronRight/></button><button className="kite-action" {...buttonProps('action')} aria-label="Spring of klim"><span>↑</span><small>SPRING / KLIM</small></button></div>}
    {phase==='select'&&<div className="kite-howto"><span>🪁 <b>Pak 3 vliegers</b></span><span>🍉 <b>Ontwijk watermeloenen</b></span><span>🧩 <b>Vind je route</b></span><span>⏱️ <b>Steeds iets moeilijker</b></span></div>}
   </section>
 }
