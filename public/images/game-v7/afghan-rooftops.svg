@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 760">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#8fd0eb"/><stop offset=".52" stop-color="#d9ece7"/><stop offset="1" stop-color="#f2d6aa"/></linearGradient>
+ <linearGradient id="m1" x2="0" y2="1"><stop stop-color="#8c9ea2"/><stop offset="1" stop-color="#667a72"/></linearGradient>
+ <linearGradient id="m2" x2="0" y2="1"><stop stop-color="#6d8179"/><stop offset="1" stop-color="#4f675b"/></linearGradient>
+ <linearGradient id="wallA" x2="0" y2="1"><stop stop-color="#e4c99d"/><stop offset="1" stop-color="#b88f63"/></linearGradient>
+ <linearGradient id="wallB" x2="0" y2="1"><stop stop-color="#d9b985"/><stop offset="1" stop-color="#aa7b50"/></linearGradient>
+ <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#bd7d3e"/><stop offset=".45" stop-color="#9b5e2b"/><stop offset="1" stop-color="#74421f"/></linearGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="7"/></filter><filter id="shadow"><feDropShadow dx="0" dy="7" stdDeviation="6" flood-opacity=".25"/></filter>
+ <pattern id="brick" width="62" height="32" patternUnits="userSpaceOnUse"><path d="M0 31H62M0 0H62M31 0v15M0 15h62M16 15v16M47 15v16" stroke="#7f5d3c" stroke-opacity=".08" stroke-width="2"/></pattern>
+</defs>
+<rect width="1000" height="760" fill="url(#sky)"/>
+<circle cx="835" cy="73" r="150" fill="#fff2b8" opacity=".24" filter="url(#soft)"/>
+<g fill="#fff" opacity=".55"><ellipse cx="125" cy="68" rx="80" ry="31"/><ellipse cx="207" cy="84" rx="72" ry="26"/><ellipse cx="765" cy="74" rx="78" ry="30"/></g>
+<!-- Hindu Kush -->
+<path d="M0 335L85 250l60 45 94-124 81 106 93-159 86 129 92-151 78 134 108-170 94 142 90-118 139 160v151H0z" fill="url(#m1)"/>
+<path d="M0 390l105-112 70 66 110-126 98 132 104-112 96 126 116-136 105 122 94-108 102 102v86H0z" fill="url(#m2)"/>
+<g fill="#f8f4e9"><path d="M333 118l-48 84 48-36 25 23 29-41z"/><path d="M575 96l-58 94 58-42 27 28 34-47z"/><path d="M777 60l-63 106 63-50 31 35 36-53z"/><path d="M239 171l-40 69 40-31 21 23 27-34z"/></g>
+<!-- bright modern city in midground -->
+<g opacity=".96" filter="url(#shadow)">
+ <g fill="#d7b88c"><path d="M0 415h70v158H0zM79 375h68v198H79zM158 430h78v143h-78zM246 360h83v213h-83zM340 420h62v153h-62zM411 344h90v229h-90zM512 395h61v178h-61zM582 356h88v217h-88zM681 417h64v156h-64zM756 349h78v224h-78zM845 401h69v172h-69zM922 368h78v205h-78z"/></g>
+ <g fill="#5c7065" opacity=".45"><rect x="18" y="450" width="7" height="12" rx="2"/><rect x="68" y="474" width="7" height="12" rx="2"/><rect x="118" y="498" width="7" height="12" rx="2"/><rect x="168" y="450" width="7" height="12" rx="2"/><rect x="218" y="474" width="7" height="12" rx="2"/><rect x="268" y="498" width="7" height="12" rx="2"/><rect x="318" y="450" width="7" height="12" rx="2"/><rect x="368" y="474" width="7" height="12" rx="2"/><rect x="418" y="498" width="7" height="12" rx="2"/><rect x="468" y="450" width="7" height="12" rx="2"/><rect x="518" y="474" width="7" height="12" rx="2"/><rect x="568" y="498" width="7" height="12" rx="2"/><rect x="618" y="450" width="7" height="12" rx="2"/><rect x="668" y="474" width="7" height="12" rx="2"/><rect x="718" y="498" width="7" height="12" rx="2"/><rect x="768" y="450" width="7" height="12" rx="2"/><rect x="818" y="474" width="7" height="12" rx="2"/><rect x="868" y="498" width="7" height="12" rx="2"/><rect x="918" y="450" width="7" height="12" rx="2"/></g>
+ <path d="M468 405a29 29 0 0 1 58 0v27h-58z" fill="#6d9189"/><rect x="458" y="432" width="78" height="66" fill="#b98559"/><rect x="552" y="326" width="8" height="166" fill="#718e87"/><path d="M545 326q11-22 22 0z" fill="#718e87"/><circle cx="556" cy="310" r="5" fill="#718e87"/>
+</g>
+<!-- city trees -->
+<g fill="#4d7654" opacity=".93"><circle cx="20" cy="548" r="8"/><circle cx="54" cy="548" r="11"/><circle cx="88" cy="548" r="14"/><circle cx="122" cy="548" r="17"/><circle cx="156" cy="548" r="8"/><circle cx="190" cy="548" r="11"/><circle cx="224" cy="548" r="14"/><circle cx="258" cy="548" r="17"/><circle cx="292" cy="548" r="8"/><circle cx="326" cy="548" r="11"/><circle cx="360" cy="548" r="14"/><circle cx="394" cy="548" r="17"/><circle cx="428" cy="548" r="8"/><circle cx="462" cy="548" r="11"/><circle cx="496" cy="548" r="14"/><circle cx="530" cy="548" r="17"/><circle cx="564" cy="548" r="8"/><circle cx="598" cy="548" r="11"/><circle cx="632" cy="548" r="14"/><circle cx="666" cy="548" r="17"/><circle cx="700" cy="548" r="8"/><circle cx="734" cy="548" r="11"/><circle cx="768" cy="548" r="14"/><circle cx="802" cy="548" r="17"/><circle cx="836" cy="548" r="8"/><circle cx="870" cy="548" r="11"/><circle cx="904" cy="548" r="14"/><circle cx="938" cy="548" r="17"/><circle cx="972" cy="548" r="8"/><circle cx="1006" cy="548" r="11"/></g>
+<!-- PLAYABLE ROOFTOPS. Tops align exactly with game collision y values -->
+<g filter="url(#shadow)">
+ <!-- ground courtyard --> <rect x="24" y="690" width="952" height="70" rx="8" fill="#b58354"/><rect x="24" y="690" width="952" height="13" rx="5" fill="url(#wood)"/>
+ <!-- level 1 -->
+ <path d="M38 560h357v150H38z" fill="url(#wallA)"/><rect x="38" y="560" width="357" height="13" rx="5" fill="url(#wood)"/><path d="M478 560h484v150H478z" fill="url(#wallB)"/><rect x="478" y="560" width="484" height="13" rx="5" fill="url(#wood)"/>
+ <!-- level 2 varied roof terraces -->
+ <path d="M112 425h520v135H112V468h-72v-43z" fill="url(#wallA)"/><rect x="112" y="425" width="520" height="13" rx="5" fill="url(#wood)"/>
+ <path d="M700 425h252v135H700z" fill="url(#wallB)"/><rect x="700" y="425" width="252" height="13" rx="5" fill="url(#wood)"/>
+ <!-- level 3 -->
+ <path d="M34 290h318v135H34z" fill="url(#wallB)"/><rect x="34" y="290" width="318" height="13" rx="5" fill="url(#wood)"/>
+ <path d="M430 290h422v135H430z" fill="url(#wallA)"/><rect x="430" y="290" width="422" height="13" rx="5" fill="url(#wood)"/>
+ <!-- level 4 top roofs -->
+ <path d="M148 150h404v140H148z" fill="url(#wallA)"/><rect x="148" y="150" width="404" height="13" rx="5" fill="url(#wood)"/>
+ <path d="M628 150h337v140H628z" fill="url(#wallB)"/><rect x="628" y="150" width="337" height="13" rx="5" fill="url(#wood)"/>
+</g>
+<!-- wall textures / arches / doors -->
+<g fill="url(#brick)" opacity=".8"><rect x="38" y="573" width="357" height="117"/><rect x="478" y="573" width="484" height="117"/><rect x="112" y="438" width="520" height="122"/><rect x="700" y="438" width="252" height="122"/><rect x="34" y="303" width="318" height="122"/><rect x="430" y="303" width="422" height="122"/><rect x="148" y="163" width="404" height="127"/><rect x="628" y="163" width="337" height="127"/></g>
+<g fill="#698075" opacity=".95"><path d="M83 610a12 12 0 0 1 24 0v32H83z"/><path d="M324 614a12 12 0 0 1 24 0v32h-24z"/><path d="M559 611a12 12 0 0 1 24 0v32h-24z"/><path d="M820 610a12 12 0 0 1 24 0v32h-24z"/><path d="M222 476a13 13 0 0 1 26 0v35h-26z"/><path d="M458 477a13 13 0 0 1 26 0v35h-26z"/><path d="M756 474a13 13 0 0 1 26 0v35h-26z"/><path d="M88 339a13 13 0 0 1 26 0v36H88z"/><path d="M253 339a13 13 0 0 1 26 0v36h-26z"/><path d="M501 340a13 13 0 0 1 26 0v35h-26z"/><path d="M732 340a13 13 0 0 1 26 0v35h-26z"/><path d="M209 203a13 13 0 0 1 26 0v36h-26z"/><path d="M397 203a13 13 0 0 1 26 0v36h-26z"/><path d="M704 201a13 13 0 0 1 26 0v36h-26z"/><path d="M865 202a13 13 0 0 1 26 0v36h-26z"/></g>
+<!-- carved arches / rugs / plants -->
+<path d="M592 560v-56a28 28 0 0 1 56 0v56" fill="#6e928a"/><path d="M604 560v-49a16 16 0 0 1 32 0v49" fill="#a77550"/>
+<g fill="#8d4438"><rect x="62" y="404" width="105" height="18" rx="2"/><rect x="747" y="404" width="122" height="18" rx="2"/><rect x="672" y="268" width="118" height="17" rx="2"/><rect x="187" y="128" width="112" height="17" rx="2"/></g>
+<g fill="#4d7750"><circle cx="83" cy="544" r="13"/><circle cx="105" cy="540" r="10"/><circle cx="602" cy="545" r="15"/><circle cx="780" cy="410" r="14"/><circle cx="818" cy="409" r="10"/><circle cx="307" cy="275" r="12"/><circle cx="910" cy="274" r="15"/><circle cx="682" cy="135" r="12"/></g>
+<!-- rooftop modern details -->
+<g transform="translate(456 118) rotate(-4)"><rect width="72" height="30" rx="3" fill="#365f6d" stroke="#8eb0b7" stroke-width="3"/><path d="M18 0v30M36 0v30M54 0v30M0 15h72" stroke="#8eb0b7"/></g><rect x="885" y="108" width="45" height="39" rx="10" fill="#a8754d"/><rect x="878" y="105" width="59" height="8" rx="4" fill="#795238"/>
+<!-- ladders aligned with gameplay -->
+<g stroke="#6c4327" stroke-width="8" stroke-linecap="round" filter="url(#shadow)"><path d="M230 560v130M270 560v130M515 425v135M555 425v135M162 290v135M202 290v135M722 150v140M762 150v140"/></g>
+<g stroke="#c29158" stroke-width="6"><path d="M230 575h40"/><path d="M230 594h40"/><path d="M230 613h40"/><path d="M230 632h40"/><path d="M230 651h40"/><path d="M230 670h40"/><path d="M515 440h40"/><path d="M515 459h40"/><path d="M515 478h40"/><path d="M515 497h40"/><path d="M515 516h40"/><path d="M515 535h40"/><path d="M515 554h40"/><path d="M162 305h40"/><path d="M162 324h40"/><path d="M162 343h40"/><path d="M162 362h40"/><path d="M162 381h40"/><path d="M162 400h40"/><path d="M162 419h40"/><path d="M722 165h40"/><path d="M722 184h40"/><path d="M722 203h40"/><path d="M722 222h40"/><path d="M722 241h40"/><path d="M722 260h40"/><path d="M722 279h40"/></g>
+<!-- flower balcony -->
+<rect x="800" y="252" width="116" height="12" rx="6" fill="#526f4c"/><g fill="#9e5686"><circle cx="820" cy="248" r="6"/><circle cx="846" cy="247" r="6"/><circle cx="875" cy="249" r="6"/><circle cx="899" cy="246" r="6"/></g>
+</svg>
