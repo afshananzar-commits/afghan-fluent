@@ -2632,3 +2632,26 @@
 .kite-howto{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.kite-howto span{background:#f8efe3;border:1px solid #e2d4c1;border-radius:13px;padding:9px;text-align:center;font-size:10px;color:#6c685f}.kite-howto b{color:#315b43}
 @media(max-width:700px){.games-tabs.games-tabs-minimal{display:flex!important;overflow-x:auto!important;scrollbar-width:none;padding-bottom:2px!important}.games-tabs.games-tabs-minimal::-webkit-scrollbar{display:none}.games-tabs.games-tabs-minimal button{flex:0 0 86px}.kite-game-active .page-head{display:none}.kite-game-active{padding-top:4px!important}.kite-game-topbar{height:48px;border-radius:15px}.kite-game-topbar button{height:34px;padding:0 9px;font-size:10px}.kite-title b{font-size:17px}.kite-game-stage{border-radius:19px}.kite-panel{padding:19px;border-radius:23px}.kite-panel h2{font-size:27px}.kite-panel p{font-size:13px}.character-preview{width:66px;height:66px;font-size:42px}.kite-controls{grid-template-columns:64px 1fr 64px;gap:8px}.kite-controls button{height:54px;border-radius:16px}.kite-howto{grid-template-columns:1fr 1fr}.kite-howto span{font-size:9px;padding:7px}.kite-hit-note{top:58px;font-size:10px}.kite-done-actions{grid-template-columns:1fr}}
 @media(max-width:390px){.kite-game-topbar .kite-title small{display:none}.kite-title b{font-size:15px}.kite-game-topbar button span{display:none}.kite-game-topbar button{padding:0 9px}.kite-panel{padding:16px}.kite-panel h2{font-size:24px}.character-choice{gap:8px}.kite-controls{grid-template-columns:58px 1fr 58px}.kite-controls button{height:50px}.kite-howto{display:none}}
+
+/* Vlieger Avontuur v1.1 — mobiele karakterkeuze */
+@media(max-width:700px){
+  .kite-game-stage:has(.kite-select){overflow:visible;min-height:430px}
+  .kite-select{position:relative;inset:auto;min-height:430px;padding:10px;background:rgba(20,42,32,.38);border-radius:19px;align-items:start;overflow:visible}
+  .kite-select .kite-panel{width:100%;max-width:430px;padding:16px 16px 14px;gap:7px;border-radius:22px;margin:8px auto}
+  .kite-select .kite-panel h2{font-size:clamp(24px,7vw,30px);line-height:1.08}
+  .kite-select .kite-panel p{font-size:12px;line-height:1.35;max-width:310px}
+  .kite-select .character-choice{margin:5px 0;gap:9px}
+  .kite-select .character-choice button{padding:9px 8px;border-radius:17px;gap:4px;min-height:105px}
+  .kite-select .character-preview{width:58px;height:58px;font-size:38px}
+  .kite-select .kite-start{min-height:44px}
+  .kite-adventure-shell:has(.kite-select) .kite-controls,
+  .kite-adventure-shell:has(.kite-select) .kite-howto{visibility:hidden;pointer-events:none;height:0;min-height:0;margin:0;padding:0;overflow:hidden}
+}
+@media(max-width:390px){
+  .kite-game-stage:has(.kite-select),.kite-select{min-height:405px}
+  .kite-select .kite-panel{padding:13px 13px 12px;margin:6px auto}
+  .kite-select .kite-panel h2{font-size:23px}
+  .kite-select .kite-panel p{font-size:11px}
+  .kite-select .character-choice button{min-height:96px;padding:7px}
+  .kite-select .character-preview{width:52px;height:52px;font-size:34px}
+}
