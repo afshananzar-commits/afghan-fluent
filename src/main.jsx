@@ -420,8 +420,118 @@ function SpeedRound({game}){
  </section>
 }
 
+
+const AFGHAN_FACTS=[
+ {title:'Hoge bergen',text:'De Hindu Kush loopt door een groot deel van Afghanistan. Veel toppen zijn duizenden meters hoog.'},
+ {title:'Vliegers in de lucht',text:'Vliegeren is al generaties lang een geliefde activiteit in Afghanistan, vooral op heldere dagen.'},
+ {title:'Granaatappels',text:'Afghanistan staat bekend om zoete granaatappels. In verschillende regio’s worden ze al eeuwen geteeld.'},
+ {title:'Blauwe steen',text:'Lapis lazuli uit Afghanistan werd duizenden jaren geleden al gebruikt voor sieraden en kunst.'},
+ {title:'Lente vieren',text:'Veel Afghaanse families vieren Nowruz aan het begin van de lente met bezoek, eten en tijd samen.'},
+ {title:'Veel talen',text:'In Afghanistan worden verschillende talen gesproken. Dari en Pashto behoren tot de meest gebruikte.'},
+ {title:'Gastvrijheid',text:'Gasten ontvangen met thee, eten en tijd voor elkaar is in veel Afghaanse families heel belangrijk.'},
+ {title:'Steden en bergen',text:'Moderne steden, oude bazaars, dorpen en hoge bergen liggen in Afghanistan soms verrassend dicht bij elkaar.'}
+];
+
+function KiteAdventure({onExit}){
+ const canvasRef=useRef(null),rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(0),keysRef=useRef({left:false,right:false,action:false}),prevActionRef=useRef(false);
+ const playerRef=useRef({x:58,y:522,w:28,h:42,vx:0,vy:0,onGround:false,invuln:0}),melonsRef=useRef([]),collectedRef=useRef(new Set());
+ const[phase,setPhase]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[fact,setFact]=useState(null),[collected,setCollected]=useState(0),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0);
+
+ const platforms=useMemo(()=>[
+  {x1:24,x2:876,y:570},{x1:130,x2:430,y:465},{x1:515,x2:875,y:465},
+  {x1:25,x2:330,y:350},{x1:420,x2:730,y:350},{x1:145,x2:560,y:235},{x1:650,x2:875,y:235},
+  {x1:25,x2:325,y:120},{x1:440,x2:820,y:120}
+ ],[]);
+ const ramps=useMemo(()=>[
+  {x1:420,y1:570,x2:525,y2:465},{x1:330,y1:350,x2:435,y2:235}
+ ],[]);
+ const ladders=useMemo(()=>[
+  {x:205,top:465,bottom:570},{x:665,top:350,bottom:465},{x:245,top:120,bottom:235}
+ ],[]);
+ const kites=useMemo(()=>[
+  {id:1,x:815,y:520},{id:2,x:80,y:300},{id:3,x:765,y:72}
+ ],[]);
+ const facts=useMemo(()=>shuffle(AFGHAN_FACTS).slice(0,3),[roundSeed]);
+
+ const resetPlayer=()=>{playerRef.current={x:58,y:522,w:28,h:42,vx:0,vy:0,onGround:false,invuln:1.05}};
+ const startRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=0;setCollected(0);setSeconds(60);setFact(null);setHitNote(false);resetPlayer();setPhase('playing');};
+ const restart=()=>{setRoundSeed(s=>s+1);startRound()};
+ const finish=()=>{setPhase('done');keysRef.current={left:false,right:false,action:false}};
+ const playFact=f=>{if(f)speak(`${f.title}. ${f.text}`,.9)};
+ const continueFromFact=()=>{setFact(null);setPhase(collectedRef.current.size>=3?'done':'playing')};
+
+ useEffect(()=>{if(phase!=='playing')return;const t=setInterval(()=>setSeconds(s=>{if(s<=1){setPhase('done');return 0}return s-1}),1000);return()=>clearInterval(t)},[phase]);
+
+ useEffect(()=>{
+  const canvas=canvasRef.current;if(!canvas)return;const ctx=canvas.getContext('2d');const DPR=Math.min(2,window.devicePixelRatio||1);canvas.width=900*DPR;canvas.height=620*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+  const supportY=(x,bottom,prevBottom)=>{
+   let best=null;
+   for(const p of platforms){if(x>=p.x1-10&&x<=p.x2+10&&prevBottom<=p.y+5&&bottom>=p.y){if(best===null||p.y<best)best=p.y}}
+   for(const r of ramps){const minX=Math.min(r.x1,r.x2),maxX=Math.max(r.x1,r.x2);if(x>=minX&&x<=maxX){const t=(x-r.x1)/(r.x2-r.x1),y=r.y1+(r.y2-r.y1)*t;if(prevBottom<=y+6&&bottom>=y){if(best===null||y<best)best=y}}}
+   return best;
+  };
+  const melonSupport=(m,prevBottom)=>{
+   let y=null;
+   for(const p of platforms){if(m.x>=p.x1+m.r*.15&&m.x<=p.x2-m.r*.15&&prevBottom<=p.y+4&&m.y+m.r>=p.y){if(y===null||p.y<y)y=p.y}}
+   for(const r of ramps){const minX=Math.min(r.x1,r.x2),maxX=Math.max(r.x1,r.x2);if(m.x>=minX&&m.x<=maxX){const t=(m.x-r.x1)/(r.x2-r.x1),ry=r.y1+(r.y2-r.y1)*t;if(prevBottom<=ry+4&&m.y+m.r>=ry){if(y===null||ry<y)y=ry}}}
+   return y;
+  };
+  const roundRect=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()};
+  const drawBackground=()=>{
+   const sky=ctx.createLinearGradient(0,0,0,620);sky.addColorStop(0,'#bfe2ee');sky.addColorStop(.52,'#e9e2c8');sky.addColorStop(1,'#d9c29d');ctx.fillStyle=sky;ctx.fillRect(0,0,900,620);
+   ctx.fillStyle='rgba(255,255,255,.55)';for(const c of [[105,70,65],[175,55,52],[720,65,70],[790,80,55]]){ctx.beginPath();ctx.arc(c[0],c[1],c[2],0,Math.PI*2);ctx.fill()}
+   const mountain=(pts,color)=>{ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(0,pts[0][1]);for(const [x,y] of pts)ctx.lineTo(x,y);ctx.lineTo(900,360);ctx.lineTo(0,360);ctx.closePath();ctx.fill()};
+   mountain([[0,280],[110,175],[185,235],[300,125],[380,230],[520,145],[625,230],[755,135],[900,260]],'#90a98f');
+   mountain([[0,315],[150,220],[270,300],[400,185],[540,300],[675,205],[805,285],[900,225]],'#758a7a');
+   ctx.fillStyle='rgba(244,241,224,.9)';ctx.beginPath();ctx.moveTo(260,160);ctx.lineTo(300,125);ctx.lineTo(333,180);ctx.lineTo(304,165);ctx.lineTo(287,184);ctx.closePath();ctx.fill();ctx.beginPath();ctx.moveTo(724,165);ctx.lineTo(755,135);ctx.lineTo(788,185);ctx.lineTo(757,170);ctx.lineTo(742,187);ctx.closePath();ctx.fill();
+   // modern Afghan city silhouette
+   const buildings=[[15,315,88,170],[108,330,72,155],[190,300,68,185],[270,335,94,150],[375,295,72,190],[458,325,88,160],[560,300,72,185],[644,320,86,165],[742,285,62,200],[812,330,72,155]];
+   buildings.forEach((b,i)=>{ctx.fillStyle=i%2?'#d8c29d':'#cdb287';ctx.fillRect(b[0],b[1],b[2],b[3]);ctx.fillStyle='rgba(76,94,83,.34)';for(let yy=b[1]+18;yy<b[1]+b[3]-12;yy+=27)for(let xx=b[0]+12;xx<b[0]+b[2]-8;xx+=24)ctx.fillRect(xx,yy,8,11)});
+   ctx.fillStyle='#7ea4a0';ctx.beginPath();ctx.arc(414,306,28,Math.PI,0);ctx.fill();ctx.fillRect(386,306,56,28);ctx.fillStyle='#b58e62';ctx.fillRect(370,334,88,58);ctx.fillStyle='#789b96';ctx.fillRect(450,265,7,70);ctx.beginPath();ctx.arc(453.5,263,9,Math.PI,0);ctx.fill();
+   ctx.fillStyle='#5d755e';for(let i=0;i<18;i++){const x=22+i*52+(i%3)*7,y=460+(i%4)*8;ctx.beginPath();ctx.arc(x,y,9+(i%3)*3,0,Math.PI*2);ctx.fill()}
+  };
+  const drawPlatform=p=>{ctx.fillStyle='#b27a45';ctx.fillRect(p.x1,p.y,p.x2-p.x1,13);ctx.fillStyle='#d09a5c';ctx.fillRect(p.x1,p.y,p.x2-p.x1,5);ctx.strokeStyle='rgba(84,61,39,.32)';ctx.lineWidth=2;for(let x=p.x1+18;x<p.x2;x+=36){ctx.beginPath();ctx.moveTo(x,p.y);ctx.lineTo(x-10,p.y+13);ctx.stroke()}};
+  const drawRamp=r=>{ctx.save();ctx.strokeStyle='#9b693c';ctx.lineWidth=18;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(r.x1,r.y1);ctx.lineTo(r.x2,r.y2);ctx.stroke();ctx.strokeStyle='#d3a36b';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(r.x1,r.y1-3);ctx.lineTo(r.x2,r.y2-3);ctx.stroke();ctx.restore()};
+  const drawLadder=l=>{ctx.strokeStyle='#795b3e';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(l.x-16,l.top);ctx.lineTo(l.x-16,l.bottom);ctx.moveTo(l.x+16,l.top);ctx.lineTo(l.x+16,l.bottom);ctx.stroke();ctx.lineWidth=4;for(let y=l.top+12;y<l.bottom;y+=18){ctx.beginPath();ctx.moveTo(l.x-16,y);ctx.lineTo(l.x+16,y);ctx.stroke()}};
+  const drawKite=k=>{if(collectedRef.current.has(k.id))return;ctx.save();ctx.translate(k.x,k.y);ctx.rotate(-.16);ctx.shadowColor='#f4c850';ctx.shadowBlur=16;ctx.fillStyle='#1f4d37';ctx.beginPath();ctx.moveTo(0,-23);ctx.lineTo(20,0);ctx.lineTo(0,24);ctx.lineTo(-20,0);ctx.closePath();ctx.fill();ctx.fillStyle='#e58b3e';ctx.beginPath();ctx.moveTo(0,-23);ctx.lineTo(20,0);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.fillStyle='#c84b3d';ctx.beginPath();ctx.moveTo(-20,0);ctx.lineTo(0,24);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.strokeStyle='#654b38';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,24);ctx.quadraticCurveTo(18,38,7,55);ctx.stroke();ctx.shadowBlur=0;ctx.restore()};
+  const drawPlayer=p=>{ctx.save();ctx.globalAlpha=p.invuln>0&&Math.floor(p.invuln*12)%2===0?.42:1;const cx=p.x+p.w/2;ctx.fillStyle='#f0b481';ctx.beginPath();ctx.arc(cx,p.y+10,9,0,Math.PI*2);ctx.fill();ctx.fillStyle='#2c2723';if(character==='girl'){ctx.beginPath();ctx.arc(cx,p.y+8,12,Math.PI,Math.PI*2);ctx.fill();ctx.fillStyle='#467056';ctx.beginPath();ctx.moveTo(cx-12,p.y+18);ctx.lineTo(cx+12,p.y+18);ctx.lineTo(cx+15,p.y+40);ctx.lineTo(cx-15,p.y+40);ctx.closePath();ctx.fill();ctx.fillStyle='#d98262';ctx.fillRect(cx-13,p.y+20,5,20);ctx.fillRect(cx+8,p.y+20,5,20)}else{ctx.fillStyle='#795234';ctx.beginPath();ctx.ellipse(cx,p.y+2,12,5,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#3f654c';ctx.fillRect(cx-12,p.y+18,24,22);ctx.fillStyle='#f1ede0';ctx.fillRect(cx-8,p.y+19,16,20)}ctx.strokeStyle='#563d2f';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(cx-7,p.y+40);ctx.lineTo(cx-10,p.y+47);ctx.moveTo(cx+7,p.y+40);ctx.lineTo(cx+10,p.y+47);ctx.stroke();ctx.restore()};
+  const drawMelon=m=>{ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.rot);ctx.fillStyle='#4b7e3f';ctx.beginPath();ctx.arc(0,0,m.r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#bad064';ctx.lineWidth=3;for(let a=-.8;a<=.8;a+=.4){ctx.beginPath();ctx.ellipse(a*8,0,5,m.r-3,a,0,Math.PI*2);ctx.stroke()}ctx.restore()};
+  const draw=()=>{drawBackground();ramps.forEach(drawRamp);platforms.forEach(drawPlatform);ladders.forEach(drawLadder);kites.forEach(drawKite);melonsRef.current.forEach(drawMelon);drawPlayer(playerRef.current);ctx.fillStyle='rgba(252,247,238,.94)';ctx.beginPath();ctx.roundRect(18,17,110,42,18);ctx.fill();ctx.fillStyle='#274b38';ctx.font='700 18px Inter, sans-serif';ctx.fillText(`🪁 ${collectedRef.current.size}/3`,39,44);ctx.beginPath();ctx.roundRect(760,17,122,42,18);ctx.fill();ctx.fillStyle='#274b38';ctx.fillText(`◷ ${seconds}s`,784,44)};
+  const update=(dt)=>{
+   const p=playerRef.current,k=keysRef.current;const move=175;p.vx=(k.left?-move:k.right?move:0);const center=p.x+p.w/2;const ladder=ladders.find(l=>Math.abs(center-l.x)<25&&p.y+p.h>l.top-8&&p.y<l.bottom+5);
+   if(k.action&&!prevActionRef.current&&!ladder&&p.onGround){p.vy=-355;p.onGround=false}
+   if(k.action&&ladder){p.vy=-125;p.onGround=false}
+   prevActionRef.current=k.action;
+   const prevBottom=p.y+p.h;p.vy+=620*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.x=Math.max(4,Math.min(868,p.x));
+   if(p.vy>=0){const sy=supportY(p.x+p.w/2,p.y+p.h,prevBottom);if(sy!==null){p.y=sy-p.h;p.vy=0;p.onGround=true}else p.onGround=false}
+   if(p.y>625)resetPlayer();if(p.invuln>0)p.invuln-=dt;
+   const elapsed=60-seconds;spawnRef.current-=dt;const interval=elapsed<20?5.2:elapsed<40?3.7:2.55;if(spawnRef.current<=0){const speed=(95+elapsed*1.25)*(Math.random()>.45?1:-1);melonsRef.current.push({x:speed>0?48:805,y:83,r:18,vx:speed,vy:0,rot:0});spawnRef.current=interval}
+   melonsRef.current.forEach(m=>{const prev=m.y+m.r;m.vy+=590*dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.vx*dt/22;const sy=melonSupport(m,prev);if(m.vy>=0&&sy!==null){m.y=sy-m.r;m.vy=0}if(m.x<m.r){m.x=m.r;m.vx=Math.abs(m.vx)}if(m.x>900-m.r){m.x=900-m.r;m.vx=-Math.abs(m.vx)}});melonsRef.current=melonsRef.current.filter(m=>m.y<680);
+   if(p.invuln<=0){for(const m of melonsRef.current){const dx=(p.x+p.w/2)-m.x,dy=(p.y+p.h/2)-m.y;if(Math.hypot(dx,dy)<m.r+17){resetPlayer();setHitNote(true);setTimeout(()=>setHitNote(false),900);break}}}
+   for(const kite of kites){if(collectedRef.current.has(kite.id))continue;const dx=(p.x+p.w/2)-kite.x,dy=(p.y+p.h/2)-kite.y;if(Math.hypot(dx,dy)<38){collectedRef.current.add(kite.id);setCollected(collectedRef.current.size);const f=facts[kite.id-1];setFact(f);setPhase('fact');setTimeout(()=>playFact(f),180);break}}
+  };
+  const loop=t=>{const dt=Math.min(.032,(t-(lastRef.current||t))/1000);lastRef.current=t;if(phase==='playing')update(dt);draw();rafRef.current=requestAnimationFrame(loop)};rafRef.current=requestAnimationFrame(loop);return()=>cancelAnimationFrame(rafRef.current)
+ },[phase,seconds,character,facts,platforms,ramps,ladders,kites]);
+
+ const press=(key,val)=>{keysRef.current[key]=val};
+ const buttonProps=key=>({onPointerDown:e=>{e.preventDefault();e.currentTarget.setPointerCapture?.(e.pointerId);press(key,true)},onPointerUp:e=>{e.preventDefault();press(key,false)},onPointerCancel:()=>press(key,false),onPointerLeave:e=>{if(e.buttons===0)press(key,false)}});
+ return <section className="kite-adventure-shell">
+   <div className="kite-game-topbar"><button className="kite-exit" onClick={onExit}><X/> Stoppen</button><div className="kite-title"><small>SPELEN</small><b>Vlieger Avontuur</b></div><button className="kite-skip" onClick={finish}><SkipForward/> Overslaan</button></div>
+   <div className="kite-game-stage">
+    <canvas ref={canvasRef} className="kite-canvas" aria-label="Vlieger Avontuur spel"/>
+    {hitNote&&<div className="kite-hit-note">🍉 Oeps! Probeer een andere route.</div>}
+    {phase==='select'&&<div className="kite-overlay kite-select"><div className="kite-panel"><span className="kite-eyebrow">KIES JE AVONTURIER</span><h2>Wie gaat de vliegers zoeken?</h2><p>Iedereen speelt hetzelfde. Kies gewoon wie jij leuk vindt.</p><div className="character-choice"><button className={character==='girl'?'active':''} onClick={()=>setCharacter('girl')}><span className="character-preview girl">👧🏻</span><b>Meisje</b></button><button className={character==='boy'?'active':''} onClick={()=>setCharacter('boy')}><span className="character-preview boy">👦🏻</span><b>Jongen</b></button></div><button className="kite-start" onClick={startRound}><Play/> Start avontuur</button></div></div>}
+    {phase==='fact'&&fact&&<div className="kite-overlay kite-fact"><div className="kite-panel"><span className="fact-kite">🪁</span><span className="kite-eyebrow">VLIEGER GEVONDEN!</span><h2>Wist je dat?</h2><h3>{fact.title}</h3><p>{fact.text}</p><button className="fact-listen" onClick={()=>playFact(fact)}><Volume2/> Luister nog een keer</button><button className="kite-start" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div>}
+    {phase==='done'&&<div className="kite-overlay kite-done"><div className="kite-panel"><span className="done-character">{character==='girl'?'👧🏻':'👦🏻'}</span><span className="kite-eyebrow">MOOI GESPEELD!</span><h2>Je avontuur is klaar</h2><p>Je hebt vandaag <b>{collected}</b> {collected===1?'nieuw weetje':'nieuwe weetjes'} over Afghanistan ontdekt.</p><div className="kite-done-actions"><button onClick={onExit}>Terug naar challenges</button><button className="kite-start" onClick={restart}><RotateCcw/> Nog een ronde</button></div></div></div>}
+   </div>
+   <div className="kite-controls"><button {...buttonProps('left')} aria-label="Links"><ChevronLeft/></button><button className="kite-action" {...buttonProps('action')} aria-label="Spring of klim"><span>↑</span><small>SPRING / KLIM</small></button><button {...buttonProps('right')} aria-label="Rechts"><ChevronRight/></button></div>
+   <div className="kite-howto"><span>🪁 <b>Pak 3 vliegers</b></span><span>🍉 <b>Ontwijk wat rolt</b></span><span>🧩 <b>Vind je route</b></span><span>⏱️ <b>Wordt langzaam moeilijker</b></span></div>
+  </section>
+}
+
+
 function Badges({app,game}){const a=[['Eerste stap','25 woorden',app.knownIds.size>=25,'🌱'],['Woordenkenner','100 woorden',app.knownIds.size>=100,'📚'],['Op stoom','500 XP',game.xp>=500,'⭐'],['Doorzetter','7 dagen',(app.progress.streak||0)>=7,'🔥'],['Taalheld','2500 XP',game.xp>=2500,'🏆']];return <div className="badges-grid">{a.map(([n,s,u,e])=><div key={n} className={`badge-card ${u?'unlocked':''}`}><span>{e}</span><b>{n}</b><small>{s}</small>{u&&<Medal/>}</div>)}</div>}
-function Games({app,game,go}){const[type,setType]=useState(game.game.lastGame||'sentence');const choose=t=>{setType(t);game.updateGame(g=>({...g,lastGame:t}))};return <div className="screen focus-screen games-focus"><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="SPELEN & LEREN" title="Challenges" sub="Oefen kort, verdien XP en verbeter wat nog lastig is." badge={<><Trophy/> Level {game.level}</>}/><GameSummary game={game}/><div className="games-tabs games-tabs-minimal"><button className={type==='sentence'?'active':''} onClick={()=>choose('sentence')}><BookText/><span>Bouw de zin</span></button><button className={type==='listen'?'active':''} onClick={()=>choose('listen')}><Headphones/><span>Luisteren</span></button><button className={type==='picture'?'active':''} onClick={()=>choose('picture')}><Layers3/><span>Plaatjes</span></button><button className={type==='speed'?'active':''} onClick={()=>choose('speed')}><Zap/><span>Snelle ronde</span></button></div>{type==='sentence'?<SentenceBuilder game={game}/>:type==='listen'?<ListeningQuiz game={game}/>:type==='picture'?<PictureQuiz game={game}/>:<SpeedRound game={game}/>}<SectionTitle title="Badges"/><Badges app={app} game={game}/></div>}
+function Games({app,game,go}){const[type,setType]=useState(game.game.lastGame||'sentence');const choose=t=>{setType(t);game.updateGame(g=>({...g,lastGame:t}))};return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="SPELEN & LEREN" title="Challenges" sub="Oefen kort, ontdek Afghanistan en verbeter wat nog lastig is." badge={<><Trophy/> Level {game.level}</>}/>{type!=='kite'&&<GameSummary game={game}/>}<div className="games-tabs games-tabs-minimal"><button className={type==='sentence'?'active':''} onClick={()=>choose('sentence')}><BookText/><span>Bouw de zin</span></button><button className={type==='listen'?'active':''} onClick={()=>choose('listen')}><Headphones/><span>Luisteren</span></button><button className={type==='picture'?'active':''} onClick={()=>choose('picture')}><Layers3/><span>Plaatjes</span></button><button className={type==='speed'?'active':''} onClick={()=>choose('speed')}><Zap/><span>Snelle ronde</span></button><button className={type==='kite'?'active':''} onClick={()=>choose('kite')}><Sparkles/><span>Vlieger</span></button></div>{type==='sentence'?<SentenceBuilder game={game}/>:type==='listen'?<ListeningQuiz game={game}/>:type==='picture'?<PictureQuiz game={game}/>:type==='speed'?<SpeedRound game={game}/>:<KiteAdventure onExit={()=>choose('sentence')}/>} {type!=='kite'&&<><SectionTitle title="Badges"/><Badges app={app} game={game}/></>}</div>}
 
 function Words({app,game,go,selectedLesson,clearSelectedLesson}){const[query,setQuery]=useState(''),[idx,setIdx]=useState(game.game.positions?.words||0),[revealed,setRevealed]=useState(false),[dragX,setDragX]=useState(0),[dragging,setDragging]=useState(false),start=useRef(null),[exit,setExit]=useState(null);const filtered=useMemo(()=>{const ids=selectedLesson?new Set(selectedLesson.words.map(x=>x.id)):null;return vocab.filter(v=>(!ids||ids.has(v.id))&&(!query||`${v.dutch} ${v.spoken} ${v.latin}`.toLowerCase().includes(query.toLowerCase())))},[query,selectedLesson]);const w=filtered[idx%Math.max(1,filtered.length)]||vocab[0],nextW=filtered[(idx+1)%Math.max(1,filtered.length)]||w,known=app.knownIds.has(w.id);const finish=right=>{if(exit)return;app.update(p=>{const set=new Set(p.known||[]),was=set.has(w.id);right?set.add(w.id):set.delete(w.id);return{...p,known:[...set]}});practice(game,`word:${w.id}`,right);if(right&&!known)awardXP(game,10,'woord geleerd');setExit(right?'right':'left');setDragX(right?700:-700);setTimeout(()=>{const n=(idx+1)%filtered.length;setIdx(n);remember(game,'words',n);setRevealed(false);setDragX(0);setExit(null)},270)};return <div className="screen focus-screen words-focus"><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="1000+ WOORDEN" title="Woorden" sub="Swipe rechts: Ken ik. Links: Nog oefenen." badge={<>{idx+1} / {filtered.length}</>}/>{selectedLesson&&<div className="review-banner"><div className="seal">{selectedLesson.emoji}</div><div><b>Les {selectedLesson.number} · {selectedLesson.title}</b><span>{selectedLesson.words.length} woorden</span></div><button onClick={clearSelectedLesson}><X/></button></div>}<div className="word-toolbar"><label><Search/><input value={query} onChange={e=>{setQuery(e.target.value);setIdx(0)}} placeholder="Zoek Nederlands of fonetisch…"/></label></div><div className="swipe-stage"><article className="premium-flashcard swipe-card swipe-card-under"><WordIllustration word={nextW}/></article><article className="premium-flashcard swipe-card swipe-card-top" style={{transform:`translateX(${dragX}px) rotate(${dragX/24}deg)`,transition:dragging?'none':'transform .27s'}} onPointerDown={e=>{start.current=e.clientX;setDragging(true)}} onPointerMove={e=>{if(start.current!==null)setDragX(Math.max(-220,Math.min(220,e.clientX-start.current)))}} onPointerUp={()=>{setDragging(false);start.current=null;if(Math.abs(dragX)>85)finish(dragX>0);else setDragX(0)}} onClick={()=>Math.abs(dragX)<8&&setRevealed(r=>!r)}><div className={`swipe-stamp learn ${dragX<-25?'show':''}`}>NOG OEFENEN</div><div className={`swipe-stamp know ${dragX>25?'show':''}`}>KEN IK!</div><div className="card-top"><span>{labelFor(w.category)}</span></div><WordIllustration word={w}/><div className="word-copy"><small>NEDERLANDS</small><h2>{w.dutch}</h2>{revealed?<><small>ZO ZEG JE HET</small><h3>{w.spoken||w.latin}</h3><button className="sound-btn" onClick={e=>{e.stopPropagation();speak(w.spoken||w.latin,.88,'word',w.id)}}><Volume2/> Luister</button></>:<div className="reveal-hint"><Eye/> Tik voor vertaling</div>}</div></article></div><div className="card-nav swipe-actions-row"><button onClick={()=>finish(false)}><X/> Nog oefenen</button><button onClick={()=>finish(true)}><Check/> Ken ik! +10 XP</button></div></div>}
 
