@@ -575,7 +575,44 @@ function KiteAdventure({onExit}){
 }
 
 
-function Games({app,game,go}){const savedGameType=game?.game?.lastGame;const[type,setType]=useState(savedGameType&&savedGameType!=='kite'?savedGameType:'sentence');const choose=t=>{setType(t);game.updateGame(g=>({...g,lastGame:t}))};return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="SPELEN & LEREN" title="Challenges" sub="Oefen kort, ontdek Afghanistan en verbeter wat nog lastig is." badge={<><Trophy/> Level {game.level}</>}/>{type!=='kite'&&<GameSummary game={game}/>}<div className="games-tabs games-tabs-minimal"><button className={type==='sentence'?'active':''} onClick={()=>choose('sentence')}><BookText/><span>Bouw de zin</span></button><button className={type==='listen'?'active':''} onClick={()=>choose('listen')}><Headphones/><span>Luisteren</span></button><button className={type==='picture'?'active':''} onClick={()=>choose('picture')}><Layers3/><span>Plaatjes</span></button><button className={type==='speed'?'active':''} onClick={()=>choose('speed')}><Zap/><span>Snelle ronde</span></button><button className={type==='kite'?'active':''} onClick={()=>choose('kite')}><Sparkles/><span>Vlieger</span></button></div>{type==='sentence'?<SentenceBuilder game={game}/>:type==='listen'?<ListeningQuiz game={game}/>:type==='picture'?<PictureQuiz game={game}/>:type==='speed'?<SpeedRound game={game}/>:<KiteGameErrorBoundary onReset={()=>choose('sentence')}><KiteAdventure onExit={()=>choose('sentence')}/></KiteGameErrorBoundary>} {type!=='kite'&&<><SectionTitle title="Badges"/><Badges app={app} game={game}/></>}</div>}
+function Games({app,game,go}){
+ const[type,setType]=useState(null);
+ const choose=t=>{setType(t);game.updateGame(g=>({...g,lastGame:t}))};
+ const backToMenu=()=>setType(null);
+
+ if(type){
+  return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}>
+   <button className="focus-exit" onClick={backToMenu}><ChevronLeft/> Spellen</button>
+   {type!=='kite'&&<PageHead eyebrow="SPELEN & LEREN" title={type==='sentence'?'Bouw de zin':type==='listen'?'Luisteren':type==='picture'?'Plaatjes':'Snelle ronde'} sub="Korte oefening. Je kunt altijd terug naar het spellenmenu."/>}
+   <ChallengeErrorBoundary onReset={backToMenu}>
+    {type==='sentence'?<SentenceBuilder game={game}/>:type==='listen'?<ListeningQuiz game={game}/>:type==='picture'?<PictureQuiz game={game}/>:type==='speed'?<SpeedRound game={game}/>:<KiteGameErrorBoundary onReset={backToMenu}><KiteAdventure onExit={backToMenu}/></KiteGameErrorBoundary>}
+   </ChallengeErrorBoundary>
+  </div>
+ }
+
+ return <div className="screen games-home-safe">
+  <button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button>
+  <PageHead eyebrow="SPELEN & LEREN" title="Spelen" sub="Kies wat je vandaag wilt oefenen." badge={<><Trophy/> Level {game.level}</>}/>
+  <div className="games-safe-grid">
+   <button onClick={()=>choose('sentence')}><span><BookText/></span><b>Bouw de zin</b><small>Zet woorden in de juiste volgorde</small></button>
+   <button onClick={()=>choose('listen')}><span><Headphones/></span><b>Luisteren</b><small>Luister en kies de betekenis</small></button>
+   <button onClick={()=>choose('picture')}><span><Layers3/></span><b>Plaatjes</b><small>Kies de juiste afbeelding</small></button>
+   <button onClick={()=>choose('speed')}><span><Zap/></span><b>Snelle ronde</b><small>Korte oefening op tempo</small></button>
+   <button className="kite-choice" onClick={()=>choose('kite')}><span><Sparkles/></span><b>Vlieger Avontuur</b><small>Vind vliegers en ontdek Afghanistan</small></button>
+  </div>
+  <GameSummary game={game}/>
+ </div>
+}
+
+class ChallengeErrorBoundary extends React.Component{
+ constructor(props){super(props);this.state={error:null}}
+ static getDerivedStateFromError(error){return{error}}
+ componentDidCatch(error,info){console.error('GAME_CHALLENGE_RENDER_ERROR',error,info)}
+ render(){
+  if(this.state.error){return <div className="challenge-error-card"><small>DIT SPEL KON NIET OPENEN</small><h2>Er ging iets mis</h2><p>{String(this.state.error?.message||this.state.error||'Onbekende fout')}</p><button className="primary-game" onClick={this.props.onReset}>Terug naar Spellen</button></div>}
+  return this.props.children
+ }
+}
 
 function Words({app,game,go,selectedLesson,clearSelectedLesson}){const[query,setQuery]=useState(''),[idx,setIdx]=useState(game.game.positions?.words||0),[revealed,setRevealed]=useState(false),[dragX,setDragX]=useState(0),[dragging,setDragging]=useState(false),start=useRef(null),[exit,setExit]=useState(null);const filtered=useMemo(()=>{const ids=selectedLesson?new Set(selectedLesson.words.map(x=>x.id)):null;return vocab.filter(v=>(!ids||ids.has(v.id))&&(!query||`${v.dutch} ${v.spoken} ${v.latin}`.toLowerCase().includes(query.toLowerCase())))},[query,selectedLesson]);const w=filtered[idx%Math.max(1,filtered.length)]||vocab[0],nextW=filtered[(idx+1)%Math.max(1,filtered.length)]||w,known=app.knownIds.has(w.id);const finish=right=>{if(exit)return;app.update(p=>{const set=new Set(p.known||[]),was=set.has(w.id);right?set.add(w.id):set.delete(w.id);return{...p,known:[...set]}});practice(game,`word:${w.id}`,right);if(right&&!known)awardXP(game,10,'woord geleerd');setExit(right?'right':'left');setDragX(right?700:-700);setTimeout(()=>{const n=(idx+1)%filtered.length;setIdx(n);remember(game,'words',n);setRevealed(false);setDragX(0);setExit(null)},270)};return <div className="screen focus-screen words-focus"><button className="focus-exit" onClick={()=>go('today')}><X/> Sluiten</button><PageHead eyebrow="1000+ WOORDEN" title="Woorden" sub="Swipe rechts: Ken ik. Links: Nog oefenen." badge={<>{idx+1} / {filtered.length}</>}/>{selectedLesson&&<div className="review-banner"><div className="seal">{selectedLesson.emoji}</div><div><b>Les {selectedLesson.number} · {selectedLesson.title}</b><span>{selectedLesson.words.length} woorden</span></div><button onClick={clearSelectedLesson}><X/></button></div>}<div className="word-toolbar"><label><Search/><input value={query} onChange={e=>{setQuery(e.target.value);setIdx(0)}} placeholder="Zoek Nederlands of fonetisch…"/></label></div><div className="swipe-stage"><article className="premium-flashcard swipe-card swipe-card-under"><WordIllustration word={nextW}/></article><article className="premium-flashcard swipe-card swipe-card-top" style={{transform:`translateX(${dragX}px) rotate(${dragX/24}deg)`,transition:dragging?'none':'transform .27s'}} onPointerDown={e=>{start.current=e.clientX;setDragging(true)}} onPointerMove={e=>{if(start.current!==null)setDragX(Math.max(-220,Math.min(220,e.clientX-start.current)))}} onPointerUp={()=>{setDragging(false);start.current=null;if(Math.abs(dragX)>85)finish(dragX>0);else setDragX(0)}} onClick={()=>Math.abs(dragX)<8&&setRevealed(r=>!r)}><div className={`swipe-stamp learn ${dragX<-25?'show':''}`}>NOG OEFENEN</div><div className={`swipe-stamp know ${dragX>25?'show':''}`}>KEN IK!</div><div className="card-top"><span>{labelFor(w.category)}</span></div><WordIllustration word={w}/><div className="word-copy"><small>NEDERLANDS</small><h2>{w.dutch}</h2>{revealed?<><small>ZO ZEG JE HET</small><h3>{w.spoken||w.latin}</h3><button className="sound-btn" onClick={e=>{e.stopPropagation();speak(w.spoken||w.latin,.88,'word',w.id)}}><Volume2/> Luister</button></>:<div className="reveal-hint"><Eye/> Tik voor vertaling</div>}</div></article></div><div className="card-nav swipe-actions-row"><button onClick={()=>finish(false)}><X/> Nog oefenen</button><button onClick={()=>finish(true)}><Check/> Ken ik! +10 XP</button></div></div>}
 

@@ -2910,3 +2910,16 @@
 .v8-error-card small{display:block;letter-spacing:.18em;color:#b86847;font-weight:800;margin-bottom:8px}
 .v8-error-card h2{font-family:Georgia,serif;font-size:30px;margin:0 0 10px}
 .v8-error-card p{color:#766b5d;overflow-wrap:anywhere}
+
+
+/* Safe games landing */
+.games-home-safe{padding-bottom:120px}
+.games-safe-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0 22px}
+.games-safe-grid>button{border:1px solid #dfd2bc;background:#fffaf1;border-radius:24px;padding:20px 16px;min-height:150px;text-align:left;display:flex;flex-direction:column;gap:8px;color:#173d2e;box-shadow:0 8px 22px rgba(65,48,27,.06)}
+.games-safe-grid>button>span{width:48px;height:48px;border-radius:16px;background:#e6efe3;display:grid;place-items:center}
+.games-safe-grid>button svg{width:25px;height:25px}.games-safe-grid>button b{font-size:18px}.games-safe-grid>button small{color:#7b746b;line-height:1.35;font-size:13px}
+.games-safe-grid>button.kite-choice{grid-column:1/-1;min-height:132px;background:linear-gradient(135deg,#2e6246,#4f7d5e);color:white}
+.games-safe-grid>button.kite-choice>span{background:rgba(255,255,255,.14)}.games-safe-grid>button.kite-choice small{color:rgba(255,255,255,.82)}
+.challenge-error-card{margin:22px auto;width:min(560px,94%);padding:28px;border:1px solid #dfc9ac;border-radius:28px;background:#fff8ec;text-align:center;color:#234a36;box-shadow:0 18px 45px rgba(60,45,25,.1)}
+.challenge-error-card small{display:block;color:#b56b4b;letter-spacing:.15em;font-weight:800;margin-bottom:8px}.challenge-error-card h2{font-family:Georgia,serif;font-size:30px;margin:0 0 10px}.challenge-error-card p{color:#766e63;overflow-wrap:anywhere}
+@media(max-width:520px){.games-safe-grid{grid-template-columns:1fr 1fr;gap:10px}.games-safe-grid>button{min-height:132px;padding:16px 13px;border-radius:20px}.games-safe-grid>button b{font-size:16px}.games-safe-grid>button small{font-size:12px}}
