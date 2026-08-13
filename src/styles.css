@@ -3032,3 +3032,30 @@
  .v11-panel{padding:20px 16px;border-radius:27px}.v11-panel h2{font-size:29px}.v11-characters button{min-height:155px}.v11-characters img{height:120px}.v11-hit{top:70px;font-size:13px}
 }
 @media(max-width:390px){.v11-stage{height:calc(100dvh - 270px);min-height:455px}.v11-controls{padding:0 14px}.v11-directions button{width:68px;height:70px}.v11-action{width:138px;height:70px}.v11-header strong{font-size:21px}}
+
+
+/* =========================================================
+   V12 — FUNCTIONELE LADDERGENERATOR + TOUCH-SAFE CONTROLS
+   ========================================================= */
+.kite-v12,.kite-v12 *{
+  -webkit-user-select:none!important;user-select:none!important;
+  -webkit-touch-callout:none!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+.kite-v12 img{-webkit-user-drag:none!important;user-drag:none!important;pointer-events:none!important}
+.v12-stage{touch-action:none!important;overscroll-behavior:contain!important}
+.v12-controls,.v12-controls *{touch-action:none!important}
+.v12-controls button{appearance:none!important;-webkit-appearance:none!important;outline:none!important}
+.v12-world-label{position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:32;background:rgba(255,250,239,.84);backdrop-filter:blur(8px);padding:7px 13px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.09em;color:#315541;box-shadow:0 4px 12px rgba(39,55,38,.08)}
+/* Thin visual platform cue only; collision geometry stays independent. */
+.v12-platform-guide{position:absolute;z-index:7;height:9px;transform:translateY(-5px);border-radius:7px;background:linear-gradient(180deg,#dfb071,#9b6034 58%,#704022);box-shadow:0 3px 8px rgba(50,31,19,.20),inset 0 1px rgba(255,238,198,.8);opacity:.96}
+/* Real game ladders are now unmistakable and polished. */
+.v12-ladder{z-index:13!important;border:none!important;background:transparent!important;filter:drop-shadow(0 4px 4px rgba(41,29,19,.22));}
+.v12-ladder:before,.v12-ladder:after{content:"";position:absolute;top:-4px;bottom:-4px;width:7px;border-radius:6px;background:linear-gradient(90deg,#6d452b,#c38a4f 45%,#704329);box-shadow:inset 0 0 0 1px rgba(63,36,19,.28)}
+.v12-ladder:before{left:3px}.v12-ladder:after{right:3px}
+.v12-ladder span{position:absolute!important;inset:0 8px!important;background:repeating-linear-gradient(to bottom,transparent 0 18px,#c28b54 19px 25px,transparent 26px 34px)!important;opacity:1!important;border:0!important}
+@media(max-width:620px){
+ .v12-world-label{top:13px;font-size:10px;padding:6px 10px}
+ .v12-platform-guide{height:7px;transform:translateY(-4px)}
+ .v12-ladder:before,.v12-ladder:after{width:6px}
+}
