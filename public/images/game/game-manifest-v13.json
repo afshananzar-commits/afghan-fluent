@@ -1,0 +1,23 @@
+{
+  "version": "v13",
+  "worlds": [
+    "/images/game/world-01.jpg",
+    "/images/game/world-02.jpg",
+    "/images/game/world-03.jpg",
+    "/images/game/world-04.jpg",
+    "/images/game/world-05.jpg",
+    "/images/game/world-06.jpg",
+    "/images/game/world-07.jpg",
+    "/images/game/world-08.jpg",
+    "/images/game/world-09.jpg",
+    "/images/game/world-10.jpg"
+  ],
+  "fallback": "/images/game/afghan-city.jpg",
+  "notes": [
+    "All kite platforms are fixed.",
+    "Ladders regenerate per new round.",
+    "Every upper branch is connected to ground.",
+    "Kites are spawned only on graph-verified reachable platforms.",
+    "World images fall back to afghan-city.jpg if a numbered asset is missing."
+  ]
+}
