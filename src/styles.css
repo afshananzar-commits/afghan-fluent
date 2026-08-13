@@ -3116,3 +3116,32 @@
   -webkit-user-drag:none!important;
   user-drag:none!important;
 }
+
+
+/* =========================================================
+   VLIEGER AVONTUUR V14 — hard ladder constraint + difficulty
+   ========================================================= */
+.v11-world{
+  width:280%!important;
+  height:100%!important;
+  aspect-ratio:auto!important;
+  left:0!important;
+  transform:translateX(calc(var(--camera) * -1%))!important;
+}
+.v11-background{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;background:#b9e0ed!important}
+.v14-start-panel{max-height:95%;padding-top:20px!important}
+.v14-start-panel .v11-characters{margin:10px 0}
+.v14-start-panel .v11-characters button{min-height:135px}
+.v14-start-panel .v11-characters img{height:100px}
+.v14-difficulty{display:grid;gap:7px;margin:10px 0 13px;text-align:left}
+.v14-difficulty>small{display:block;font-size:9px;letter-spacing:.16em;font-weight:900;color:#b76d4c;margin:2px 3px}
+.v14-difficulty>button{width:100%;border:1px solid #dfceb5;border-radius:15px;background:#fffaf1;color:#234b37;min-height:53px;padding:8px 11px;display:grid;grid-template-columns:30px 1fr;gap:9px;align-items:center;text-align:left}
+.v14-difficulty>button>span{width:28px;height:28px;border-radius:50%;border:1px solid #cbbba4;display:grid;place-items:center;font-weight:900;background:#f4eadb}
+.v14-difficulty>button b,.v14-difficulty>button small{display:block}
+.v14-difficulty>button b{font-size:12px}.v14-difficulty>button small{font-size:9px;color:#7a7166;margin-top:2px}
+.v14-difficulty>button.selected{border-color:#35684c;background:#edf4e9;box-shadow:0 0 0 2px rgba(53,104,76,.10)}
+.v14-difficulty>button.selected>span{background:#35684c;color:#fff;border-color:#35684c}
+@media(max-width:620px){
+ .v14-start-panel{padding:15px 13px!important}.v14-start-panel h2{font-size:25px!important;margin:5px 0!important}.v14-start-panel p{font-size:11px;margin:3px 0 7px}.v14-start-panel .v11-characters button{min-height:112px}.v14-start-panel .v11-characters img{height:82px}
+ .v14-difficulty{gap:5px;margin:7px 0 9px}.v14-difficulty>button{min-height:45px;padding:6px 9px}.v14-difficulty>button b{font-size:11px}.v14-difficulty>button small{font-size:8px}
+}

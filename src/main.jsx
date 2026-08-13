@@ -457,11 +457,11 @@ function KiteAdventure({onExit}){
  const rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(1.8),keysRef=useRef({left:false,right:false}),actionLatchRef=useRef(false);
  const playerRef=useRef({x:150,y:548,w:72,h:112,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:0});
  const melonsRef=useRef([]),collectedRef=useRef(new Set()),phaseRef=useRef('select'),secondsRef=useRef(60),factsRef=useRef([]),lastPaintRef=useRef(0);
- const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[worldError,setWorldError]=useState(false),[frame,setFrame]=useState({player:{x:150,y:548,pose:'idle',dir:1},melons:[]});
+ const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[difficulty,setDifficulty]=useState('easy'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[worldError,setWorldError]=useState(false),[worldIndex,setWorldIndex]=useState(()=>{try{const last=Number(window.localStorage.getItem('afghanFluentKiteLastWorld'));return Number.isFinite(last)?(last+1)%10:0}catch{return 0}}),[frame,setFrame]=useState({player:{x:150,y:548,pose:'idle',dir:1},melons:[]});
  const setPhase=p=>{phaseRef.current=p;setPhaseState(p)};
- const worldIndex=((roundSeed%10)+10)%10;
  const worldFile=`/images/game/world-${String(worldIndex+1).padStart(2,'0')}.jpg`;
  const worldFallback='/images/game/afghan-city.jpg';
+ const rememberWorld=i=>{try{window.localStorage.setItem('afghanFluentKiteLastWorld',String(i))}catch{}};
  useEffect(()=>{setWorldError(false);const img=new Image();img.src=worldFile;img.onerror=()=>setWorldError(true)},[worldFile]);
 
  // Stable platform geometry. Backgrounds are decorative; only these surfaces are physical.
@@ -479,94 +479,65 @@ function KiteAdventure({onExit}){
 
  const seeded=seed=>{let s=((seed+1)*9301+49297)%233280;return()=>{s=(s*9301+49297)%233280;return s/233280}};
  const ladders=useMemo(()=>{
-  const rnd=seeded(roundSeed+37);
-  const byId=Object.fromEntries(platforms.map(p=>[p.id,p]));
-  // A spanning route: every higher platform gets exactly one parent.
-  // This guarantees every level can be reached from ground.
-  const edges=[
-   ['ground','midL'],['ground','midC'],['ground','midR'],
-   ['midL','upL'],['midC','upC'],['midR','upR'],
-   [rnd()>.5?'upL':'upC','topL'],
-   [rnd()>.5?'upC':'upR','topR']
+  const rnd=seeded(roundSeed+worldIndex*31+37),byId=Object.fromEntries(platforms.map(p=>[p.id,p]));
+  const LADDER_W=48,MIN_EDGE_GAP=LADDER_W*2,MIN_CENTER_GAP=LADDER_W+MIN_EDGE_GAP,MARGIN=78;
+  // Hard constraint: between two ladders there is always at least TWO full ladder widths of empty space.
+  const transitionOptions=[
+   [['ground','midL'],['ground','midC'],['ground','midR']],
+   [['midL','upL'],['midC','upC'],['midR','upR'],['midC','upL'],['midR','upC']],
+   [['upL','topL'],['upC','topL'],['upC','topR'],['upR','topR']]
   ];
   const placed=[];
-  const MIN_GLOBAL_GAP=185;
-  const MOUTH_MARGIN=92;
-
-  const scoreX=(x,low,high)=>{
-   let score=9999;
-   for(const l of placed){
-    const verticalOverlap=!(Math.min(low.y,high.y)>=l.bottom||Math.max(low.y,high.y)<=l.top);
-    // Strongly separate ladder mouths even if ladders are on adjacent height bands.
-    const sameMouthBand=Math.min(
-      Math.abs(low.y-l.bottom),Math.abs(low.y-l.top),
-      Math.abs(high.y-l.bottom),Math.abs(high.y-l.top)
-    )<45;
-    if(verticalOverlap||sameMouthBand) score=Math.min(score,Math.abs(x-l.x));
+  const legalX=(x)=>placed.every(l=>Math.abs(x-l.x)>=MIN_CENTER_GAP);
+  const shuffled=a=>[...a].map(v=>({v,r:rnd()})).sort((a,b)=>a.r-b.r).map(o=>o.v);
+  for(let tier=0;tier<transitionOptions.length;tier++){
+   let chosen=null;
+   for(const [from,to] of shuffled(transitionOptions[tier])){
+    const low=byId[from],high=byId[to],lo=Math.max(low.x1,high.x1)+MARGIN,hi=Math.min(low.x2,high.x2)-MARGIN;
+    if(hi<=lo)continue;
+    const candidates=shuffled(Array.from({length:45},(_,n)=>lo+(hi-lo)*(n/44))).filter(legalX);
+    if(candidates.length){chosen={id:`lad-${tier}`,x:candidates[0],top:high.y,bottom:low.y,w:LADDER_W,from,to};break}
    }
-   return score;
-  };
-
-  for(let i=0;i<edges.length;i++){
-   const [lowId,highId]=edges[i],low=byId[lowId],high=byId[highId];
-   const lo=Math.max(low.x1,high.x1)+MOUTH_MARGIN;
-   const hi=Math.min(low.x2,high.x2)-MOUTH_MARGIN;
-   if(hi<=lo) continue;
-
-   // Deterministic candidates, then choose the one farthest from all existing ladders.
-   const candidates=Array.from({length:31},(_,n)=>lo+(hi-lo)*(n/30));
-   // Rotate candidate order per round so layouts still change.
-   const offset=Math.floor(rnd()*candidates.length);
-   const ordered=[...candidates.slice(offset),...candidates.slice(0,offset)];
-   let best=ordered[0],bestScore=-1;
-   for(const x of ordered){
-    const s=scoreX(x,low,high);
-    if(s>bestScore){best=x;bestScore=s}
-   }
-   // If a legal overlap is narrow, still keep as much separation as geometry allows.
-   const l={id:`lad-${i}`,x:best,top:high.y,bottom:low.y,w:48,from:lowId,to:highId};
-   placed.push(l);
+   if(chosen)placed.push(chosen);
   }
   return placed;
- },[platforms,roundSeed]);
+ },[platforms,roundSeed,worldIndex]);
 
  const reachablePlatforms=useMemo(()=>{
   const adj={};platforms.forEach(p=>adj[p.id]=[]);
+  // Ladders connect different heights.
   ladders.forEach(l=>{adj[l.from]?.push(l.to);adj[l.to]?.push(l.from)});
-  const seen=new Set(['ground']),queue=['ground'];
-  while(queue.length){
-   const id=queue.shift();
-   for(const n of adj[id]||[]) if(!seen.has(n)){seen.add(n);queue.push(n)}
+  // Short gaps on the same level are deliberately jumpable; these are also valid routes.
+  const JUMPABLE_GAP=125;
+  for(let i=0;i<platforms.length;i++)for(let j=i+1;j<platforms.length;j++){
+   const a=platforms[i],b=platforms[j];if(a.level!==b.level)continue;
+   const gap=Math.max(0,Math.max(a.x1,b.x1)-Math.min(a.x2,b.x2));
+   if(gap<=JUMPABLE_GAP){adj[a.id].push(b.id);adj[b.id].push(a.id)}
   }
+  const seen=new Set(['ground']),queue=['ground'];
+  while(queue.length){const id=queue.shift();for(const n of adj[id]||[])if(!seen.has(n)){seen.add(n);queue.push(n)}}
   return seen;
  },[platforms,ladders]);
 
- // Kites only exist on verified reachable platforms.
  const kites=useMemo(()=>{
-  const rnd=seeded(roundSeed+101);
+  const rnd=seeded(roundSeed+worldIndex*43+101);
   const candidates=platforms.filter(p=>p.level>=2&&reachablePlatforms.has(p.id));
-  const ranked=[...candidates].sort(()=>rnd()-.5);
-  const chosen=ranked.slice(0,3);
-  return chosen.map((pl,i)=>{
-   const mouths=ladders.filter(l=>l.to===pl.id||l.from===pl.id).map(l=>l.x);
-   const lo=pl.x1+105,hi=pl.x2-105;
-   const spots=Array.from({length:21},(_,n)=>lo+(Math.max(1,hi-lo))*(n/20));
-   let best=spots[0],bestScore=-1;
-   for(const x of spots){
-    const s=mouths.length?Math.min(...mouths.map(mx=>Math.abs(mx-x))):9999;
-    if(s>bestScore){best=x;bestScore=s}
-   }
-   return{id:i+1,x:best,y:pl.y-62,platform:pl.id}
+  const ranked=[...candidates].map(v=>({v,r:rnd()})).sort((a,b)=>a.r-b.r).map(o=>o.v);
+  return ranked.slice(0,3).map((pl,i)=>{
+   const mouths=ladders.filter(l=>l.to===pl.id||l.from===pl.id).map(l=>l.x),lo=pl.x1+105,hi=pl.x2-105;
+   const spots=Array.from({length:21},(_,n)=>lo+Math.max(1,hi-lo)*(n/20));
+   let best=spots[0],score=-1;for(const x of spots){const s=mouths.length?Math.min(...mouths.map(mx=>Math.abs(mx-x))):9999;if(s>score){best=x;score=s}}
+   return{id:i+1,x:best,y:pl.y-62,platform:pl.id};
   });
- },[platforms,ladders,reachablePlatforms,roundSeed]);
+ },[platforms,ladders,reachablePlatforms,roundSeed,worldIndex]);
  useEffect(()=>{if(kites.length<3)console.error('V13 route validation failed: fewer than 3 reachable kites',{roundSeed,ladders,kites})},[kites,ladders,roundSeed]);
  const facts=useMemo(()=>shuffle(AFGHAN_FACTS).slice(0,3),[roundSeed]);
  useEffect(()=>{factsRef.current=facts},[facts]);useEffect(()=>{secondsRef.current=seconds},[seconds]);useEffect(()=>{phaseRef.current=phase},[phase]);
  const sprite=pose=>`/images/game/${character}-${pose}.png`;
  const resetPlayer=()=>{playerRef.current={x:150,y:548,w:72,h:112,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:.8}};
- const resetRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=1.7;keysRef.current={left:false,right:false};actionLatchRef.current=false;setCollected(0);setSeconds(60);secondsRef.current=60;setFact(null);setHitNote(false);resetPlayer();setFrame({player:{x:150,y:548,pose:'idle',dir:1},melons:[]})};
- const startRound=()=>{setRuntimeError('');resetRound();setPhase('playing')};
- const restart=()=>{setRuntimeError('');setRoundSeed(v=>v+1);resetRound();setPhase('playing')};
+ const resetRound=()=>{collectedRef.current=new Set();melonsRef.current=[];spawnRef.current=difficulty==='hard'?1.2:difficulty==='easy'?2.4:999;keysRef.current={left:false,right:false};actionLatchRef.current=false;setCollected(0);setSeconds(60);secondsRef.current=60;setFact(null);setHitNote(false);resetPlayer();setFrame({player:{x:150,y:548,pose:'idle',dir:1},melons:[]})};
+ const startRound=()=>{setRuntimeError('');rememberWorld(worldIndex);resetRound();setPhase('playing')};
+ const restart=()=>{setRuntimeError('');const next=(worldIndex+1)%10;setWorldIndex(next);rememberWorld(next);setRoundSeed(v=>v+1);resetRound();setPhase('playing')};
  const finish=()=>{keysRef.current={left:false,right:false};setPhase('done')};
  const togglePause=()=>{if(phaseRef.current==='playing')setPhase('paused');else if(phaseRef.current==='paused')setPhase('playing')};
  const playFact=f=>f&&speak(`${f.title}. ${f.text}`,.9);const continueFromFact=()=>{setFact(null);setPhase(collectedRef.current.size>=3?'done':'playing')};
@@ -577,14 +548,26 @@ function KiteAdventure({onExit}){
   const supportAt=(cx,bottom,prevBottom)=>{let best=null;for(const pl of platforms){if(cx>=pl.x1-7&&cx<=pl.x2+7&&prevBottom<=pl.y+9&&bottom>=pl.y){if(best===null||pl.y<best)best=pl.y}}return best};
   const nearestLadder=p=>{const cx=p.x+p.w/2,feet=p.y+p.h;let best=null,bestScore=999;for(const l of ladders){const dx=Math.abs(cx-l.x),mouth=Math.min(Math.abs(feet-l.bottom),Math.abs(feet-l.top));const score=dx+mouth*1.4;if(dx<30&&mouth<24&&score<bestScore){best=l;bestScore=score}}return best};
   const startAction=()=>{if(phaseRef.current!=='playing')return;const p=playerRef.current;if(p.mode==='climb')return;const l=nearestLadder(p),feet=p.y+p.h;if(l){const fromBottom=Math.abs(feet-l.bottom)<Math.abs(feet-l.top);p.mode='climb';p.vx=0;p.vy=0;p.x=l.x-p.w/2;p.climbTarget=fromBottom?l.top-p.h:l.bottom-p.h;return}if(p.onGround){p.vy=-455;p.onGround=false}};
-  const updateMelons=(dt,elapsed)=>{const spawnEvery=Math.max(2.35,5-elapsed*.038),speed=120+elapsed*1.25;spawnRef.current-=dt;if(spawnRef.current<=0){const source=platforms[1+Math.floor(Math.random()*Math.min(6,platforms.length-1))];const dir=Math.random()>.5?1:-1;const x=dir>0?source.x1+40:source.x2-40;melonsRef.current.push({id:`m${Date.now()}${Math.random()}`,x,y:source.y-28,r:28,vx:dir*speed,vy:0,rot:0});spawnRef.current=spawnEvery*(.88+Math.random()*.28)}melonsRef.current.forEach(m=>{const prevBottom=m.y+m.r;m.vy+=910*dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.vx*dt/m.r;let support=null;for(const pl of platforms){if(m.x>=pl.x1+m.r*.1&&m.x<=pl.x2-m.r*.1&&prevBottom<=pl.y+8&&m.y+m.r>=pl.y){if(support===null||pl.y<support)support=pl.y}}if(support!==null&&m.vy>=0){m.y=support-m.r;m.vy=0}if(m.x<15){m.x=15;m.vx=Math.abs(m.vx)}if(m.x>WORLD_W-15){m.x=WORLD_W-15;m.vx=-Math.abs(m.vx)}});melonsRef.current=melonsRef.current.filter(m=>m.y<WORLD_H+120)};
+  const updateMelons=(dt,elapsed)=>{
+   if(difficulty==='none'){melonsRef.current=[];return}
+   const hard=difficulty==='hard',spawnEvery=hard?Math.max(1.65,3.7-elapsed*.03):Math.max(3.9,6.4-elapsed*.02),speed=hard?145+elapsed*1.45:92+elapsed*.55,maxMelons=hard?7:3;
+   spawnRef.current-=dt;
+   if(spawnRef.current<=0&&melonsRef.current.length<maxMelons){
+    const pool=hard?platforms.slice(1,8):platforms.filter(p=>p.level===1||p.id==='ground');
+    const source=pool[Math.floor(Math.random()*pool.length)],dir=Math.random()>.5?1:-1,x=dir>0?source.x1+40:source.x2-40;
+    melonsRef.current.push({id:`m${Date.now()}${Math.random()}`,x,y:source.y-28,r:28,vx:dir*speed,vy:0,rot:0});
+    spawnRef.current=spawnEvery*(.9+Math.random()*.22)
+   }
+   melonsRef.current.forEach(m=>{const prevBottom=m.y+m.r;m.vy+=910*dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.vx*dt/m.r;let support=null;for(const pl of platforms){if(m.x>=pl.x1+m.r*.1&&m.x<=pl.x2-m.r*.1&&prevBottom<=pl.y+8&&m.y+m.r>=pl.y){if(support===null||pl.y<support)support=pl.y}}if(support!==null&&m.vy>=0){m.y=support-m.r;m.vy=0}if(m.x<15){m.x=15;m.vx=Math.abs(m.vx)}if(m.x>WORLD_W-15){m.x=WORLD_W-15;m.vx=-Math.abs(m.vx)}});
+   melonsRef.current=melonsRef.current.filter(m=>m.y<WORLD_H+120)
+  };
   const update=dt=>{if(phaseRef.current!=='playing')return;const p=playerRef.current,keys=keysRef.current,prevBottom=p.y+p.h;if(p.invuln>0)p.invuln-=dt;if(actionLatchRef.current){actionLatchRef.current=false;startAction()}if(p.mode==='climb'){const target=p.climbTarget??p.y,delta=target-p.y,step=Math.sign(delta)*205*dt;if(Math.abs(delta)<=Math.abs(step)+2){p.y=target;p.mode='normal';p.climbTarget=null;p.vy=0;p.onGround=true}else p.y+=step}else{if(keys.left&&!keys.right){p.vx=-250;p.dir=-1}else if(keys.right&&!keys.left){p.vx=250;p.dir=1}else p.vx*=Math.pow(.001,dt);p.vy+=980*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const bottom=p.y+p.h,support=supportAt(p.x+p.w/2,bottom,prevBottom);if(p.vy>=0&&support!==null){p.y=support-p.h;p.vy=0;p.onGround=true}else p.onGround=false}p.x=Math.max(4,Math.min(WORLD_W-p.w-4,p.x));if(p.y>WORLD_H+90)resetPlayer();const elapsed=60-secondsRef.current;updateMelons(dt,elapsed);const pcx=p.x+p.w/2,pcy=p.y+p.h/2;for(const m of melonsRef.current){if(p.invuln<=0&&Math.hypot(pcx-m.x,pcy-m.y)<m.r+28){setHitNote(true);window.setTimeout(()=>setHitNote(false),900);resetPlayer();break}}for(const k of kites){if(collectedRef.current.has(k.id))continue;if(Math.hypot(pcx-k.x,pcy-k.y)<62){collectedRef.current.add(k.id);const n=collectedRef.current.size;setCollected(n);setFact(factsRef.current[n-1]||factsRef.current[0]);keysRef.current={left:false,right:false};setPhase('fact');break}}};
   const paint=time=>{try{const dt=Math.min(.03,(time-lastRef.current)/1000||.016);lastRef.current=time;update(dt);if(time-lastPaintRef.current>33){lastPaintRef.current=time;const p=playerRef.current;let pose='idle';if(p.mode==='climb')pose='climb';else if(!p.onGround)pose='jump';else if(Math.abs(p.vx)>35)pose='run';setFrame({player:{x:p.x,y:p.y,pose,dir:p.dir},melons:melonsRef.current.map(m=>({...m}))})}rafRef.current=requestAnimationFrame(paint)}catch(err){console.error('Vlieger Avontuur runtimefout:',err);setRuntimeError(String(err?.message||err||'Onbekende runtimefout'));setPhase('error')}};rafRef.current=requestAnimationFrame(paint);return()=>cancelAnimationFrame(rafRef.current)
- },[platforms,ladders,kites]);
+ },[platforms,ladders,kites,difficulty]);
  const press=key=>e=>{e.preventDefault();e.stopPropagation();try{e.currentTarget.setPointerCapture?.(e.pointerId)}catch{}keysRef.current[key]=true};
  const release=key=>e=>{e.preventDefault();e.stopPropagation();keysRef.current[key]=false};
  const action=e=>{e.preventDefault();e.stopPropagation();actionLatchRef.current=true};
- const camera=Math.max(0,Math.min(70,(frame.player.x/WORLD_W)*100-17));
+ const MAX_CAMERA=63.2;const camera=Math.max(0,Math.min(MAX_CAMERA,(frame.player.x/Math.max(1,WORLD_W-playerRef.current.w))*MAX_CAMERA));
  return <section className={`kite-v11 kite-v12 phase-${phase}`} onContextMenu={e=>e.preventDefault()}>
   <header className="v11-header"><button onClick={onExit}><X/></button><div><small>SPELEN</small><strong>Vlieger Avontuur</strong></div><div className="v11-header-actions"><button onClick={togglePause} disabled={!['playing','paused'].includes(phase)}>{phase==='paused'?'▶':'Ⅱ'}</button><button onClick={finish}><SkipForward/></button></div></header>
   <div className="v11-stage v12-stage" onContextMenu={e=>e.preventDefault()}>
@@ -599,7 +582,7 @@ function KiteAdventure({onExit}){
    <div className="v11-hud"><span><img src="/images/game/kite.png" draggable="false"/>{collected}/3</span><span>⏱ {String(Math.floor(seconds/60)).padStart(2,'0')}:{String(seconds%60).padStart(2,'0')}</span></div>
    <div className="v12-world-label">Wereld {worldIndex+1} / 10</div>
    {hitNote&&<div className="v11-hit">🍉 Oeps! Probeer een andere route.</div>}
-   {phase==='select'&&<div className="v11-overlay"><div className="v11-panel"><small>KIES JE AVONTURIER</small><h2>Wie gaat de vliegers zoeken?</h2><p>Elke ronde krijgt nieuwe ladders. Alle drie de vliegers blijven altijd bereikbaar.</p><div className="v11-characters"><button className={character==='boy'?'selected':''} onClick={()=>setCharacter('boy')}><img src="/images/game/boy-idle.png" draggable="false"/><b>Jongen</b></button><button className={character==='girl'?'selected':''} onClick={()=>setCharacter('girl')}><img src="/images/game/girl-idle.png" draggable="false"/><b>Meisje</b></button></div><button className="primary-game" onClick={startRound}><Play/> Start avontuur</button></div></div>}
+   {phase==='select'&&<div className="v11-overlay"><div className="v11-panel v14-start-panel"><small>KIES JE AVONTURIER</small><h2>Wie gaat de vliegers zoeken?</h2><p>Elke ronde krijgt een nieuwe wereld en nieuwe ladderroute. Alle drie de vliegers blijven bereikbaar.</p><div className="v11-characters"><button className={character==='boy'?'selected':''} onClick={()=>setCharacter('boy')}><img src="/images/game/boy-idle.png" draggable="false"/><b>Jongen</b></button><button className={character==='girl'?'selected':''} onClick={()=>setCharacter('girl')}><img src="/images/game/girl-idle.png" draggable="false"/><b>Meisje</b></button></div><div className="v14-difficulty"><small>KIES MOEILIJKHEID</small><button className={difficulty==='none'?'selected':''} onClick={()=>setDifficulty('none')}><span>1</span><div><b>Zonder watermeloenen</b><small>Rustig ontdekken en vliegers zoeken.</small></div></button><button className={difficulty==='easy'?'selected':''} onClick={()=>setDifficulty('easy')}><span>2</span><div><b>Watermeloenen · makkelijk</b><small>Minder vaak en langzamer.</small></div></button><button className={difficulty==='hard'?'selected':''} onClick={()=>setDifficulty('hard')}><span>3</span><div><b>Watermeloenen · moeilijker</b><small>Vaker, sneller en op meer niveaus.</small></div></button></div><button className="primary-game" onClick={startRound}><Play/> Start avontuur</button></div></div>}
    {phase==='paused'&&<div className="v11-overlay"><div className="v11-panel v11-small"><small>PAUZE</small><h2>Even gestopt</h2><button className="primary-game" onClick={togglePause}>Verder spelen</button></div></div>}
    {phase==='fact'&&fact&&<div className="v11-overlay"><div className="v11-panel v11-fact"><div className="v11-ribbon">Vlieger gepakt!</div><img className="v11-prize" src="/images/game/kite.png" draggable="false"/><small>WIST JE DAT?</small><h2>{fact.title}</h2><p>{fact.text}</p><button className="v11-listen" onClick={()=>playFact(fact)}><Volume2/> Luister</button><button className="primary-game" onClick={continueFromFact}>Verder spelen <ChevronRight/></button></div></div>}
    {phase==='error'&&<div className="v11-overlay"><div className="v11-panel"><h2>Er ging iets mis</h2><p>{runtimeError}</p><button className="primary-game" onClick={onExit}>Terug naar Spelen</button></div></div>}
