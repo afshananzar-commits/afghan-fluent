@@ -3184,3 +3184,61 @@
  .v14-difficulty>button b{font-size:10px!important;line-height:1.05!important}.v14-difficulty>button small{font-size:7.5px!important;line-height:1.05!important;margin-top:1px!important}
  .v14-start-panel>.primary-game{min-height:44px!important;height:44px!important;border-radius:15px!important;font-size:12px!important}
 }
+
+
+/* =========================================================
+   HOME v24 — personalised learner in the green continue card
+   Aeden uses the exact boy from Vlieger Avontuur; Lena the girl.
+   Other profiles keep the existing card unchanged.
+   ========================================================= */
+.home-v14 .continue-card.has-learner-character{
+  grid-template-columns:minmax(0,1fr) 150px 44px !important;
+  overflow:hidden;
+}
+.home-v14 .continue-learner-character{
+  position:relative;
+  align-self:stretch;
+  height:100%;
+  min-height:138px;
+  pointer-events:none;
+  z-index:5;
+}
+.home-v14 .continue-learner-character img{
+  position:absolute;
+  left:50%;
+  bottom:-14px;
+  transform:translateX(-50%);
+  width:142px;
+  max-width:none;
+  height:auto;
+  display:block;
+  object-fit:contain;
+  filter:drop-shadow(0 9px 10px rgba(26,47,32,.16));
+}
+.home-v14 .continue-card.has-learner-character>button{
+  justify-self:end;
+}
+@media(max-width:620px){
+  .home-v14 .continue-card.has-learner-character{
+    grid-template-columns:minmax(0,1fr) 128px 38px !important;
+    column-gap:2px;
+  }
+  .home-v14 .continue-learner-character{
+    min-height:130px;
+  }
+  .home-v14 .continue-learner-character img{
+    width:126px;
+    bottom:-11px;
+  }
+  .home-v14 .continue-card.has-learner-character .continue-copy h2{
+    max-width:126px;
+  }
+}
+@media(max-width:390px){
+  .home-v14 .continue-card.has-learner-character{
+    grid-template-columns:minmax(0,1fr) 112px 36px !important;
+  }
+  .home-v14 .continue-learner-character img{
+    width:116px;
+  }
+}
