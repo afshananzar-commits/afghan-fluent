@@ -457,10 +457,12 @@ function KiteAdventure({onExit}){
  const rafRef=useRef(null),lastRef=useRef(0),spawnRef=useRef(1.8),keysRef=useRef({left:false,right:false}),actionLatchRef=useRef(false);
  const playerRef=useRef({x:150,y:548,w:72,h:112,vx:0,vy:0,onGround:false,mode:'normal',climbTarget:null,dir:1,invuln:0});
  const melonsRef=useRef([]),collectedRef=useRef(new Set()),phaseRef=useRef('select'),secondsRef=useRef(60),factsRef=useRef([]),lastPaintRef=useRef(0);
- const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[frame,setFrame]=useState({player:{x:150,y:548,pose:'idle',dir:1},melons:[]});
+ const[phase,setPhaseState]=useState('select'),[character,setCharacter]=useState('girl'),[seconds,setSeconds]=useState(60),[collected,setCollected]=useState(0),[fact,setFact]=useState(null),[hitNote,setHitNote]=useState(false),[roundSeed,setRoundSeed]=useState(0),[runtimeError,setRuntimeError]=useState(''),[worldError,setWorldError]=useState(false),[frame,setFrame]=useState({player:{x:150,y:548,pose:'idle',dir:1},melons:[]});
  const setPhase=p=>{phaseRef.current=p;setPhaseState(p)};
  const worldIndex=((roundSeed%10)+10)%10;
  const worldFile=`/images/game/world-${String(worldIndex+1).padStart(2,'0')}.jpg`;
+ const worldFallback='/images/game/afghan-city.jpg';
+ useEffect(()=>{setWorldError(false);const img=new Image();img.src=worldFile;img.onerror=()=>setWorldError(true)},[worldFile]);
 
  // Stable platform geometry. Backgrounds are decorative; only these surfaces are physical.
  const platforms=useMemo(()=>[
@@ -475,54 +477,89 @@ function KiteAdventure({onExit}){
   {id:'topR',x1:900,x2:1450,y:175,level:3}
  ],[]);
 
- const seeded=seed=>{let s=(seed+1)*9301+49297;return()=>{s=(s*9301+49297)%233280;return s/233280}};
- const makeLadders=useMemo(()=>{
+ const seeded=seed=>{let s=((seed+1)*9301+49297)%233280;return()=>{s=(s*9301+49297)%233280;return s/233280}};
+ const ladders=useMemo(()=>{
   const rnd=seeded(roundSeed+37);
   const byId=Object.fromEntries(platforms.map(p=>[p.id,p]));
-  // Every upper platform gets exactly one guaranteed parent connection.
+  // A spanning route: every higher platform gets exactly one parent.
+  // This guarantees every level can be reached from ground.
   const edges=[
    ['ground','midL'],['ground','midC'],['ground','midR'],
    ['midL','upL'],['midC','upC'],['midR','upR'],
-   [rnd()>.5?'upL':'upC','topL'],[rnd()>.5?'upC':'upR','topR']
+   [rnd()>.5?'upL':'upC','topL'],
+   [rnd()>.5?'upC':'upR','topR']
   ];
   const placed=[];
-  const minGap=145;
-  const pickX=(a,b)=>{
-   const lo=Math.max(a.x1,b.x1)+55,hi=Math.min(a.x2,b.x2)-55;
-   if(hi<=lo)return (Math.max(a.x1,b.x1)+Math.min(a.x2,b.x2))/2;
-   const candidates=Array.from({length:18},(_,i)=>lo+(hi-lo)*((i+rnd())/18));
-   let best=candidates[0],bestScore=-1;
-   for(const x of candidates){
-    let score=9999;
-    for(const l of placed){
-     const verticalOverlap=!(Math.min(a.y,b.y)>=l.bottom||Math.max(a.y,b.y)<=l.top);
-     if(verticalOverlap)score=Math.min(score,Math.abs(x-l.x));
-    }
-    if(score>bestScore){best=x;bestScore=score}
-   }
-   return best;
-  };
-  return edges.map(([lowId,highId],i)=>{
-   const low=byId[lowId],high=byId[highId];
-   const x=pickX(low,high);
-   const l={id:`lad-${i}`,x,top:high.y,bottom:low.y,w:44,from:lowId,to:highId};placed.push(l);return l
-  });
- },[platforms,roundSeed]);
- const ladders=makeLadders;
+  const MIN_GLOBAL_GAP=185;
+  const MOUTH_MARGIN=92;
 
- // Kites are regenerated on reachable platforms and never placed on ladder mouths.
+  const scoreX=(x,low,high)=>{
+   let score=9999;
+   for(const l of placed){
+    const verticalOverlap=!(Math.min(low.y,high.y)>=l.bottom||Math.max(low.y,high.y)<=l.top);
+    // Strongly separate ladder mouths even if ladders are on adjacent height bands.
+    const sameMouthBand=Math.min(
+      Math.abs(low.y-l.bottom),Math.abs(low.y-l.top),
+      Math.abs(high.y-l.bottom),Math.abs(high.y-l.top)
+    )<45;
+    if(verticalOverlap||sameMouthBand) score=Math.min(score,Math.abs(x-l.x));
+   }
+   return score;
+  };
+
+  for(let i=0;i<edges.length;i++){
+   const [lowId,highId]=edges[i],low=byId[lowId],high=byId[highId];
+   const lo=Math.max(low.x1,high.x1)+MOUTH_MARGIN;
+   const hi=Math.min(low.x2,high.x2)-MOUTH_MARGIN;
+   if(hi<=lo) continue;
+
+   // Deterministic candidates, then choose the one farthest from all existing ladders.
+   const candidates=Array.from({length:31},(_,n)=>lo+(hi-lo)*(n/30));
+   // Rotate candidate order per round so layouts still change.
+   const offset=Math.floor(rnd()*candidates.length);
+   const ordered=[...candidates.slice(offset),...candidates.slice(0,offset)];
+   let best=ordered[0],bestScore=-1;
+   for(const x of ordered){
+    const s=scoreX(x,low,high);
+    if(s>bestScore){best=x;bestScore=s}
+   }
+   // If a legal overlap is narrow, still keep as much separation as geometry allows.
+   const l={id:`lad-${i}`,x:best,top:high.y,bottom:low.y,w:48,from:lowId,to:highId};
+   placed.push(l);
+  }
+  return placed;
+ },[platforms,roundSeed]);
+
+ const reachablePlatforms=useMemo(()=>{
+  const adj={};platforms.forEach(p=>adj[p.id]=[]);
+  ladders.forEach(l=>{adj[l.from]?.push(l.to);adj[l.to]?.push(l.from)});
+  const seen=new Set(['ground']),queue=['ground'];
+  while(queue.length){
+   const id=queue.shift();
+   for(const n of adj[id]||[]) if(!seen.has(n)){seen.add(n);queue.push(n)}
+  }
+  return seen;
+ },[platforms,ladders]);
+
+ // Kites only exist on verified reachable platforms.
  const kites=useMemo(()=>{
   const rnd=seeded(roundSeed+101);
-  const candidates=platforms.filter(p=>p.level>=2);
-  const chosen=shuffle([...candidates]).slice(0,3);
+  const candidates=platforms.filter(p=>p.level>=2&&reachablePlatforms.has(p.id));
+  const ranked=[...candidates].sort(()=>rnd()-.5);
+  const chosen=ranked.slice(0,3);
   return chosen.map((pl,i)=>{
-   const nearby=ladders.filter(l=>l.to===pl.id||l.from===pl.id).map(l=>l.x);
-   let x=pl.x1+90+rnd()*Math.max(40,pl.x2-pl.x1-180);
-   for(let tries=0;tries<10&&nearby.some(lx=>Math.abs(lx-x)<95);tries++)x=pl.x1+90+rnd()*Math.max(40,pl.x2-pl.x1-180);
-   return{id:i+1,x,y:pl.y-58,platform:pl.id}
-  })
- },[platforms,ladders,roundSeed]);
-
+   const mouths=ladders.filter(l=>l.to===pl.id||l.from===pl.id).map(l=>l.x);
+   const lo=pl.x1+105,hi=pl.x2-105;
+   const spots=Array.from({length:21},(_,n)=>lo+(Math.max(1,hi-lo))*(n/20));
+   let best=spots[0],bestScore=-1;
+   for(const x of spots){
+    const s=mouths.length?Math.min(...mouths.map(mx=>Math.abs(mx-x))):9999;
+    if(s>bestScore){best=x;bestScore=s}
+   }
+   return{id:i+1,x:best,y:pl.y-62,platform:pl.id}
+  });
+ },[platforms,ladders,reachablePlatforms,roundSeed]);
+ useEffect(()=>{if(kites.length<3)console.error('V13 route validation failed: fewer than 3 reachable kites',{roundSeed,ladders,kites})},[kites,ladders,roundSeed]);
  const facts=useMemo(()=>shuffle(AFGHAN_FACTS).slice(0,3),[roundSeed]);
  useEffect(()=>{factsRef.current=facts},[facts]);useEffect(()=>{secondsRef.current=seconds},[seconds]);useEffect(()=>{phaseRef.current=phase},[phase]);
  const sprite=pose=>`/images/game/${character}-${pose}.png`;
@@ -538,7 +575,7 @@ function KiteAdventure({onExit}){
  useEffect(()=>{const down=e=>{if(['ArrowLeft','a','A'].includes(e.key))keysRef.current.left=true;if(['ArrowRight','d','D'].includes(e.key))keysRef.current.right=true;if(['ArrowUp',' ','w','W'].includes(e.key)){e.preventDefault();actionLatchRef.current=true}};const up=e=>{if(['ArrowLeft','a','A'].includes(e.key))keysRef.current.left=false;if(['ArrowRight','d','D'].includes(e.key))keysRef.current.right=false};window.addEventListener('keydown',down);window.addEventListener('keyup',up);return()=>{window.removeEventListener('keydown',down);window.removeEventListener('keyup',up)}},[]);
  useEffect(()=>{
   const supportAt=(cx,bottom,prevBottom)=>{let best=null;for(const pl of platforms){if(cx>=pl.x1-7&&cx<=pl.x2+7&&prevBottom<=pl.y+9&&bottom>=pl.y){if(best===null||pl.y<best)best=pl.y}}return best};
-  const nearestLadder=p=>{const cx=p.x+p.w/2,feet=p.y+p.h;let best=null,dist=999;for(const l of ladders){const dx=Math.abs(cx-l.x),mouth=Math.min(Math.abs(feet-l.bottom),Math.abs(feet-l.top));if(dx<38&&mouth<28&&dx<dist){best=l;dist=dx}}return best};
+  const nearestLadder=p=>{const cx=p.x+p.w/2,feet=p.y+p.h;let best=null,bestScore=999;for(const l of ladders){const dx=Math.abs(cx-l.x),mouth=Math.min(Math.abs(feet-l.bottom),Math.abs(feet-l.top));const score=dx+mouth*1.4;if(dx<30&&mouth<24&&score<bestScore){best=l;bestScore=score}}return best};
   const startAction=()=>{if(phaseRef.current!=='playing')return;const p=playerRef.current;if(p.mode==='climb')return;const l=nearestLadder(p),feet=p.y+p.h;if(l){const fromBottom=Math.abs(feet-l.bottom)<Math.abs(feet-l.top);p.mode='climb';p.vx=0;p.vy=0;p.x=l.x-p.w/2;p.climbTarget=fromBottom?l.top-p.h:l.bottom-p.h;return}if(p.onGround){p.vy=-455;p.onGround=false}};
   const updateMelons=(dt,elapsed)=>{const spawnEvery=Math.max(2.35,5-elapsed*.038),speed=120+elapsed*1.25;spawnRef.current-=dt;if(spawnRef.current<=0){const source=platforms[1+Math.floor(Math.random()*Math.min(6,platforms.length-1))];const dir=Math.random()>.5?1:-1;const x=dir>0?source.x1+40:source.x2-40;melonsRef.current.push({id:`m${Date.now()}${Math.random()}`,x,y:source.y-28,r:28,vx:dir*speed,vy:0,rot:0});spawnRef.current=spawnEvery*(.88+Math.random()*.28)}melonsRef.current.forEach(m=>{const prevBottom=m.y+m.r;m.vy+=910*dt;m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.vx*dt/m.r;let support=null;for(const pl of platforms){if(m.x>=pl.x1+m.r*.1&&m.x<=pl.x2-m.r*.1&&prevBottom<=pl.y+8&&m.y+m.r>=pl.y){if(support===null||pl.y<support)support=pl.y}}if(support!==null&&m.vy>=0){m.y=support-m.r;m.vy=0}if(m.x<15){m.x=15;m.vx=Math.abs(m.vx)}if(m.x>WORLD_W-15){m.x=WORLD_W-15;m.vx=-Math.abs(m.vx)}});melonsRef.current=melonsRef.current.filter(m=>m.y<WORLD_H+120)};
   const update=dt=>{if(phaseRef.current!=='playing')return;const p=playerRef.current,keys=keysRef.current,prevBottom=p.y+p.h;if(p.invuln>0)p.invuln-=dt;if(actionLatchRef.current){actionLatchRef.current=false;startAction()}if(p.mode==='climb'){const target=p.climbTarget??p.y,delta=target-p.y,step=Math.sign(delta)*205*dt;if(Math.abs(delta)<=Math.abs(step)+2){p.y=target;p.mode='normal';p.climbTarget=null;p.vy=0;p.onGround=true}else p.y+=step}else{if(keys.left&&!keys.right){p.vx=-250;p.dir=-1}else if(keys.right&&!keys.left){p.vx=250;p.dir=1}else p.vx*=Math.pow(.001,dt);p.vy+=980*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const bottom=p.y+p.h,support=supportAt(p.x+p.w/2,bottom,prevBottom);if(p.vy>=0&&support!==null){p.y=support-p.h;p.vy=0;p.onGround=true}else p.onGround=false}p.x=Math.max(4,Math.min(WORLD_W-p.w-4,p.x));if(p.y>WORLD_H+90)resetPlayer();const elapsed=60-secondsRef.current;updateMelons(dt,elapsed);const pcx=p.x+p.w/2,pcy=p.y+p.h/2;for(const m of melonsRef.current){if(p.invuln<=0&&Math.hypot(pcx-m.x,pcy-m.y)<m.r+28){setHitNote(true);window.setTimeout(()=>setHitNote(false),900);resetPlayer();break}}for(const k of kites){if(collectedRef.current.has(k.id))continue;if(Math.hypot(pcx-k.x,pcy-k.y)<62){collectedRef.current.add(k.id);const n=collectedRef.current.size;setCollected(n);setFact(factsRef.current[n-1]||factsRef.current[0]);keysRef.current={left:false,right:false};setPhase('fact');break}}};
@@ -552,7 +589,7 @@ function KiteAdventure({onExit}){
   <header className="v11-header"><button onClick={onExit}><X/></button><div><small>SPELEN</small><strong>Vlieger Avontuur</strong></div><div className="v11-header-actions"><button onClick={togglePause} disabled={!['playing','paused'].includes(phase)}>{phase==='paused'?'▶':'Ⅱ'}</button><button onClick={finish}><SkipForward/></button></div></header>
   <div className="v11-stage v12-stage" onContextMenu={e=>e.preventDefault()}>
    <div className="v11-world" style={{'--camera':camera}}>
-    <img className="v11-background" src={worldFile} alt="" draggable="false"/>
+    <img className="v11-background" src={worldError?worldFallback:worldFile} alt="" draggable="false" onError={()=>setWorldError(true)}/>
     {platforms.map(pl=><div key={pl.id} className="v12-platform-guide" style={{left:`${pl.x1/WORLD_W*100}%`,top:`${pl.y/WORLD_H*100}%`,width:`${(pl.x2-pl.x1)/WORLD_W*100}%`}}/>)}
     {ladders.map(l=><div key={l.id} className="v11-ladder v12-ladder" style={{left:`${(l.x-l.w/2)/WORLD_W*100}%`,top:`${l.top/WORLD_H*100}%`,width:`${l.w/WORLD_W*100}%`,height:`${(l.bottom-l.top)/WORLD_H*100}%`}}><span/></div>)}
     {kites.map((k,i)=>!collectedRef.current.has(k.id)&&<img key={k.id} className="v11-kite" src="/images/game/kite.png" draggable="false" style={{left:`${(k.x-45)/WORLD_W*100}%`,top:`${(k.y-55)/WORLD_H*100}%`,animationDelay:`${i*.3}s`}}/>)}

@@ -3059,3 +3059,60 @@
  .v12-platform-guide{height:7px;transform:translateY(-4px)}
  .v12-ladder:before,.v12-ladder:after{width:6px}
 }
+
+
+/* =========================================================
+   VLIEGER AVONTUUR V13 — stable worlds + deliberate ladders
+   ========================================================= */
+.kite-v12,.kite-v12 *{
+  -webkit-touch-callout:none!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+}
+.v12-stage,.v12-controls,.v12-controls button{
+  touch-action:none!important;
+}
+.v11-background{
+  background:#b8e0ef;
+}
+
+/* Cleaner ladders: warmer wood, slimmer rails, real rungs. */
+.v12-ladder{
+  z-index:13!important;
+  background:transparent!important;
+  filter:drop-shadow(0 3px 3px rgba(38,24,14,.2))!important;
+}
+.v12-ladder:before,.v12-ladder:after{
+  width:6px!important;
+  border-radius:5px!important;
+  background:linear-gradient(90deg,#5b3821 0%,#9c6539 32%,#d3a064 55%,#83502f 78%,#4b2d1b 100%)!important;
+  box-shadow:inset 1px 0 rgba(255,224,169,.34),inset -1px 0 rgba(43,24,13,.34)!important;
+}
+.v12-ladder span{
+  inset:0 7px!important;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0 17px,
+    #704424 18px 20px,
+    #c79155 21px 25px,
+    #704424 26px 28px,
+    transparent 29px 36px
+  )!important;
+  filter:drop-shadow(0 1px 0 rgba(44,26,14,.25));
+}
+
+/* Slightly less technical-looking physical surfaces. */
+.v12-platform-guide{
+  height:8px!important;
+  transform:translateY(-4px)!important;
+  background:linear-gradient(180deg,#d5a46c 0 18%,#9b6238 20% 54%,#704127 56% 100%)!important;
+  box-shadow:0 3px 6px rgba(42,27,17,.18), inset 0 1px rgba(255,235,195,.72)!important;
+  opacity:.92!important;
+}
+
+/* Ensure sprite/images never trigger iOS selection overlays. */
+.v11-world img,.v11-stage img,.v11-controls svg{
+  pointer-events:none!important;
+  -webkit-user-drag:none!important;
+  user-drag:none!important;
+}
