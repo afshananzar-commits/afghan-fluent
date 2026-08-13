@@ -3149,3 +3149,38 @@
 /* Gamification v1 — 50-level curriculum + Vliegerpunten */
 .curriculum-screen .page-head{margin-bottom:18px}.curriculum-intro{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;margin:0 0 20px;border:1px solid rgba(61,79,64,.12);border-radius:22px;background:linear-gradient(135deg,#f8f3e8,#edf3e9)}.curriculum-intro div{display:flex;flex-direction:column;gap:4px}.curriculum-intro small{font-size:9px;letter-spacing:.13em;color:#7b806f}.curriculum-intro b{font-size:14px;line-height:1.45;max-width:560px}.curriculum-intro>span{min-width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid rgba(61,79,64,.12);font-weight:800;color:#415b48}.curriculum-path{gap:10px}.curriculum-level{position:relative}.curriculum-level .lesson-row{min-height:84px}.curriculum-level.locked{opacity:.48}.curriculum-level.locked .lesson-row{cursor:not-allowed}.level-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.level-title-row em{font-style:normal;font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:4px 7px;border-radius:999px;background:#f1eee5;color:#7a7568}.kite-earned{position:absolute;right:18px;bottom:-4px;display:flex;align-items:center;gap:4px;font-size:8px;font-weight:800;color:#946d23;background:#fff7df;border:1px solid #ead7a9;border-radius:999px;padding:4px 8px}.kite-earned svg{width:11px;height:11px}.level-hub .page-head{margin-bottom:16px}.level-mission-strip{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:18px;background:#f6f1e7;border:1px solid rgba(72,68,56,.10);margin-bottom:14px}.level-mission-strip>div:first-child{display:flex;flex-direction:column}.level-mission-strip small{font-size:8px;letter-spacing:.12em;color:#898173}.level-mission-strip b{font-size:14px}.mission-dots{display:flex;gap:6px}.mission-dots i{display:block;width:12px;height:12px;border-radius:50%;background:#dedbd2;box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}.mission-dots i.done{background:#6f8c72}.games-safe-grid button{position:relative}.games-safe-grid button.mission-done{border-color:rgba(86,128,93,.32);background:linear-gradient(180deg,#fbfdf9,#edf5eb)}.games-safe-grid button.mission-done>svg{position:absolute;right:10px;top:10px;width:17px;height:17px;color:#5d7e64}.games-safe-grid .kite-locked{filter:saturate(.55);opacity:.55}.reward-rules{display:flex;flex-direction:column;gap:5px;margin:16px 0;padding:15px 17px;border-radius:18px;background:#fffaf0;border:1px solid #eadfc6}.reward-rules b{font-size:12px}.reward-rules span{font-size:10px;line-height:1.5;color:#6f6b61}.game-summary .game-stat svg{width:17px;height:17px}
 @media(max-width:640px){.curriculum-intro{padding:14px 15px}.curriculum-intro b{font-size:12px}.curriculum-intro>span{min-width:54px;height:54px;font-size:13px}.curriculum-level .lesson-row{min-height:76px}.level-title-row{align-items:flex-start;flex-direction:column;gap:3px}.kite-earned{right:10px}.level-mission-strip{padding:12px 13px}.reward-rules{padding:12px 14px}}
+
+/* v15 gamification refinements */
+.admin-unlock-banner{display:flex;align-items:center;gap:8px;margin:-8px 0 14px;padding:10px 13px;border:1px solid #d5c39f;border-radius:14px;background:#fff6df;color:#315c43;font-size:11px;font-weight:800}
+.admin-unlock-banner svg{width:17px;height:17px}
+.admin-level-toggle{cursor:default}.admin-level-toggle .admin-toggle{margin-left:14px;flex:0 0 auto}.admin-level-toggle .admin-toggle button{min-width:48px}
+.word-illustration-image{background:#f7f0e3!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important}
+.word-illustration-image>img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;border-radius:inherit}
+.unified-picture-grid .word-illustration-image>img{width:100%;height:100%;object-fit:contain}
+.card-is-exiting .swipe-card-top{pointer-events:none}.card-is-entering .swipe-card-top{animation:swipeCardRise .34s cubic-bezier(.22,.8,.32,1) forwards}
+@keyframes swipeCardRise{from{transform:translateY(110px) scale(.97);opacity:.15}to{transform:translateY(0) scale(1);opacity:1}}
+.mission-finish-card{min-height:360px;display:flex!important;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:32px!important}
+.mission-finish-card>svg{width:54px;height:54px;color:#55765c}.mission-finish-card>small{font-weight:900;letter-spacing:.16em;color:#b76d4c}.mission-finish-card h2{font-family:Fraunces,Georgia,serif;font-size:44px;margin:0;color:#244b36}.mission-finish-card p{max-width:440px;margin:0 0 8px;color:#70685d}.mission-finish-card .primary-game{min-width:210px}
+
+@media(max-width:620px){
+ .admin-level-toggle{flex-direction:row!important;align-items:center!important}.admin-level-toggle>div:first-child{min-width:0;flex:1}.admin-level-toggle .admin-toggle{margin-left:8px}.admin-level-toggle .admin-toggle button{min-width:42px;padding:7px 8px}
+ .unified-picture-grid .word-illustration{height:92px!important;min-height:92px!important;background:#f7f0e3!important}
+ .unified-picture-grid .word-illustration-image>img{object-fit:contain!important;padding:2px}
+ .mission-finish-card{min-height:300px;padding:22px!important}.mission-finish-card h2{font-size:38px}
+ /* Kite selection must fit without scrolling on phone */
+ .v11-overlay{padding:8px!important}
+ .v14-start-panel{width:calc(100% - 8px)!important;max-height:calc(100% - 8px)!important;overflow:hidden!important;padding:11px 12px 10px!important;border-radius:24px!important}
+ .v14-start-panel>small{font-size:8px!important;letter-spacing:.16em!important}
+ .v14-start-panel h2{font-size:23px!important;line-height:1.04!important;margin:3px 0 4px!important}
+ .v14-start-panel>p{font-size:9.5px!important;line-height:1.25!important;margin:0 0 5px!important}
+ .v14-start-panel .v11-characters{gap:8px!important;margin:5px 0 6px!important}
+ .v14-start-panel .v11-characters button{min-height:82px!important;height:82px!important;padding:4px!important;border-radius:18px!important}
+ .v14-start-panel .v11-characters img{height:58px!important;max-height:58px!important}
+ .v14-start-panel .v11-characters b{font-size:11px!important;line-height:1!important}
+ .v14-difficulty{gap:4px!important;margin:5px 0 7px!important}
+ .v14-difficulty>small{font-size:8px!important;margin:0 2px 1px!important}
+ .v14-difficulty>button{min-height:39px!important;height:39px!important;padding:4px 8px!important;grid-template-columns:28px 1fr!important;gap:7px!important;border-radius:13px!important}
+ .v14-difficulty>button>span{width:25px!important;height:25px!important;font-size:11px!important}
+ .v14-difficulty>button b{font-size:10px!important;line-height:1.05!important}.v14-difficulty>button small{font-size:7.5px!important;line-height:1.05!important;margin-top:1px!important}
+ .v14-start-panel>.primary-game{min-height:44px!important;height:44px!important;border-radius:15px!important;font-size:12px!important}
+}
