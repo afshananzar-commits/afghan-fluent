@@ -1,0 +1,26 @@
+{
+  "version": "v14",
+  "ladder_constraint": {
+    "ladder_width": 48,
+    "minimum_empty_gap_between_ladders": 96,
+    "minimum_center_distance": 144
+  },
+  "difficulty_modes": [
+    "none",
+    "easy",
+    "hard"
+  ],
+  "world_sequence": "persistent 1..10, advances on every new round/session",
+  "world_assets": [
+    "/images/game/world-01.jpg",
+    "/images/game/world-02.jpg",
+    "/images/game/world-03.jpg",
+    "/images/game/world-04.jpg",
+    "/images/game/world-05.jpg",
+    "/images/game/world-06.jpg",
+    "/images/game/world-07.jpg",
+    "/images/game/world-08.jpg",
+    "/images/game/world-09.jpg",
+    "/images/game/world-10.jpg"
+  ]
+}
