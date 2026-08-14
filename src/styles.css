@@ -3264,3 +3264,332 @@
   color:#55765c!important;
   font-weight:700!important;
 }
+
+
+/* =========================================================
+   UITSPRAAK v3 — Luister & herhaal / Zeg het zelf / Gesprek
+   Gebouwd op de bestaande Farangis-layout.
+   ========================================================= */
+.speak-v3{max-width:760px;margin:0 auto}
+.pronunciation-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:-6px auto 18px;padding:5px;background:#eee5d7;border-radius:18px;max-width:690px}
+.pronunciation-modes button{min-height:46px;border:0;border-radius:14px;background:transparent;color:#70756e;font:700 12px 'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;padding:8px 10px}
+.pronunciation-modes button svg{width:17px;height:17px}
+.pronunciation-modes button.active{background:#fffdf9;color:#244b39;box-shadow:0 4px 12px rgba(67,50,32,.08)}
+.pronunciation-card{min-height:600px;padding-bottom:28px}
+.pronunciation-label{display:block;margin:18px 0 5px;color:var(--terra);font-size:9px;letter-spacing:.14em;font-weight:900}
+.pronunciation-meaning{font-size:18px;color:var(--ink);margin:4px 0 24px}
+.self-dutch{font-size:38px!important;line-height:1.12;margin:34px auto!important;max-width:560px}
+.self-speech-actions{display:grid;grid-template-columns:1.1fr 1fr;gap:9px;max-width:470px;margin:0 auto 16px}
+.self-speech-actions button{min-height:50px;border-radius:999px;font-weight:800}
+.reveal-answer{border:1px solid var(--line);background:#fffaf2;color:#315b43;padding:11px 16px;border-radius:999px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
+.reveal-answer svg{width:18px}
+.record-main.recording{animation:pronunciationPulse 1s ease-in-out infinite;background:#9c5c4d}
+@keyframes pronunciationPulse{50%{transform:scale(1.025);box-shadow:0 0 0 8px rgba(156,92,77,.10)}}
+.pronunciation-feedback,.pronunciation-solution{max-width:500px;margin:13px auto 0;padding:15px 17px;border-radius:18px;border:1px solid #dfd2bf;background:#fffaf2;text-align:left;display:grid;gap:4px}
+.pronunciation-feedback small,.pronunciation-solution small{font-size:8px;letter-spacing:.13em;color:var(--terra);font-weight:900}
+.pronunciation-feedback>b{font-size:16px;color:#294333}
+.pronunciation-feedback>span{justify-self:start;margin-top:4px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900}
+.pronunciation-feedback>span.good{background:#e2eee0;color:#396044}.pronunciation-feedback>span.almost{background:#f4ead1;color:#87672e}.pronunciation-feedback>span.retry{background:#f4e0d9;color:#8c5044}
+.pronunciation-feedback p{font-size:11px;color:#756f67;margin:3px 0 0;line-height:1.4}
+.pronunciation-solution{background:#eaf1e7;text-align:center}
+.pronunciation-solution h3{font:700 31px Fraunces,serif;color:#315b43;margin:2px 0 8px}
+.pronunciation-solution button{justify-self:center;border:0;border-radius:999px;background:#315b43;color:#fff;padding:10px 14px;font-weight:800;display:flex;gap:6px;align-items:center}
+.dialogue-mode{text-align:left}
+.dialogue-bubble{max-width:540px;margin:15px auto;padding:16px 17px;border-radius:21px;display:grid;grid-template-columns:1fr auto;gap:5px 12px;align-items:center;text-align:left}
+.dialogue-bubble small{grid-column:1/-1;font-size:8px;letter-spacing:.14em;font-weight:900}
+.dialogue-bubble div{display:grid;gap:3px}.dialogue-bubble b{font:700 22px Fraunces,serif}.dialogue-bubble span{font-size:11px;color:#6d716b}
+.dialogue-bubble>button{width:42px;height:42px;border:0;border-radius:50%;background:#fffdf9;color:#315b43;display:grid;place-items:center}
+.dialogue-bubble>button svg{width:19px}
+.farangis-turn{background:#e5eee2;color:#244b39;border-radius:22px 22px 22px 8px}.farangis-turn small{color:#55765c}
+.learner-turn{background:#f0e4d4;color:#3b473f;border-radius:22px 22px 8px 22px}.learner-turn small{color:#a7624f}
+.dialogue-mic{background:#315b43!important;color:#fff!important}
+.compact-feedback{margin-top:8px}
+.dialogue-actions{max-width:540px;margin:13px auto 0;display:grid;grid-template-columns:1fr 1.25fr;gap:8px}
+.dialogue-actions .primary-game{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:800}
+.dialogue-note{max-width:520px;margin:12px auto 0!important;text-align:center;font-size:9px!important;line-height:1.35;color:#8a8174!important}
+
+@media(max-width:620px){
+  .speak-v3 .page-head{margin-bottom:14px}
+  .pronunciation-modes{gap:4px;margin-bottom:12px;padding:4px;border-radius:16px}
+  .pronunciation-modes button{min-height:42px;padding:7px 4px;font-size:9px;gap:4px;line-height:1.1}
+  .pronunciation-modes button svg{width:14px;height:14px;flex:0 0 14px}
+  .pronunciation-card{min-height:0;padding-left:18px;padding-right:18px;padding-bottom:22px}
+  .pronunciation-card.speak-practice-card{padding-top:124px}
+  .pronunciation-label{margin-top:10px}
+  .pronunciation-meaning{font-size:16px;margin-bottom:17px}
+  .self-dutch{font-size:30px!important;margin:20px auto 24px!important}
+  .self-speech-actions{grid-template-columns:1fr 1fr;gap:7px}
+  .self-speech-actions button{min-height:46px;font-size:11px;padding:9px}
+  .pronunciation-feedback,.pronunciation-solution{padding:12px 13px;border-radius:16px}
+  .pronunciation-solution h3{font-size:27px}
+  .dialogue-bubble{padding:13px 14px;margin:10px auto;border-radius:18px}
+  .dialogue-bubble b{font-size:19px}.dialogue-bubble span{font-size:10px}
+  .dialogue-bubble>button{width:38px;height:38px}
+  .dialogue-actions{grid-template-columns:1fr;gap:7px}
+  .dialogue-actions button{min-height:44px}
+}
+@media(max-width:390px){
+  .pronunciation-modes button span{font-size:8.5px}
+  .pronunciation-card.speak-practice-card{padding-top:116px}
+  .self-dutch{font-size:27px!important}
+}
+
+
+/* =========================================================
+   UI RUSTIGER v5 — agreed polish pass
+   ========================================================= */
+
+/* 1. Farangis: only left/right/top edge fade. Bottom stays solid. */
+.farangis-character,
+.home-coach-character,
+.builder-v29-coach img,
+.unified-game-card .builder-v29-coach img,
+.farangis-coach img,
+.auth-coach img{
+  -webkit-mask-image:
+    linear-gradient(to right,transparent 0%,#000 8%,#000 92%,transparent 100%),
+    linear-gradient(to bottom,transparent 0%,#000 9%,#000 100%) !important;
+  -webkit-mask-composite:source-in !important;
+  mask-image:
+    linear-gradient(to right,transparent 0%,#000 8%,#000 92%,transparent 100%),
+    linear-gradient(to bottom,transparent 0%,#000 9%,#000 100%) !important;
+  mask-composite:intersect !important;
+}
+
+/* 2. Home composition: protected copy left, Farangis right, compact learning card. */
+.home-v14 .home-welcome-v2{
+  position:relative!important;
+  min-height:210px!important;
+  margin:10px 0 0!important;
+  padding:16px 0 0!important;
+  overflow:visible!important;
+  align-items:flex-start!important;
+}
+.home-v14 .home-welcome-v2 .welcome-copy{
+  position:relative;
+  z-index:5;
+  width:50%;
+  max-width:360px;
+}
+.home-v14 .home-welcome-v2 .welcome-copy h1{
+  margin-bottom:10px!important;
+}
+.home-v14 .home-welcome-v2 .welcome-line{
+  max-width:285px!important;
+  margin:0!important;
+  line-height:1.4!important;
+}
+.home-v14 .home-welcome-v2 .streak-pill{
+  position:absolute!important;
+  right:0!important;
+  top:10px!important;
+  z-index:7!important;
+}
+.home-v14 .home-welcome-v2 .home-coach-stage{
+  position:absolute!important;
+  z-index:3!important;
+  right:0!important;
+  bottom:-28px!important;
+  width:49%!important;
+  height:205px!important;
+  margin:0!important;
+  pointer-events:none!important;
+}
+.home-v14 .home-welcome-v2 .home-coach-character{
+  position:absolute!important;
+  right:-2px!important;
+  bottom:0!important;
+  width:205px!important;
+  max-width:100%!important;
+  transform:none!important;
+}
+.home-v14 .continue-card{
+  min-height:138px!important;
+  padding:20px 22px!important;
+  grid-template-columns:1fr 46px!important;
+  border-radius:27px!important;
+}
+.home-v14 .continue-copy h2{
+  font-size:29px!important;
+  margin:10px 0 18px!important;
+  max-width:none!important;
+}
+.home-v14 .continue-card .mini-progress{width:185px!important}
+.home-v14 .continue-card>button{width:40px!important;height:40px!important}
+
+/* 3. Four shortcuts: one warm Afghan/Japandi family, accents only in the icon chip. */
+.home-v14 .home-actions .quick-card,
+.home-v14 .home-actions .quick-card:nth-child(2),
+.home-v14 .home-actions .quick-card:nth-child(3),
+.home-v14 .home-actions .quick-card:nth-child(4){
+  background:#F2EBDD!important;
+  border-color:#DDD0BC!important;
+  color:#294333!important;
+  box-shadow:0 5px 15px rgba(67,50,32,.045)!important;
+}
+.home-v14 .home-actions .quick-card .quick-icon{background:#D8E3D4!important;color:#365840!important}
+.home-v14 .home-actions .quick-card:nth-child(2) .quick-icon{background:#E4D7BF!important;color:#705A35!important}
+.home-v14 .home-actions .quick-card:nth-child(3) .quick-icon{background:#E8CEC2!important;color:#8A5545!important}
+.home-v14 .home-actions .quick-card:nth-child(4) .quick-icon{background:#E6D6A9!important;color:#735D2F!important}
+
+/* 4. Kite points: icon first, number second. */
+.vp-amount{display:flex!important;align-items:center!important;gap:6px!important}
+.vp-kite-icon{width:22px!important;height:22px!important;object-fit:contain!important;display:inline-block!important;vertical-align:middle!important}
+.page-badge .vp-kite-icon{width:19px!important;height:19px!important}
+.stat-card .stat-kite{width:24px!important;height:24px!important}
+
+/* 5. Words: a true stacked deck. The next card is hidden until the top card moves. */
+.words-focus .swipe-stage{isolation:isolate}
+.words-focus .swipe-card-under{
+  z-index:1!important;
+  pointer-events:none!important;
+  left:8px!important;
+  right:8px!important;
+  top:2px!important;
+  bottom:auto!important;
+}
+.words-focus .swipe-card-top{position:relative!important;z-index:3!important}
+.words-focus .premium-flashcard{
+  display:flex!important;
+  flex-direction:column!important;
+}
+.words-focus .word-illustration{
+  flex:0 0 auto!important;
+  height:clamp(285px,43dvh,390px)!important;
+  min-height:0!important;
+  margin:7px 0 5px!important;
+}
+.words-focus .word-copy{
+  flex:0 0 auto!important;
+  padding:10px 8px 6px!important;
+}
+.words-focus .word-copy h2{
+  margin:3px 0 7px!important;
+}
+.words-focus .translation-reserved{
+  height:118px!important;
+  min-height:118px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.words-focus .translation-reserved>small{margin-bottom:0!important}
+.words-focus .translation-reserved h3{
+  margin:2px 0 5px!important;
+  line-height:1.05!important;
+}
+.words-focus .reveal-hint{
+  min-height:44px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  margin:0!important;
+}
+.words-focus .sound-btn{padding:8px 13px!important}
+.words-focus .swipe-actions-row{
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  margin-top:7px!important;
+}
+.words-focus .swipe-action{
+  min-height:48px!important;
+  border-radius:17px!important;
+  padding:9px 14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  font-weight:800!important;
+  font-size:13px!important;
+  box-shadow:0 4px 12px rgba(66,50,34,.04)!important;
+}
+.words-focus .swipe-action svg{width:18px!important;height:18px!important}
+.words-focus .practice-again{
+  background:#F5E9E0!important;
+  border:1px solid #DEC5B8!important;
+  color:#875747!important;
+}
+.words-focus .know-it{
+  background:#55765C!important;
+  border:1px solid #55765C!important;
+  color:#fff!important;
+}
+.words-focus .practice-again *,
+.words-focus .know-it *{color:inherit!important}
+
+/* Desktop/mobile nav: five distinct destinations, no duplicate Games tab. */
+.bottom-nav{justify-content:space-around!important}
+
+@media(max-width:620px){
+  .home-v14 .home-welcome-v2{
+    min-height:190px!important;
+    padding-top:10px!important;
+  }
+  .home-v14 .home-welcome-v2 .welcome-copy{
+    width:51%!important;
+    max-width:220px!important;
+  }
+  .home-v14 .home-welcome-v2 .welcome-copy h1{
+    font-size:34px!important;
+    line-height:1.02!important;
+    max-width:215px!important;
+  }
+  .home-v14 .home-welcome-v2 .welcome-line{
+    max-width:205px!important;
+    font-size:13px!important;
+    line-height:1.35!important;
+  }
+  .home-v14 .home-welcome-v2 .streak-pill{
+    top:5px!important;
+    padding:8px 10px!important;
+  }
+  .home-v14 .home-welcome-v2 .home-coach-stage{
+    width:51%!important;
+    height:185px!important;
+    bottom:-24px!important;
+  }
+  .home-v14 .home-welcome-v2 .home-coach-character{
+    width:183px!important;
+    right:-5px!important;
+  }
+  .home-v14 .continue-card{
+    min-height:128px!important;
+    padding:17px 18px!important;
+    border-radius:25px!important;
+  }
+  .home-v14 .continue-copy h2{
+    font-size:27px!important;
+    margin:8px 0 15px!important;
+  }
+  .home-v14 .continue-card .mini-progress{width:145px!important}
+  .home-v14 .home-actions{margin:12px 0 10px!important}
+  .home-v14 .home-review{padding:12px 14px!important}
+  .home-v14 .home-progress{margin-top:14px!important;padding-top:13px!important}
+
+  .words-focus .swipe-stage{padding-bottom:2px!important}
+  .words-focus .premium-flashcard{padding:10px!important}
+  .words-focus .word-illustration{
+    height:clamp(250px,42dvh,345px)!important;
+  }
+  .words-focus .translation-reserved{
+    height:102px!important;
+    min-height:102px!important;
+  }
+  .words-focus .word-copy h2{font-size:28px!important}
+  .words-focus .translation-reserved h3{font-size:31px!important}
+  .words-focus .swipe-actions-row{margin-top:5px!important}
+  .words-focus .swipe-action{min-height:45px!important;font-size:12px!important;border-radius:15px!important}
+}
+@media(max-width:390px){
+  .home-v14 .home-welcome-v2{min-height:180px!important}
+  .home-v14 .home-welcome-v2 .welcome-copy{width:50%!important;max-width:190px!important}
+  .home-v14 .home-welcome-v2 .welcome-copy h1{font-size:31px!important;max-width:188px!important}
+  .home-v14 .home-welcome-v2 .welcome-line{max-width:180px!important;font-size:12px!important}
+  .home-v14 .home-welcome-v2 .home-coach-character{width:170px!important}
+  .home-v14 .continue-card{min-height:122px!important}
+  .words-focus .word-illustration{height:clamp(235px,40dvh,315px)!important}
+  .words-focus .translation-reserved{height:96px!important;min-height:96px!important}
+  .words-focus .swipe-action{min-height:43px!important;padding:7px 10px!important}
+}
