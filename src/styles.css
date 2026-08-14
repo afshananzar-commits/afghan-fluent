@@ -3593,3 +3593,25 @@
   .words-focus .translation-reserved{height:96px!important;min-height:96px!important}
   .words-focus .swipe-action{min-height:43px!important;padding:7px 10px!important}
 }
+
+
+/* =========================================================
+   HOTFIX v5.1 — restored word/picture illustrations
+   ========================================================= */
+.word-illustration-image{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+.word-illustration-image>img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  display:block!important;
+}
+.word-illustration-fallback{
+  display:grid!important;
+  place-items:center!important;
+}
