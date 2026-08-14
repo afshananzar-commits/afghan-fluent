@@ -3245,70 +3245,22 @@
 
 .review-smart-card{max-width:620px;margin:28px auto;background:#fffaf1;border:1px solid #dfd1ba;border-radius:32px;padding:28px;text-align:center}.review-smart-card h2{font-family:Georgia,serif;font-size:52px;color:#173e30}.review-answer{font-family:Georgia,serif;font-size:34px;color:#477b5f}.review-grade,.speech-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.review-grade button,.speech-actions button{padding:14px;border-radius:18px;border:1px solid #d8c9af;background:#fff;font-weight:800}.speak-mode-switch{display:flex;gap:8px;padding:5px;background:#eee6d8;border-radius:22px;max-width:520px;margin:0 auto 18px}.speak-mode-switch button{flex:1;border:0;background:transparent;padding:13px;border-radius:18px;font-weight:800}.speak-mode-switch button.active{background:#fff;color:#174231}.speech-solution{margin-top:18px;padding:18px;border-radius:22px;background:#f5efe4}.dialogue-card{max-width:650px;margin:auto;background:#fffaf1;border:1px solid #ddcfb7;border-radius:30px;padding:24px}.dialogue-turn{margin:14px 0;padding:18px;border-radius:22px}.farangis-turn{background:#eaf1e7}.learner-turn{background:#f3e7d5}
 
-/* =========================================================
-   UITSPRAAK v3 — Luister & herhaal / Zeg het zelf / Gesprek
-   Gebouwd op de bestaande Farangis-layout.
-   ========================================================= */
-.speak-v3{max-width:760px;margin:0 auto}
-.pronunciation-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:-6px auto 18px;padding:5px;background:#eee5d7;border-radius:18px;max-width:690px}
-.pronunciation-modes button{min-height:46px;border:0;border-radius:14px;background:transparent;color:#70756e;font:700 12px 'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;padding:8px 10px}
-.pronunciation-modes button svg{width:17px;height:17px}
-.pronunciation-modes button.active{background:#fffdf9;color:#244b39;box-shadow:0 4px 12px rgba(67,50,32,.08)}
-.pronunciation-card{min-height:600px;padding-bottom:28px}
-.pronunciation-label{display:block;margin:18px 0 5px;color:var(--terra);font-size:9px;letter-spacing:.14em;font-weight:900}
-.pronunciation-meaning{font-size:18px;color:var(--ink);margin:4px 0 24px}
-.self-dutch{font-size:38px!important;line-height:1.12;margin:34px auto!important;max-width:560px}
-.self-speech-actions{display:grid;grid-template-columns:1.1fr 1fr;gap:9px;max-width:470px;margin:0 auto 16px}
-.self-speech-actions button{min-height:50px;border-radius:999px;font-weight:800}
-.reveal-answer{border:1px solid var(--line);background:#fffaf2;color:#315b43;padding:11px 16px;border-radius:999px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px}
-.reveal-answer svg{width:18px}
-.record-main.recording{animation:pronunciationPulse 1s ease-in-out infinite;background:#9c5c4d}
-@keyframes pronunciationPulse{50%{transform:scale(1.025);box-shadow:0 0 0 8px rgba(156,92,77,.10)}}
-.pronunciation-feedback,.pronunciation-solution{max-width:500px;margin:13px auto 0;padding:15px 17px;border-radius:18px;border:1px solid #dfd2bf;background:#fffaf2;text-align:left;display:grid;gap:4px}
-.pronunciation-feedback small,.pronunciation-solution small{font-size:8px;letter-spacing:.13em;color:var(--terra);font-weight:900}
-.pronunciation-feedback>b{font-size:16px;color:#294333}
-.pronunciation-feedback>span{justify-self:start;margin-top:4px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900}
-.pronunciation-feedback>span.good{background:#e2eee0;color:#396044}.pronunciation-feedback>span.almost{background:#f4ead1;color:#87672e}.pronunciation-feedback>span.retry{background:#f4e0d9;color:#8c5044}
-.pronunciation-feedback p{font-size:11px;color:#756f67;margin:3px 0 0;line-height:1.4}
-.pronunciation-solution{background:#eaf1e7;text-align:center}
-.pronunciation-solution h3{font:700 31px Fraunces,serif;color:#315b43;margin:2px 0 8px}
-.pronunciation-solution button{justify-self:center;border:0;border-radius:999px;background:#315b43;color:#fff;padding:10px 14px;font-weight:800;display:flex;gap:6px;align-items:center}
-.dialogue-mode{text-align:left}
-.dialogue-bubble{max-width:540px;margin:15px auto;padding:16px 17px;border-radius:21px;display:grid;grid-template-columns:1fr auto;gap:5px 12px;align-items:center;text-align:left}
-.dialogue-bubble small{grid-column:1/-1;font-size:8px;letter-spacing:.14em;font-weight:900}
-.dialogue-bubble div{display:grid;gap:3px}.dialogue-bubble b{font:700 22px Fraunces,serif}.dialogue-bubble span{font-size:11px;color:#6d716b}
-.dialogue-bubble>button{width:42px;height:42px;border:0;border-radius:50%;background:#fffdf9;color:#315b43;display:grid;place-items:center}
-.dialogue-bubble>button svg{width:19px}
-.farangis-turn{background:#e5eee2;color:#244b39;border-radius:22px 22px 22px 8px}.farangis-turn small{color:#55765c}
-.learner-turn{background:#f0e4d4;color:#3b473f;border-radius:22px 22px 8px 22px}.learner-turn small{color:#a7624f}
-.dialogue-mic{background:#315b43!important;color:#fff!important}
-.compact-feedback{margin-top:8px}
-.dialogue-actions{max-width:540px;margin:13px auto 0;display:grid;grid-template-columns:1fr 1.25fr;gap:8px}
-.dialogue-actions .primary-game{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:800}
-.dialogue-note{max-width:520px;margin:12px auto 0!important;text-align:center;font-size:9px!important;line-height:1.35;color:#8a8174!important}
 
-@media(max-width:620px){
-  .speak-v3 .page-head{margin-bottom:14px}
-  .pronunciation-modes{gap:4px;margin-bottom:12px;padding:4px;border-radius:16px}
-  .pronunciation-modes button{min-height:42px;padding:7px 4px;font-size:9px;gap:4px;line-height:1.1}
-  .pronunciation-modes button svg{width:14px;height:14px;flex:0 0 14px}
-  .pronunciation-card{min-height:0;padding-left:18px;padding-right:18px;padding-bottom:22px}
-  .pronunciation-card.speak-practice-card{padding-top:124px}
-  .pronunciation-label{margin-top:10px}
-  .pronunciation-meaning{font-size:16px;margin-bottom:17px}
-  .self-dutch{font-size:30px!important;margin:20px auto 24px!important}
-  .self-speech-actions{grid-template-columns:1fr 1fr;gap:7px}
-  .self-speech-actions button{min-height:46px;font-size:11px;padding:9px}
-  .pronunciation-feedback,.pronunciation-solution{padding:12px 13px;border-radius:16px}
-  .pronunciation-solution h3{font-size:27px}
-  .dialogue-bubble{padding:13px 14px;margin:10px auto;border-radius:18px}
-  .dialogue-bubble b{font-size:19px}.dialogue-bubble span{font-size:10px}
-  .dialogue-bubble>button{width:38px;height:38px}
-  .dialogue-actions{grid-template-columns:1fr;gap:7px}
-  .dialogue-actions button{min-height:44px}
+/* =========================================================
+   ADMIN TESTMODUS — Vlieger Avontuur altijd speelbaar
+   Alleen visuele status; toegang wordt in main.jsx afgevangen.
+   ========================================================= */
+.kite-choice.kite-admin-open{
+  border-color:rgba(49,91,67,.42)!important;
+  background:linear-gradient(135deg,#edf4e9,#e2eee1)!important;
+  color:#274b37!important;
+  opacity:1!important;
 }
-@media(max-width:390px){
-  .pronunciation-modes button span{font-size:8.5px}
-  .pronunciation-card.speak-practice-card{padding-top:116px}
-  .self-dutch{font-size:27px!important}
+.kite-choice.kite-admin-open>span{
+  background:#d4e5d2!important;
+  color:#315b43!important;
+}
+.kite-choice.kite-admin-open small{
+  color:#55765c!important;
+  font-weight:700!important;
 }
