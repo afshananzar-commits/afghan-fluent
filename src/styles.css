@@ -3874,3 +3874,77 @@
   .level-hub .games-safe-grid-five .word-intro-choice,
   .level-hub .games-safe-grid-five .kite-choice{min-height:60px!important}
 }
+
+/* =========================================================
+   LEERPAD v8 — Japandi x Afghan subtle colour accents
+   Warm, calm and handcrafted; colour lives in details, not blocks.
+   ========================================================= */
+.level-hub{
+  --afghan-terracotta:#a9674d;
+  --afghan-indigo:#65778a;
+  --afghan-sage:#71806b;
+  --afghan-ochre:#aa8045;
+  --afghan-deep:#254b3a;
+}
+/* Keep the paper architecture neutral and add a little material depth. */
+.level-hub .level-mission-strip,
+.level-hub .game-summary{
+  background:#fbf4e8!important;
+  border-color:#ddcdb7!important;
+}
+.level-hub .games-safe-grid-five>button{
+  background:#fffaf2!important;
+  border-color:#ddcdb7!important;
+  box-shadow:0 7px 20px rgba(72,52,31,.055)!important;
+}
+/* New words: calm sage — the anchor card. */
+.level-hub .games-safe-grid-five>button:nth-child(1){
+  background:linear-gradient(135deg,#fffaf2 0%,#fffaf2 72%,rgba(113,128,107,.055) 100%)!important;
+  border-color:#cfd3c3!important;
+}
+.level-hub .games-safe-grid-five>button:nth-child(1)>span{
+  background:#e8ede3!important;color:var(--afghan-sage)!important;
+}
+/* Four games: tiny Afghan textile palette, still mostly ivory. */
+.level-hub .games-safe-grid-five>button:nth-child(2)>span{
+  background:#f3e4dc!important;color:var(--afghan-terracotta)!important;
+}
+.level-hub .games-safe-grid-five>button:nth-child(3)>span{
+  background:#e5e9ec!important;color:var(--afghan-indigo)!important;
+}
+.level-hub .games-safe-grid-five>button:nth-child(4)>span{
+  background:#e6ebe2!important;color:var(--afghan-sage)!important;
+}
+.level-hub .games-safe-grid-five>button:nth-child(5)>span{
+  background:#f2e7d4!important;color:var(--afghan-ochre)!important;
+}
+/* A whisper of colour on card edges rather than coloured tiles. */
+.level-hub .games-safe-grid-five>button:nth-child(2){border-top-color:rgba(169,103,77,.48)!important}
+.level-hub .games-safe-grid-five>button:nth-child(3){border-top-color:rgba(101,119,138,.45)!important}
+.level-hub .games-safe-grid-five>button:nth-child(4){border-top-color:rgba(113,128,107,.48)!important}
+.level-hub .games-safe-grid-five>button:nth-child(5){border-top-color:rgba(170,128,69,.48)!important}
+/* Vlieger Avontuur: restrained green with a very subtle Afghan diamond motif. */
+.level-hub .games-safe-grid-five>button:nth-child(6){
+  background-color:#fbf8ef!important;
+  background-image:
+    linear-gradient(45deg,rgba(169,103,77,.026) 25%,transparent 25%,transparent 75%,rgba(169,103,77,.026) 75%),
+    linear-gradient(45deg,rgba(101,119,138,.022) 25%,transparent 25%,transparent 75%,rgba(101,119,138,.022) 75%)!important;
+  background-size:18px 18px!important;
+  background-position:0 0,9px 9px!important;
+  border-color:#cbd2c2!important;
+}
+.level-hub .games-safe-grid-five>button:nth-child(6)>span{
+  background:#e5ece3!important;color:#58705d!important;
+}
+/* Completed state remains quiet instead of turning every card green. */
+.level-hub .games-safe-grid-five>button.mission-done{
+  background-color:#fffdf8!important;
+  border-color:#cbbca7!important;
+}
+.level-hub .games-safe-grid-five>button.mission-done>svg{
+  color:#5f7c65!important;
+}
+.level-hub .mission-dots i.done,
+.level-hub .game-bar i{background:#5f7761!important}
+.level-hub .game-stat:nth-child(1)>span{background:#f2e5d2!important;color:#9d7542!important}
+.level-hub .game-stat:nth-child(2)>span{background:#e8e5ec!important;color:#716984!important}
