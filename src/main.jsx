@@ -43,27 +43,61 @@ async function syncOneDriveContent(){
 const COACH_IMAGES={welcome:'/images/coach/farangis-welcome.png',tip:'/images/coach/farangis-tip.png',fact:'/images/coach/farangis-fact.png',think:'/images/coach/farangis-think.png',listen:'/images/coach/farangis-listen.png',correct:'/images/coach/farangis-correct.png',good:'/images/coach/farangis-correct.png',almost:'/images/coach/farangis-almost.png',help:'/images/coach/farangis-help.png',explain:'/images/coach/farangis-explain.png',celebrate:'/images/coach/farangis-celebrate.png'};
 function Coach({type='tip',text,compact=false,hero=false,placement='edge'}){const src=COACH_IMAGES[type]||COACH_IMAGES.tip;const fallback={welcome:'Salaam! Zullen we samen verder leren? 💛',tip:'Probeer het rustig hardop te zeggen.',good:'Super gedaan! ✨',correct:'Super gedaan! ✨',almost:'Bijna! Probeer het nog één keer.',help:'Zal ik je een handje helpen?',fact:'Wist je dat? Door hardop te oefenen onthoud je woorden beter.',think:'Denk rustig na. Je weet meer dan je denkt.',listen:'Luister goed naar het ritme en de klank.',explain:'Ik leg het stap voor stap uit.',celebrate:'Wauw! Heel goed gedaan! 🎉'};return <div className={`farangis-popout farangis-${type} ${compact?'compact':''} ${hero?'hero':''} placement-${placement}`}><img className="farangis-character" src={src} alt={`Farangis — ${type}`}/><div className="farangis-bubble"><small>FARANGIS</small><span>{text||fallback[type]||fallback.tip}</span></div></div>}
 
-const CATEGORY={home:{label:'Thuis',emoji:'🏡'},food:{label:'Eten & drinken',emoji:'🥣'},travel:{label:'Onderweg',emoji:'🚌'},daily:{label:'Dagelijks',emoji:'☀️'},verbs:{label:'Werkwoorden',emoji:'🏃'},family:{label:'Familie',emoji:'👨‍👩‍👧‍👦'},people:{label:'Mensen',emoji:'🧑'},body:{label:'Lichaam',emoji:'🫶'},clothes:{label:'Kleding',emoji:'🧥'},nature:{label:'Natuur',emoji:'🌿'},animals:{label:'Dieren',emoji:'🐾'},school:{label:'School',emoji:'🎒'},work:{label:'Werk',emoji:'💼'},shopping:{label:'Winkelen',emoji:'🛍️'},time:{label:'Tijd',emoji:'🕰️'},feelings:{label:'Gevoelens',emoji:'💛'},colors:{label:'Kleuren',emoji:'🎨'},numbers:{label:'Getallen',emoji:'🔢'},greetings:{label:'Begroeten',emoji:'👋'},questions:{label:'Vragen',emoji:'❓'},other:{label:'Overig',emoji:'✨'}};
+const CATEGORY={home:{label:'Thuis',emoji:'🏡'},food:{label:'Eten & drinken',emoji:'🥣'},travel:{label:'Onderweg',emoji:'🚌'},daily:{label:'Dagelijks',emoji:'☀️'},verbs:{label:'Werkwoorden',emoji:'🏃'},family:{label:'Familie',emoji:'👨‍👩‍👧‍👦'},people:{label:'Mensen',emoji:'🧑'},body:{label:'Lichaam',emoji:'🫶'},clothes:{label:'Kleding',emoji:'🧥'},nature:{label:'Natuur',emoji:'🌿'},animals:{label:'Dieren',emoji:'🐾'},school:{label:'School',emoji:'🎒'},work:{label:'Werk',emoji:'💼'},shopping:{label:'Winkelen',emoji:'🛍️'},time:{label:'Tijd',emoji:'🕰️'},feelings:{label:'Gevoelens',emoji:'💛'},colors:{label:'Kleuren',emoji:'🎨'},numbers:{label:'Getallen',emoji:'🔢'},greetings:{label:'Kennismaking',emoji:'👋'},questions:{label:'Vragen',emoji:'❓'},other:{label:'Overig',emoji:'✨'}};
 const iconFor=c=>(CATEGORY[c]||CATEGORY.other).emoji, labelFor=c=>(CATEGORY[c]||{label:c||'Overig'}).label;
 const MISSION_TYPES=['picture','listen','sentence','speed'];
 const CURRICULUM_ORDER=['greetings','numbers','family','people','home','food','daily','questions','verbs','time','school','clothes','body','feelings','shopping','travel','work','nature','animals','colors','other'];
 const LEVEL_TITLES=['Eerste woorden','Hallo & kennismaken','Tellen & kiezen','Mijn familie','Mensen om je heen','Thuis','Eten & drinken','Elke dag','Vragen stellen','Doen & bewegen','Tijd & plannen','School & leren','Kleding','Lichaam & gezondheid','Gevoelens','Winkelen','Onderweg','Werk & afspraken','Buiten & natuur','Dieren','Kleuren & beschrijven','Meer dagelijkse woorden','Korte antwoorden','Korte zinnen','Luisteren in context','Zinnen combineren','Vraag en antwoord','Dagelijkse gesprekken','Thuis praten','Samen eten','Op pad','Plannen maken','Vertellen wat je doet','Vertellen wat je wilt','Mensen beschrijven','Plaatsen beschrijven','Meer luisteren','Sneller herkennen','Langere zinnen','Gesprekken volgen','Zonder vertaling denken','Tempo maken','Combineren & reageren','Praktische gesprekken','Vrijer spreken','Natuurlijk luisteren','Snel reageren','Alles door elkaar','Eindmissie','Afghan Fluent'];
 function buildCurriculum(){
  const rank=Object.fromEntries(CURRICULUM_ORDER.map((c,i)=>[c,i]));
- const ordered=[...vocab].sort((a,b)=>(rank[a.category]??999)-(rank[b.category]??999)||Number(a.id)-Number(b.id));
- const levels=[];
- for(let i=0;i<50;i++){
-  const words=ordered.slice(i*20,(i+1)*20);
-  const counts={}; words.forEach(w=>counts[w.category||'other']=(counts[w.category||'other']||0)+1);
-  const category=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0]?.[0]||'other';
-  const maxWords=i<10?4:i<25?6:i<40?9:99;
-  let sentencePool=sentences.filter(x=>{const n=(x.spoken||x.latin||'').trim().split(/\s+/).filter(Boolean).length;return n>=3&&n<=maxWords});
-  if(sentencePool.length<12)sentencePool=sentences.filter(x=>(x.spoken||x.latin||'').trim());
-  const sentenceStart=(i*7)%Math.max(1,sentencePool.length);
-  const levelSentences=Array.from({length:Math.min(12,sentencePool.length)},(_,j)=>sentencePool[(sentenceStart+j)%sentencePool.length]).filter(Boolean);
-  const phase=i<10?'Herkennen & uitspreken':i<20?'Korte zinnen begrijpen':i<30?'Zelf zinnen maken':i<40?'Gesprekken volgen':'Vrij reageren'; const difficulty=i<10?'Starter':i<20?'Basis':i<30?'Actief':i<40?'Gesprek':'Vloeiender'; levels.push({id:`level-${i+1}`,number:i+1,title:LEVEL_TITLES[i]||`Level ${i+1}`,category,emoji:iconFor(category),words,sentences:levelSentences,difficulty,phase});
+ const grouped={};
+ vocab.forEach(w=>{const c=w.category||'other';(grouped[c]??=[]).push(w)});
+ Object.values(grouped).forEach(list=>list.sort((a,b)=>Number(a.id)-Number(b.id)));
+ const categories=Object.keys(grouped).sort((a,b)=>(rank[a]??999)-(rank[b]??999));
+
+ // Verdeel de 50 levels over de echte categorieën. Een level bevat NOOIT
+ // woorden uit twee verschillende categorieën.
+ const targetLevels=50;
+ const total=Math.max(1,vocab.length);
+ const allocation=Object.fromEntries(categories.map(c=>[c,1]));
+ let remaining=Math.max(0,targetLevels-categories.length);
+ const exact=categories.map(c=>({c,share:grouped[c].length/total*targetLevels}));
+ while(remaining>0){
+  const pick=[...exact].sort((a,b)=>(b.share-allocation[b.c])-(a.share-allocation[a.c]))[0];
+  allocation[pick.c]++;remaining--;
  }
- return levels;
+
+ const levels=[];
+ const normalize=t=>(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ');
+ const sentenceMatchesWords=(sentence,words)=>{
+  const hayNl=` ${normalize(sentence.dutch)} `;
+  const haySp=` ${normalize(sentence.spoken||sentence.latin)} `;
+  return words.some(w=>{
+   const nl=normalize(w.dutch).trim(),sp=normalize(w.spoken||w.latin).trim();
+   return (nl&&hayNl.includes(` ${nl} `))||(sp&&haySp.includes(` ${sp} `));
+  });
+ };
+
+ categories.forEach(category=>{
+  const words=grouped[category];
+  const count=Math.min(allocation[category],words.length);
+  for(let part=0;part<count;part++){
+   const from=Math.floor(part*words.length/count),to=Math.floor((part+1)*words.length/count);
+   const levelWords=words.slice(from,to);
+   const related=sentences.filter(s=>sentenceMatchesWords(s,levelWords));
+   const maxWords=levels.length<10?4:levels.length<25?6:levels.length<40?9:99;
+   let levelSentences=related.filter(x=>{const n=(x.spoken||x.latin||'').trim().split(/\s+/).filter(Boolean).length;return n>=3&&n<=maxWords});
+   if(levelSentences.length<4)levelSentences=related;
+   levelSentences=levelSentences.slice(0,12);
+   const number=levels.length+1;
+   const categoryLabel=labelFor(category);
+   const title=count>1?`${categoryLabel} ${part+1}`:categoryLabel;
+   const phase=number<=10?'Herkennen & uitspreken':number<=20?'Korte zinnen begrijpen':number<=30?'Zelf zinnen maken':number<=40?'Gesprekken volgen':'Vrij reageren';
+   const difficulty=number<=10?'Starter':number<=20?'Basis':number<=30?'Actief':number<=40?'Gesprek':'Vloeiender';
+   levels.push({id:`level-${number}`,number,title,category,emoji:iconFor(category),words:levelWords,sentences:levelSentences,difficulty,phase});
+  }
+ });
+ return levels.slice(0,targetLevels);
 }
 const CURRICULUM=buildCurriculum();
 const seeded=n=>((Number(n||1)*9301+49297)%233280)/233280;
