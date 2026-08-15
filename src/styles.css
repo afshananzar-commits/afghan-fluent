@@ -3675,3 +3675,202 @@
   position:relative;
   z-index:20;
 }
+
+/* =========================================================
+   LEERPAD v7 — compact one-screen level + warm paper palette
+   2026-08-15
+   ========================================================= */
+.level-hub{
+  --level-paper:#fffaf2;
+  --level-paper-soft:#fbf3e6;
+  --level-paper-deep:#f4e7d3;
+  --level-line:#e2d3bd;
+  --level-accent:#9a7447;
+  --level-ink:#173d2e;
+}
+.level-hub .level-mission-strip{
+  background:var(--level-paper-soft);
+  border-color:var(--level-line);
+  box-shadow:none;
+}
+.level-hub .mission-dots i{
+  background:#ddd3c4;
+}
+.level-hub .mission-dots i.done{
+  background:#60775f;
+}
+.level-hub .games-safe-grid-five>button,
+.level-hub .games-safe-grid-five .word-intro-choice,
+.level-hub .games-safe-grid-five .kite-choice{
+  background:var(--level-paper)!important;
+  border-color:var(--level-line)!important;
+  color:var(--level-ink)!important;
+  box-shadow:0 5px 16px rgba(73,53,31,.045)!important;
+}
+.level-hub .games-safe-grid-five>button>span,
+.level-hub .games-safe-grid-five .word-intro-choice>span,
+.level-hub .games-safe-grid-five .kite-choice>span{
+  background:var(--level-paper-deep)!important;
+  color:var(--level-accent)!important;
+}
+.level-hub .games-safe-grid-five>button small,
+.level-hub .games-safe-grid-five .kite-choice small{
+  color:#787168!important;
+}
+.level-hub .games-safe-grid-five>button.mission-done{
+  background:#fffdf8!important;
+  border-color:#cfc1ad!important;
+}
+.level-hub .games-safe-grid-five>button.mission-done>span{
+  background:#efe5d5!important;
+}
+.level-hub .games-safe-grid-five .kite-locked{
+  filter:none!important;
+  opacity:.58!important;
+}
+.level-hub .game-summary{
+  background:var(--level-paper-soft)!important;
+  border-color:var(--level-line)!important;
+  box-shadow:none!important;
+}
+.level-hub .game-stat>span{
+  background:var(--level-paper-deep)!important;
+  color:var(--level-accent)!important;
+}
+.level-hub .game-bar i{background:#667d65!important}
+.level-hub .level-hub-summary{margin-top:0}
+
+@media(max-width:620px){
+  /* The lesson hub is deliberately denser than the rest of the app so the
+     complete level fits above the fixed navigation on an iPhone viewport. */
+  main:has(.level-hub){
+    padding-top:2px!important;
+    padding-bottom:74px!important;
+  }
+  .games-home-safe.level-hub{
+    padding-bottom:8px!important;
+  }
+  .level-hub .focus-exit{
+    top:calc(4px + env(safe-area-inset-top))!important;
+    right:10px!important;
+    padding:6px 9px!important;
+    font-size:9px!important;
+  }
+  .level-hub .page-head{
+    margin:2px 0 7px!important;
+    padding-right:66px!important;
+    min-height:0!important;
+  }
+  .level-hub .page-head>div>span{
+    font-size:8px!important;
+    letter-spacing:.16em!important;
+  }
+  .level-hub .page-head h1{
+    font-size:28px!important;
+    line-height:.98!important;
+    margin:4px 0 5px!important;
+  }
+  .level-hub .page-head p{
+    font-size:10.5px!important;
+    line-height:1.3!important;
+    max-width:265px!important;
+  }
+  .level-hub .page-badge{
+    padding:6px 9px!important;
+    font-size:11px!important;
+  }
+  .level-hub .page-badge .vp-kite-icon{
+    width:18px!important;
+    height:18px!important;
+  }
+  .level-hub .level-mission-strip{
+    margin:0 0 7px!important;
+    padding:8px 11px!important;
+    min-height:48px!important;
+    border-radius:15px!important;
+  }
+  .level-hub .level-mission-strip small{font-size:7px!important}
+  .level-hub .level-mission-strip b{font-size:12px!important}
+  .level-hub .mission-dots{gap:5px!important}
+  .level-hub .mission-dots i{width:8px!important;height:8px!important}
+  .level-hub .games-safe-grid-five{
+    margin:0 0 7px!important;
+    gap:7px!important;
+  }
+  .level-hub .games-safe-grid-five>button{
+    min-height:94px!important;
+    padding:10px 11px!important;
+    border-radius:18px!important;
+    gap:4px!important;
+  }
+  .level-hub .games-safe-grid-five>button>span{
+    width:35px!important;
+    height:35px!important;
+    border-radius:12px!important;
+  }
+  .level-hub .games-safe-grid-five>button>span svg{
+    width:19px!important;
+    height:19px!important;
+  }
+  .level-hub .games-safe-grid-five>button b{
+    font-size:14px!important;
+    line-height:1.05!important;
+  }
+  .level-hub .games-safe-grid-five>button small{
+    font-size:9.5px!important;
+    line-height:1.25!important;
+  }
+  .level-hub .games-safe-grid-five .word-intro-choice{
+    min-height:66px!important;
+    display:grid!important;
+    grid-template-columns:38px 1fr!important;
+    grid-template-rows:auto auto!important;
+    column-gap:9px!important;
+    align-items:center!important;
+  }
+  .level-hub .games-safe-grid-five .word-intro-choice>span{
+    grid-row:1/3!important;
+  }
+  .level-hub .games-safe-grid-five .word-intro-choice>b,
+  .level-hub .games-safe-grid-five .word-intro-choice>small{
+    grid-column:2!important;
+  }
+  .level-hub .games-safe-grid-five .kite-choice{
+    min-height:64px!important;
+    display:grid!important;
+    grid-template-columns:38px 1fr!important;
+    grid-template-rows:auto auto!important;
+    column-gap:9px!important;
+    align-items:center!important;
+  }
+  .level-hub .games-safe-grid-five .kite-choice>span{grid-row:1/3!important}
+  .level-hub .games-safe-grid-five .kite-choice>b,
+  .level-hub .games-safe-grid-five .kite-choice>small{grid-column:2!important}
+  .level-hub .level-hub-summary .game-summary{
+    margin:0!important;
+    padding:7px 10px!important;
+    min-height:54px!important;
+    border-radius:16px!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:7px!important;
+  }
+  .level-hub .level-hub-summary .game-stat>span{
+    width:31px!important;
+    height:31px!important;
+    border-radius:10px!important;
+  }
+  .level-hub .level-hub-summary .game-stat b{font-size:13px!important}
+  .level-hub .level-hub-summary .game-stat small,
+  .level-hub .level-hub-summary .game-xp small{font-size:7px!important}
+  .level-hub .level-hub-summary .game-xp{min-width:0!important}
+  .level-hub .level-hub-summary .game-goal{display:none!important}
+}
+
+@media(max-width:390px){
+  .level-hub .page-head h1{font-size:26px!important}
+  .level-hub .page-head p{font-size:10px!important}
+  .level-hub .games-safe-grid-five>button{min-height:88px!important;padding:9px 10px!important}
+  .level-hub .games-safe-grid-five>button small{font-size:9px!important}
+  .level-hub .games-safe-grid-five .word-intro-choice,
+  .level-hub .games-safe-grid-five .kite-choice{min-height:60px!important}
+}
