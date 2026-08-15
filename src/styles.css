@@ -3615,3 +3615,51 @@
   display:grid!important;
   place-items:center!important;
 }
+
+
+/* =========================================================
+   LEERPAD v6 — Nieuwe woorden + 4 spellen = 5 onderdelen
+   ========================================================= */
+.level-five-dots,.mission-dots-five{display:flex;gap:5px;align-items:center;margin:5px 0 7px}
+.level-five-dots i,.mission-dots-five i{width:7px;height:7px;border-radius:50%;background:#ddd5c8;display:block}
+.level-five-dots i.done,.mission-dots-five i.done{background:#55765c}
+.games-safe-grid-five{grid-template-columns:repeat(2,minmax(0,1fr))}
+.games-safe-grid-five .word-intro-choice{grid-column:1/-1;background:linear-gradient(135deg,#f1eadc,#e9efe5);border-color:#d8cbb7}
+.games-safe-grid-five button:disabled{opacity:.48;filter:saturate(.55);cursor:not-allowed}
+.games-safe-grid-five button:disabled>span{background:#ece8df;color:#8b8a82}
+.level-word-progress{display:flex;align-items:center;gap:10px;margin:0 0 6px;color:#6f746b;font-size:10px;font-weight:800}
+.level-word-progress>i{height:5px;background:#e6ded1;border-radius:99px;overflow:hidden;flex:1}
+.level-word-progress>i>b{display:block;height:100%;background:#55765c;border-radius:99px}
+
+/* Woorden-tab is now a discovered-word library, not the 1000-word firehose. */
+.words-library{max-width:760px;margin:0 auto}
+.words-library-hero{background:linear-gradient(135deg,#f3eadc,#e8efe4);border:1px solid #ddcfbb;border-radius:26px;padding:22px;margin-bottom:15px}
+.words-library-hero>div:first-child{display:flex;align-items:baseline;gap:8px}.words-library-hero small{font-size:8px;letter-spacing:.15em;color:#b6694f;font-weight:900}.words-library-hero b{font-family:Fraunces;font-size:38px;color:#244a37}.words-library-hero span{color:#6f746b}.words-library-hero p{margin:10px 0 0;color:#6f6b63;line-height:1.45}
+.words-library-progress{height:7px!important;background:#ddd7cb!important;border-radius:99px!important;overflow:hidden;margin-top:9px}
+.words-library-progress i{display:block;height:100%;background:#55765c;border-radius:99px}
+.word-library-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.word-library-actions button,.word-category-grid button{border:1px solid #ded1be;background:#fffaf2;border-radius:19px;color:#294333;padding:14px;text-align:left;box-shadow:0 4px 13px rgba(61,47,31,.04)}
+.word-library-actions button{min-height:112px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px}
+.word-library-actions svg{width:22px;height:22px;color:#55765c}.word-library-actions b,.word-library-actions small{display:block}.word-library-actions small,.word-category-grid small{font-size:9px;color:#79746b}
+.word-category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.word-category-grid button{min-height:92px}.word-category-grid button>span{font-size:25px;display:block;margin-bottom:5px}.word-category-grid b{display:block}
+.level-words-finished{justify-content:center}
+.word-finish-card{max-width:540px;margin:auto;background:#fffaf2;border:1px solid #ddcfbb;border-radius:30px;padding:30px;text-align:center;box-shadow:0 14px 38px rgba(67,51,34,.07)}
+.word-finish-card>span{font-size:54px}.word-finish-card h2{font-family:Fraunces;font-size:32px;margin:8px 0}.word-finish-card>b{color:#55765c}.word-finish-card p{color:#736e66;line-height:1.5}.word-finish-card .primary-game{margin-top:10px;display:inline-flex;align-items:center;gap:7px}
+
+/* Six tiles on level hub: intro full width + 2x2 learning games + kite. */
+.level-hub .games-safe-grid-five .kite-choice{grid-column:1/-1}
+
+@media(max-width:620px){
+  .games-safe-grid-five{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .games-safe-grid-five .word-intro-choice,.games-safe-grid-five .kite-choice{grid-column:1/-1!important}
+  .word-library-actions{grid-template-columns:1fr!important}
+  .word-library-actions button{min-height:78px!important;display:grid!important;grid-template-columns:34px 1fr!important;align-items:center!important;column-gap:10px!important}
+  .word-library-actions button svg{grid-row:1/3}.word-library-actions button b,.word-library-actions button small{grid-column:2}
+  .word-category-grid{grid-template-columns:1fr 1fr!important}
+  .word-category-grid button{min-height:82px!important;padding:12px!important}
+  .words-library-hero{padding:17px!important;border-radius:22px!important}
+  .words-library-hero b{font-size:32px!important}
+  .level-word-progress{margin-top:-2px!important}
+  .word-finish-card{padding:22px!important;border-radius:25px!important}
+}
