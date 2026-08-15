@@ -4022,3 +4022,335 @@
   .home-v16 .quick-icon{width:29px!important;height:29px!important}
   .home-v16 .home-review{min-height:50px!important;padding:7px 10px!important}
 }
+
+
+/* =========================================================
+   HOME V17 — editorial calm / single-focus dashboard
+   ========================================================= */
+.home-v17{
+  max-width:760px;
+  margin:0 auto;
+  padding:0 0 24px;
+}
+.home17-hero{
+  position:relative;
+  min-height:250px;
+  margin:2px 0 -22px;
+  overflow:hidden;
+}
+.home17-copy{
+  position:relative;
+  z-index:3;
+  width:58%;
+  padding:24px 0 58px;
+}
+.home17-eyebrow{
+  font-size:10px;
+  letter-spacing:.19em;
+  font-weight:800;
+  color:#9d6548;
+  margin-bottom:10px;
+}
+.home17-copy h1{
+  margin:0;
+  font-family:Fraunces,serif;
+  font-size:clamp(43px,7vw,62px);
+  line-height:.94;
+  letter-spacing:-.035em;
+  color:var(--ink);
+}
+.home17-copy h1 span{
+  font-family:'DM Sans',sans-serif;
+  font-size:.56em;
+  vertical-align:.12em;
+}
+.home17-copy p{
+  margin:15px 0 0;
+  color:#777268;
+  font-size:15px;
+  line-height:1.4;
+}
+.home17-coach{
+  position:absolute;
+  z-index:2;
+  right:-5px;
+  bottom:0;
+  width:48%;
+  height:238px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  pointer-events:none;
+}
+.home17-coach:before{
+  content:"";
+  position:absolute;
+  width:210px;
+  height:160px;
+  right:0;
+  bottom:12px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(133,157,124,.17),rgba(133,157,124,0) 68%);
+}
+.home17-coach img{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:auto;
+  height:228px;
+  max-width:100%;
+  object-fit:contain;
+  object-position:right bottom;
+}
+.home17-streak{
+  position:absolute;
+  z-index:5;
+  right:4px;
+  top:8px;
+  min-height:38px;
+  padding:8px 12px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  border:1px solid rgba(202,174,126,.42);
+  border-radius:999px;
+  background:rgba(255,250,241,.78);
+  backdrop-filter:blur(10px);
+  color:#98602e;
+  font-size:11px;
+}
+.home17-streak svg{width:16px;height:16px}
+.home17-streak b{font-size:13px}
+
+.home17-primary{
+  position:relative;
+  z-index:6;
+  width:100%;
+  border:0;
+  border-radius:30px;
+  padding:22px 22px 18px;
+  background:linear-gradient(132deg,#3f624a 0%,#55775c 58%,#6f8a70 100%);
+  color:#fff;
+  text-align:left;
+  box-shadow:0 18px 38px rgba(49,73,54,.15);
+  cursor:pointer;
+}
+.home17-primary-top{
+  display:grid;
+  grid-template-columns:46px 1fr 44px;
+  gap:14px;
+  align-items:center;
+}
+.home17-level-mark{
+  width:46px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:23px 23px 13px 13px;
+  background:rgba(255,255,255,.10);
+  font-family:Fraunces,serif;
+  font-size:23px;
+}
+.home17-primary small{
+  display:block;
+  margin-bottom:5px;
+  font-size:9px;
+  letter-spacing:.14em;
+  font-weight:800;
+  color:rgba(255,255,255,.72);
+}
+.home17-primary h2{
+  margin:0;
+  font-family:Fraunces,serif;
+  font-size:29px;
+  line-height:1.08;
+  letter-spacing:-.018em;
+  color:#fff;
+}
+.home17-arrow{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#fffaf0;
+  color:#35533d;
+}
+.home17-arrow svg{width:21px}
+.home17-primary-bottom{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:20px;
+}
+.home17-progress{
+  flex:1;
+  height:6px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.18);
+}
+.home17-progress i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:#f0d39a;
+}
+.home17-primary-bottom>span{
+  min-width:max-content;
+  font-size:10px;
+  color:rgba(255,255,255,.76);
+}
+
+.home17-shortcuts{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:14px 0 10px;
+}
+.home17-shortcuts button{
+  min-width:0;
+  min-height:108px;
+  padding:14px;
+  border:1px solid rgba(218,207,190,.76);
+  border-radius:22px;
+  background:rgba(255,253,249,.76);
+  box-shadow:0 5px 15px rgba(68,52,34,.035);
+  color:var(--ink);
+  text-align:left;
+}
+.home17-shortcuts button>span{
+  width:35px;
+  height:35px;
+  margin-bottom:12px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+}
+.home17-shortcuts button:nth-child(1)>span{background:#e7eee5;color:#48694f}
+.home17-shortcuts button:nth-child(2)>span{background:#f2e5df;color:#986555}
+.home17-shortcuts button:nth-child(3)>span{background:#f2e8c9;color:#8b7338}
+.home17-shortcuts svg{width:19px;height:19px;stroke-width:1.9}
+.home17-shortcuts b,.home17-shortcuts small{display:block}
+.home17-shortcuts b{font-size:13px;margin-bottom:3px}
+.home17-shortcuts small{font-size:9px;color:#817b72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.home17-review{
+  width:100%;
+  display:grid;
+  grid-template-columns:42px 1fr 20px;
+  align-items:center;
+  gap:12px;
+  padding:13px 15px;
+  border:1px solid rgba(218,207,190,.72);
+  border-radius:21px;
+  background:rgba(250,246,238,.72);
+  color:var(--ink);
+  text-align:left;
+}
+.home17-review-icon{
+  width:42px;height:42px;border-radius:13px;
+  display:grid;place-items:center;
+  background:#e6eee3;color:#496b50;
+}
+.home17-review-icon svg{width:21px}
+.home17-review-copy{min-width:0}
+.home17-review-copy small,.home17-review-copy b,.home17-review-copy em{display:block}
+.home17-review-copy small{font-size:8px;letter-spacing:.14em;color:#9b6a50;font-weight:800;margin-bottom:2px}
+.home17-review-copy b{font-size:12px;line-height:1.25}
+.home17-review-copy em{font-style:normal;font-size:9px;color:#837d73;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home17-review>svg{width:17px;color:#58725c}
+
+.home17-today{
+  margin-top:20px;
+  padding:18px 2px 0;
+  border-top:1px solid rgba(220,210,194,.72);
+}
+.home17-today-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+.home17-today-head small{
+  display:block;
+  color:#9b6a50;
+  font-size:8px;
+  letter-spacing:.16em;
+  font-weight:800;
+}
+.home17-today-head h3{
+  margin:3px 0 0;
+  font-family:Fraunces,serif;
+  font-size:21px;
+  line-height:1;
+}
+.home17-today-head>span{
+  font-size:10px;
+  color:#79746c;
+}
+.home17-daily-track{
+  height:5px;
+  margin-top:12px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#e7e0d5;
+}
+.home17-daily-track i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:#55755b;
+}
+.home17-meta{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  margin-top:10px;
+  color:#777168;
+  font-size:9px;
+}
+.home17-meta span{display:flex;align-items:center;gap:5px}
+.home17-meta img,.home17-meta svg{width:14px;height:14px;object-fit:contain}
+.home17-meta b{font-size:11px;color:var(--ink)}
+
+@media(max-width:980px){
+  .app:has(.home-v17) .top-chrome{
+    height:58px;
+    padding:5px 16px;
+    background:rgba(247,240,227,.90);
+    border-bottom:1px solid rgba(226,215,198,.42);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+  }
+  .app:has(.home-v17) main{padding-top:0}
+}
+@media(max-width:620px){
+  .home-v17{padding-bottom:8px}
+  .home17-hero{min-height:224px;margin-top:0;margin-bottom:-19px}
+  .home17-copy{width:61%;padding-top:18px}
+  .home17-copy h1{font-size:42px}
+  .home17-copy p{font-size:13px;max-width:205px;margin-top:12px}
+  .home17-coach{right:-10px;width:49%;height:216px}
+  .home17-coach img{height:205px}
+  .home17-streak{top:5px;right:0;padding:7px 10px}
+  .home17-primary{padding:18px 17px 15px;border-radius:25px}
+  .home17-primary-top{grid-template-columns:40px 1fr 40px;gap:11px}
+  .home17-level-mark{width:40px;height:46px;font-size:20px}
+  .home17-primary h2{font-size:23px}
+  .home17-arrow{width:40px;height:40px}
+  .home17-primary-bottom{margin-top:16px}
+  .home17-shortcuts{gap:8px;margin-top:11px}
+  .home17-shortcuts button{min-height:91px;padding:11px;border-radius:19px}
+  .home17-shortcuts button>span{width:31px;height:31px;margin-bottom:8px}
+  .home17-shortcuts b{font-size:12px}
+  .home17-shortcuts small{font-size:8px}
+  .home17-review{padding:11px 12px;border-radius:19px}
+  .home17-review-copy em{font-size:8px}
+  .home17-today{margin-top:16px;padding-top:14px}
+}
+@media(max-width:380px){
+  .home17-copy h1{font-size:38px}
+  .home17-shortcuts small{display:none}
+  .home17-shortcuts button{min-height:78px}
+}
