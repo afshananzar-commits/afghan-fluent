@@ -129,8 +129,11 @@ function practice(gs,k,ok){gs.updateGame(g=>{const p={...(g.practice||{})},o=p[k
 function reviewItems(game,limit=20){const now=Date.now();return Object.entries(game.game.practice||{}).filter(([,v])=>!v.due||new Date(v.due).getTime()<=now||(v.priority||0)>0).sort((a,b)=>(b[1].priority||0)-(a[1].priority||0)).slice(0,limit)}
 function masteryCount(game){return Object.values(game.game.practice||{}).filter(v=>v.mastered).length}
 async function speak(text,rate=.86,itemType=null,itemId=null){
- // Hybride uitspraak: 1) opname van Farangis, 2) Dari/Afghanistan (fa-AF), 3) Perzisch/Iran (fa-IR).
- // Bewust geen Nederlandse/default stem als fallback.
+ // Hybride uitspraak:
+ // 1) goedgekeurde opname van Farangis
+ // 2) fa-AF / Dari-stem
+ // 3) fa-IR / Perzische stem
+ // 4) platform zelf fa-AF laten oplossen zodat de knop nooit stil blijft
  if(itemType&&itemId){
   try{
    const{data}=await supabase.from('audio_recordings').select('storage_path').eq('item_type',itemType).eq('item_id',Number(itemId)).eq('approved',true).maybeSingle();
@@ -138,29 +141,36 @@ async function speak(text,rate=.86,itemType=null,itemId=null){
     const{data:urlData}=supabase.storage.from('farangis-audio').getPublicUrl(data.storage_path);
     if(urlData?.publicUrl){
      const audio=new Audio(urlData.publicUrl);
-     await audio.play();
-     return;
+     try{await audio.play();return}catch(e){console.warn('Farangis-opname kon niet afspelen; TTS fallback wordt gebruikt.',e)}
     }
    }
   }catch(e){console.warn('Farangis-audio niet beschikbaar; TTS fallback wordt gebruikt.',e)}
  }
  if(!text||!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window))return;
  const synth=window.speechSynthesis;
- const getVoices=()=>synth.getVoices?.()||[];
- let voices=getVoices();
- if(!voices.length){
-  await new Promise(resolve=>{let done=false;const finish=()=>{if(done)return;done=true;resolve()};const timer=setTimeout(finish,350);synth.addEventListener?.('voiceschanged',()=>{clearTimeout(timer);finish()},{once:true})});
-  voices=getVoices();
- }
  const lang=v=>(v?.lang||'').toLowerCase();
- const voice=voices.find(v=>lang(v)==='fa-af')||voices.find(v=>lang(v).startsWith('fa-af'))||voices.find(v=>lang(v)==='fa-ir')||voices.find(v=>lang(v).startsWith('fa-ir'));
- if(!voice){console.warn('Geen fa-AF of fa-IR stem beschikbaar op dit apparaat.');return}
+ const name=v=>(v?.name||'').toLowerCase();
+ let voices=synth.getVoices?.()||[];
+ if(!voices.length){
+  await new Promise(resolve=>{
+   let done=false;
+   const finish=()=>{if(done)return;done=true;resolve()};
+   const timer=setTimeout(finish,250);
+   synth.addEventListener?.('voiceschanged',()=>{clearTimeout(timer);finish()},{once:true});
+  });
+  voices=synth.getVoices?.()||[];
+ }
+ const faAf=voices.find(v=>lang(v)==='fa-af')||voices.find(v=>lang(v).startsWith('fa-af'))||voices.find(v=>name(v).includes('dari'));
+ const faIr=voices.find(v=>lang(v)==='fa-ir')||voices.find(v=>lang(v).startsWith('fa-ir'))||voices.find(v=>lang(v).startsWith('fa'))||voices.find(v=>name(v).includes('persian'))||voices.find(v=>name(v).includes('farsi'));
+ const voice=faAf||faIr||null;
  synth.cancel();
  const u=new SpeechSynthesisUtterance(text);
- u.voice=voice;
- u.lang=lang(voice).startsWith('fa-af')?'fa-AF':'fa-IR';
+ if(voice)u.voice=voice;
+ u.lang=faAf?'fa-AF':faIr?'fa-IR':'fa-AF';
  u.rate=rate;
  u.pitch=1;
+ // Belangrijk op iPhone: ook zonder vooraf geladen fa-stem laten we iOS
+ // zelf een fa-AF stem kiezen in plaats van stil te stoppen.
  synth.speak(u);
 }
 function shuffle(a){a=[...a];for(let i=a.length-1;i;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
