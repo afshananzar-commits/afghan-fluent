@@ -3663,3 +3663,15 @@
   .level-word-progress{margin-top:-2px!important}
   .word-finish-card{padding:22px!important;border-radius:25px!important}
 }
+
+
+/* =========================================================
+   HOTFIX v6.1 — restored learning-game engine
+   ========================================================= */
+.games-focus{
+  min-height:calc(100dvh - 150px);
+}
+.games-focus>.focus-exit{
+  position:relative;
+  z-index:20;
+}
