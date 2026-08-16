@@ -129,11 +129,8 @@ function practice(gs,k,ok){gs.updateGame(g=>{const p={...(g.practice||{})},o=p[k
 function reviewItems(game,limit=20){const now=Date.now();return Object.entries(game.game.practice||{}).filter(([,v])=>!v.due||new Date(v.due).getTime()<=now||(v.priority||0)>0).sort((a,b)=>(b[1].priority||0)-(a[1].priority||0)).slice(0,limit)}
 function masteryCount(game){return Object.values(game.game.practice||{}).filter(v=>v.mastered).length}
 async function speak(text,rate=.86,itemType=null,itemId=null){
- // Hybride uitspraak:
- // 1) goedgekeurde opname van Farangis
- // 2) fa-AF / Dari-stem
- // 3) fa-IR / Perzische stem
- // 4) platform zelf fa-AF laten oplossen zodat de knop nooit stil blijft
+ // Hybride uitspraak: 1) opname van Farangis, 2) Dari/Afghanistan (fa-AF), 3) Perzisch/Iran (fa-IR).
+ // Bewust geen Nederlandse/default stem als fallback.
  if(itemType&&itemId){
   try{
    const{data}=await supabase.from('audio_recordings').select('storage_path').eq('item_type',itemType).eq('item_id',Number(itemId)).eq('approved',true).maybeSingle();
@@ -141,36 +138,29 @@ async function speak(text,rate=.86,itemType=null,itemId=null){
     const{data:urlData}=supabase.storage.from('farangis-audio').getPublicUrl(data.storage_path);
     if(urlData?.publicUrl){
      const audio=new Audio(urlData.publicUrl);
-     try{await audio.play();return}catch(e){console.warn('Farangis-opname kon niet afspelen; TTS fallback wordt gebruikt.',e)}
+     await audio.play();
+     return;
     }
    }
   }catch(e){console.warn('Farangis-audio niet beschikbaar; TTS fallback wordt gebruikt.',e)}
  }
  if(!text||!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window))return;
  const synth=window.speechSynthesis;
- const lang=v=>(v?.lang||'').toLowerCase();
- const name=v=>(v?.name||'').toLowerCase();
- let voices=synth.getVoices?.()||[];
+ const getVoices=()=>synth.getVoices?.()||[];
+ let voices=getVoices();
  if(!voices.length){
-  await new Promise(resolve=>{
-   let done=false;
-   const finish=()=>{if(done)return;done=true;resolve()};
-   const timer=setTimeout(finish,250);
-   synth.addEventListener?.('voiceschanged',()=>{clearTimeout(timer);finish()},{once:true});
-  });
-  voices=synth.getVoices?.()||[];
+  await new Promise(resolve=>{let done=false;const finish=()=>{if(done)return;done=true;resolve()};const timer=setTimeout(finish,350);synth.addEventListener?.('voiceschanged',()=>{clearTimeout(timer);finish()},{once:true})});
+  voices=getVoices();
  }
- const faAf=voices.find(v=>lang(v)==='fa-af')||voices.find(v=>lang(v).startsWith('fa-af'))||voices.find(v=>name(v).includes('dari'));
- const faIr=voices.find(v=>lang(v)==='fa-ir')||voices.find(v=>lang(v).startsWith('fa-ir'))||voices.find(v=>lang(v).startsWith('fa'))||voices.find(v=>name(v).includes('persian'))||voices.find(v=>name(v).includes('farsi'));
- const voice=faAf||faIr||null;
+ const lang=v=>(v?.lang||'').toLowerCase();
+ const voice=voices.find(v=>lang(v)==='fa-af')||voices.find(v=>lang(v).startsWith('fa-af'))||voices.find(v=>lang(v)==='fa-ir')||voices.find(v=>lang(v).startsWith('fa-ir'));
+ if(!voice){console.warn('Geen fa-AF of fa-IR stem beschikbaar op dit apparaat.');return}
  synth.cancel();
  const u=new SpeechSynthesisUtterance(text);
- if(voice)u.voice=voice;
- u.lang=faAf?'fa-AF':faIr?'fa-IR':'fa-AF';
+ u.voice=voice;
+ u.lang=lang(voice).startsWith('fa-af')?'fa-AF':'fa-IR';
  u.rate=rate;
  u.pitch=1;
- // Belangrijk op iPhone: ook zonder vooraf geladen fa-stem laten we iOS
- // zelf een fa-AF stem kiezen in plaats van stil te stoppen.
  synth.speak(u);
 }
 function shuffle(a){a=[...a];for(let i=a.length-1;i;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -357,72 +347,74 @@ function PageHead({eyebrow,title,sub,badge}){return <div className="page-head"><
 function SectionTitle({title}){return <div className="section-title"><h2>{title}</h2></div>}
 function GameSummary({game}){const pct=Math.min(100,Math.round(game.daily/game.goal*100)),results=game.game.levelResults?.[game.level]||{},missions=new Set(MISSION_TYPES.filter(m=>results[m]?.passed===true)),wordsDone=levelWordsDone(game,game.level),parts=(wordsDone?1:0)+missions.size;return <section className="game-summary"><div className="game-stat"><span><Trophy/></span><div><small>LEVEL</small><b>{game.level}/50</b></div></div><div className="game-xp"><div><b className="vp-amount"><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</b><small>{parts}/5 onderdelen in level {game.level}</small></div><div className="game-bar"><i style={{width:`${parts*20}%`}}/></div></div><div className="game-stat"><span><Sparkles/></span><div><small>VLIEGERS</small><b>{game.kiteTickets}</b></div></div><div className="game-goal"><div className="game-bar"><i style={{width:`${pct}%`}}/></div><small>{game.daily}/{game.goal} vandaag</small></div></section>}
 function Quick({title,sub,icon,onClick}){return <button className="quick-card" onClick={onClick}><span className="quick-icon">{icon}</span><div><b>{title}</b><small>{sub}</small></div></button>}
-function Today({app,game,go,displayName='Leerling'}){
- const known=app.knownIds.size;
- const results=game.game.levelResults?.[game.level]||{};
- const missionsDone=MISSION_TYPES.filter(m=>results[m]?.passed===true).length;
- const wordsDone=levelWordsDone(game,game.level)?1:0;
- const parts=Math.min(5,wordsDone+missionsDone);
- const level=CURRICULUM[Math.max(0,game.level-1)]||CURRICULUM[0];
- const levelPct=parts*20;
- const reviewCount=reviewItems(game,20).length;
- const streak=app.progress.streak||1;
- return <div className="screen today-screen home-v17">
-  <section className="home17-hero">
-   <div className="home17-copy">
-    <div className="home17-eyebrow">GOEDE DAG</div>
-    <h1>Salaam,<br/>{displayName}! <span>👋</span></h1>
-    <p>Vandaag een klein stukje verder.</p>
-   </div>
-   <div className="home17-coach" aria-hidden="true">
-    <img src={COACH_IMAGES.welcome} alt=""/>
-   </div>
-   <div className="home17-streak"><Flame/><b>{streak}</b><span>{streak===1?'dag':'dagen'}</span></div>
-  </section>
+function Today({app,game,go,displayName='Leerling'}){const known=app.knownIds.size;return <div className="screen today-screen home-v14 home-v16"><section className="welcome home-welcome-v2"><div className="welcome-copy"><p className="kicker">GOEDE DAG</p><h1>Salaam, {displayName}! <span>👋</span></h1><p className="welcome-line">Vandaag is een mooie dag om te leren.</p></div><div className="streak-pill"><Flame/><b>{app.progress.streak||1}</b><span>dagen</span></div><div className="home-coach-stage" aria-hidden="true"><img className="home-coach-character" src={COACH_IMAGES.welcome} alt=""/></div></section><div className="continue-card" onClick={()=>go(game.game.lastTab&&game.game.lastTab!=='today'?game.game.lastTab:'path')}><div className="continue-copy"><small>GA VERDER WAAR JE WAS</small><h2>Verder leren</h2><div className="mini-progress"><i style={{width:`${Math.min(100,game.daily)}%`}}/></div></div><button aria-label="Verder leren"><ChevronRight/></button></div><section className="quick-grid home-actions"><Quick title="Spelen" sub="Oefen je huidige level" icon={<Trophy/>} onClick={()=>go('games')}/><Quick title="Woorden" sub="Flashcards" icon={<Layers3/>} onClick={()=>go('words')}/><Quick title="Zinnen" sub="Oefen zinnen" icon={<MessageCircle/>} onClick={()=>go('sentences')}/><Quick title="Uitspraak" sub="Luister & spreek" icon={<Mic/>} onClick={()=>go('speak')}/></section><div className="review-banner home-review" onClick={()=>go('review')}><div className="seal"><Brain/></div><div><b>Nog oefenen</b><span>Korte challenge met wat extra aandacht nodig heeft.</span></div><ChevronRight/></div><section className="home-progress"><div className="home-progress-title"><span>JOUW VOORTGANG</span><b>Vandaag</b></div><GameSummary game={game}/><div className="profile-stats"><StatCard icon={<Layers3/>} value={known} label="Woorden"/><StatCard icon={<img className="vp-kite-icon stat-kite" src="/images/game/kite.png" alt=""/>} value={game.xp} label="VP"/><StatCard icon={<Flame/>} value={app.progress.streak||1} label="Streak"/></div></section></div>}
+function LearningPath({app,game,isAdmin=false,openLesson}){const completed=new Set(game.game.completedLevels||[]),current=Math.min(50,completed.size+1),adminOpen=isAdmin&&!!game.game.adminAllLevels;return <div className="screen curriculum-screen"><PageHead eyebrow="JOUW ROUTE" title="Van eerste woord tot gesprek" sub="50 levels. Eerst leer je de nieuwe woorden; daarna pas je ze toe in vier verschillende spellen." badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/><div className="curriculum-intro"><div><small>DOEL</small><b>Na level 50 kun je veel dagelijkse Afghaanse gesprekken begrijpen en zelf voeren.</b></div><span>{completed.size}/50</span></div>{adminOpen&&<div className="admin-unlock-banner"><ShieldCheck/> Admin testmodus: alle 50 levels zijn speelbaar.</div>}<div className="path-list curriculum-path">{CURRICULUM.map(l=>{const done=completed.has(l.number),locked=!adminOpen&&l.number>current,results=game.game.levelResults?.[l.number]||{},missions=new Set(MISSION_TYPES.filter(m=>results[m]?.passed===true)),wordsDone=levelWordsDone(game,l.number),parts=(wordsDone?1:0)+missions.size;return <div className={`path-item curriculum-level ${done?'done':''} ${locked?'locked':''}`} key={l.id}><span className={`path-node ${done?'complete':''}`}>{done?<Check/>:locked?<Lock/>:l.number}</span><button className="lesson-row" disabled={locked} onClick={()=>openLesson(l)}><span className="lesson-art">{l.emoji}</span><div className="lesson-main"><div className="level-title-row"><b>{l.number}. {l.title}</b><em>{l.difficulty}</em></div><small>{l.phase} · {l.words.length} woorden · {parts}/5 onderdelen voltooid</small><div className="level-five-dots"><i className={wordsDone?'done':''}/>{MISSION_TYPES.map(m=><i key={m} className={missions.has(m)?'done':''}/>)}</div><div className="tiny-bar"><i style={{width:`${done?100:parts*20}%`}}/></div></div>{!locked&&<ChevronRight/>}</button>{done&&<div className="kite-earned"><Sparkles/> Level voltooid · Vlieger vrijgespeeld</div>}</div>})}</div></div>}
+function SentenceBuilder({game,level,lesson,onSolved}){
+ const pool=useMemo(()=>{const base=lesson?.sentences?.length?lesson.sentences:sentences;return base.filter(s=>(s.spoken||s.latin||'').trim().split(/\s+/).length>=3)},[lesson?.id]),[idx,setIdx]=useState(0),s=pool[idx%Math.max(1,pool.length)];
+ const[bank,setBank]=useState([]),[answer,setAnswer]=useState([]),[result,setResult]=useState(null),[dragging,setDragging]=useState(null),[dragPos,setDragPos]=useState(null),[hoverSlot,setHoverSlot]=useState(null),[coachMessage,setCoachMessage]=useState(null),[help,setHelp]=useState({hint:false,revealed:false,wrong:0}),[finished,setFinished]=useState(null); const drag=useRef(null),sessionStats=useRef({correct:0,total:0});
 
-  <button className="home17-primary" onClick={()=>go('path')}>
-   <div className="home17-primary-top">
-    <span className="home17-level-mark">{game.level}</span>
-    <div>
-     <small>GA VERDER MET JE LEERPAD</small>
-     <h2>{level?.title||'Verder leren'}</h2>
-    </div>
-    <span className="home17-arrow"><ChevronRight/></span>
-   </div>
-   <div className="home17-primary-bottom">
-    <div className="home17-progress"><i style={{width:`${levelPct}%`}}/></div>
-    <span>{parts}/5 onderdelen</span>
-   </div>
-  </button>
+ useEffect(()=>{if(!s)return;const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setBank(shuffle(words));setAnswer(Array(words.length).fill(null));setResult(null);setDragging(null);setDragPos(null);setHoverSlot(null);setCoachMessage(null);setHelp({hint:false,revealed:false,wrong:0})},[s?.id]);
 
-  <section className="home17-shortcuts" aria-label="Snel oefenen">
-   <button onClick={()=>go('words')}><span><Layers3/></span><b>Woorden</b><small>{known} geleerd</small></button>
-   <button onClick={()=>go('sentences')}><span><MessageCircle/></span><b>Zinnen</b><small>In context</small></button>
-   <button onClick={()=>go('speak')}><span><Mic/></span><b>Uitspraak</b><small>Luister & spreek</small></button>
-  </section>
+ const reset=()=>{const all=[...bank,...answer.filter(Boolean)];setBank(shuffle(all));setAnswer(Array(all.length).fill(null));setResult(null);setDragging(null);setDragPos(null);setHoverSlot(null);setCoachMessage(null)};
+ const showHint=()=>{setHelp(h=>({...h,hint:true}));const first=(s.spoken||s.latin).trim().split(/\s+/)[0];setCoachMessage({type:'tip',text:`Begin eens met ‘${first}’. Daarna valt de rest vaak vanzelf op zijn plek.`})};
+ const revealAnswer=()=>{setHelp(h=>({...h,revealed:true}));const words=(s.spoken||s.latin).trim().split(/\s+/).map((word,i)=>({id:`${s.id}-${i}-${word}`,word,origin:i}));setAnswer(words);setBank([]);setResult(null);setCoachMessage({type:'help',text:'Ik heb de goede volgorde voor je klaargezet. Kijk er rustig naar.'})};
 
-  <button className="home17-review" onClick={()=>go('review')}>
-   <span className="home17-review-icon"><Brain/></span>
-   <span className="home17-review-copy">
-    <small>SLIM HERHALEN</small>
-    <b>{reviewCount>0?`${reviewCount} ${reviewCount===1?'item':'items'} klaar om te oefenen`:'Nog even oefenen'}</b>
-    <em>{reviewCount>0?'Herhaal wat extra aandacht nodig heeft.':'Een korte ronde om scherp te blijven.'}</em>
-   </span>
-   <ChevronRight/>
-  </button>
+ const putInSlot=(tile,slot,source,sourceIndex)=>{setResult(null);setAnswer(a=>{const n=[...a],displaced=n[slot];n[slot]=tile;if(source==='slot'&&sourceIndex!==slot)n[sourceIndex]=displaced||null;else if(source==='bank'&&displaced)setBank(b=>[...b,displaced]);return n});if(source==='bank')setBank(b=>b.filter(x=>x.id!==tile.id))};
+ const returnToBank=(slot)=>{const tile=answer[slot];if(!tile)return;setAnswer(a=>a.map((x,i)=>i===slot?null:x));setBank(b=>[...b,tile]);setResult(null)};
+ const tapBank=tile=>{const slot=answer.findIndex(x=>!x);if(slot>=0)putInSlot(tile,slot,'bank',null)};
+ const startDrag=(e,tile,source,sourceIndex)=>{if(result==='good')return;e.preventDefault();e.currentTarget.setPointerCapture?.(e.pointerId);drag.current={tile,source,sourceIndex,pointerId:e.pointerId};setDragging(tile.id);setDragPos({x:e.clientX,y:e.clientY,word:tile.word})};
+ const moveDrag=e=>{if(!drag.current)return;e.preventDefault();setDragPos({x:e.clientX,y:e.clientY,word:drag.current.tile.word});const el=document.elementsFromPoint(e.clientX,e.clientY).find(n=>n?.dataset?.answerSlot!==undefined);setHoverSlot(el?Number(el.dataset.answerSlot):null)};
+ const endDrag=e=>{if(!drag.current)return;const d=drag.current;const el=document.elementsFromPoint(e.clientX,e.clientY).find(n=>n?.dataset?.answerSlot!==undefined);const slot=el?Number(el.dataset.answerSlot):null;if(slot!==null)putInSlot(d.tile,slot,d.source,d.sourceIndex);drag.current=null;setDragging(null);setDragPos(null);setHoverSlot(null);try{e.currentTarget.releasePointerCapture?.(e.pointerId)}catch{}};
 
-  <section className="home17-today">
-   <div className="home17-today-head">
-    <div><small>VANDAAG</small><h3>Jouw ritme</h3></div>
-    <span>{game.daily}/{game.goal} VP</span>
+ const check=()=>{if(answer.some(x=>!x))return;const ok=answer.every((t,i)=>t?.origin===i);sessionStats.current.total+=1;if(ok)sessionStats.current.correct+=1;setResult(ok?'good':'bad');practice(game,`sentence:${s.id}`,ok);if(ok){const pts=rewardFor(20,help);awardXP(game,pts,'zin gebouwd',level);setCoachMessage({type:'correct',text:`Perfect! +${pts} vliegerpunten ✨`})}else{setHelp(h=>({...h,wrong:h.wrong+1}));setCoachMessage({type:'almost',text:'Bijna — probeer het nog eens. Bij een volgende poging zijn iets minder vliegerpunten te verdienen.'})}};
+ const next=()=>{if((idx%pool.length)>=pool.length-1){const r=saveMissionResult(game,level,'sentence',sessionStats.current.correct,sessionStats.current.total);setFinished(r);if(r.passed)onSolved?.('sentence');return}const n=(idx+1)%pool.length;setIdx(n);remember(game,'builder',n)};
+ const restartSession=()=>{sessionStats.current={correct:0,total:0};setFinished(null);setIdx(0);remember(game,'builder',0)};
+
+ if(!s)return null;
+ if(finished)return <section className="game-card mission-finish-card"><Trophy/><small>BOUW DE ZIN AFGEROND</small><h2>{finished.accuracy}% goed</h2><p>{finished.passed?'Missie gehaald. Deze telt mee voor het vrijspelen van het Vlieger Avontuur.':'Je hebt meer dan 80% nodig. Probeer de ronde nog een keer.'}</p><button className="primary-game" onClick={finished.passed?()=>onSolved?.('done'):restartSession}>{finished.passed?'Klaar':'Opnieuw proberen'}</button></section>;
+ const coachType=coachMessage?.type||'think'; const coachSrc=COACH_IMAGES[coachType]||COACH_IMAGES.think;
+
+ const sentenceWords=(s.spoken||s.latin||'').trim().split(/\s+/).filter(Boolean);
+ const sentenceChars=sentenceWords.join('').length;
+ const longestWord=Math.max(1,...sentenceWords.map(w=>w.length));
+ const tileFontSize=sentenceChars<=16&&longestWord<=8?18:sentenceChars<=24&&longestWord<=10?16:sentenceChars<=34&&longestWord<=12?14:12;
+
+ return <section className={`game-card sentence-builder-v2 sentence-builder-v29 ${answer.length>3?'has-many-words':'has-three-words'}`} style={{'--word-count':Math.max(1,answer.length),'--sentence-tile-font':`${tileFontSize}px`}}>
+   <div className="builder-v29-head">
+     <div className="builder-v29-title">
+       <small>🧩 BOUW DE ZIN <span className="builder-xp-inline">max 20 VP</span></small>
+       <h2>Zet de zin in<br/>goede volgorde</h2>
+       <p>Sleep de woorden naar de juiste plek.</p>
+     </div>
+     <div className="builder-v29-tools" aria-label="Hulpmiddelen">
+       <span className="spark s1">✦</span><span className="spark s2">✦</span><span className="spark s3">✦</span>
+       <button onClick={showHint} aria-label="Hint" title="Hint">💡</button>
+       <button onClick={()=>{speak(s.spoken||s.latin,.78,'sentence',s.id);setCoachMessage({type:'listen',text:'Luister goed naar het ritme en zeg de zin daarna rustig na.'})}} aria-label="Luister" title="Luister">🎧</button>
+       <button onClick={revealAnswer} aria-label="Antwoord" title="Antwoord">👀</button>
+     </div>
    </div>
-   <div className="home17-daily-track"><i style={{width:`${Math.min(100,Math.round(game.daily/game.goal*100))}%`}}/></div>
-   <div className="home17-meta">
-    <span><img src="/images/game/kite.png" alt=""/><b>{game.xp}</b> vliegerpunten</span>
-    <span><Flame/><b>{streak}</b> {streak===1?'dag':'dagen'} op rij</span>
+
+   <div className="builder-v36-dutch-prompt" aria-label="Nederlandse voorbeeldzin">
+     <span>{s.dutch}</span>
    </div>
-  </section>
- </div>
+
+   <div className={`answer-slots builder-v29-slots ${dragging?'is-dragging':''}`}>{answer.map((tile,i)=><div key={i} data-answer-slot={i} className={`answer-slot ${tile?'filled':''} ${hoverSlot===i?'hover':''} ${result==='good'?'correct-slot':''} ${result==='bad'&&tile?.origin!==i?'wrong-slot':''} ${result==='bad'&&tile?.origin===i?'right-slot':''}`}>{tile?<button className={`sentence-tile placed ${result==='bad'&&tile?.origin!==i?'is-wrong-position':''} ${result==='bad'&&tile?.origin===i?'is-right-position':''} ${dragging===tile.id?'is-held':''}`} onClick={()=>returnToBank(i)} onPointerDown={e=>startDrag(e,tile,'slot',i)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>:<span className="slot-number">{i+1}</span>}</div>)}</div>
+
+   <div className="builder-divider builder-v29-divider"><span>WOORDEN</span></div>
+   <div className="word-bank builder-v29-bank">{bank.map(tile=><button key={tile.id} className={`sentence-tile bank-tile ${dragging===tile.id?'is-held':''}`} onClick={()=>tapBank(tile)} onPointerDown={e=>startDrag(e,tile,'bank',null)} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}><span>{tile.word}</span></button>)}</div>
+   {dragPos&&<div className="floating-word-tile builder-v29-floating" style={{left:dragPos.x,top:dragPos.y}}>{dragPos.word}</div>}
+
+   <div className="builder-v29-coach-zone">
+     <div className="builder-v29-coach">
+       <img src={coachSrc} alt="Farangis"/>
+     </div>
+     {coachMessage&&<div className={`builder-v29-coach-note ${coachMessage.type||''}`}><small>{coachMessage.type==='tip'?'TIP VAN FARANGIS ✨':coachMessage.type==='listen'?'LUISTER MET FARANGIS 🎧':coachMessage.type==='correct'?'GOED GEDAAN ✨':coachMessage.type==='almost'?'BIJNA!':coachMessage.type==='help'?'HULP VAN FARANGIS':'FARANGIS'}</small><span>{coachMessage.text}</span></div>}
+     <div className="builder-v29-actions">
+       <button className="ghost-game" onClick={reset}><RotateCcw/> Opnieuw</button>
+       <button className="primary-game" disabled={answer.some(x=>!x)} onClick={result==='good'?next:check}>{result==='good'?((idx%pool.length)>=pool.length-1?'Afronden':'Volgende zin'):'Controleren'}</button>
+     </div>
+   </div>
+ </section>
 }
 
 
