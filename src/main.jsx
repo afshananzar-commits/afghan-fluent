@@ -106,7 +106,7 @@ function loadProgress(userId){return readJsonStorage(userId?profileStorageKey(us
 function saveProgress(userId,p){localStorage.setItem(userId?profileStorageKey(userId):'afghanFluentProgress',JSON.stringify(p))}
 function useAppState(userId,cloudProgress,onCloudChange){
  const[progress,setProgress]=useState(()=>loadProgress(userId));
- useEffect(()=>{if(!userId)return;const local=loadProgress(userId);setProgress(cloudProgress&&Object.keys(cloudProgress).length?{...local,...cloudProgress}:local)},[userId]);
+ useEffect(()=>{if(!userId)return;const local=loadProgress(userId);setProgress(cloudProgress&&Object.keys(cloudProgress).length?{...local,...cloudProgress}:local)},[userId,cloudProgress]);
  const update=fn=>setProgress(p=>{const n=typeof fn==='function'?fn(p):fn;saveProgress(userId,n);onCloudChange?.(n);return n});
  return{progress,update,knownIds:new Set(progress.known||[]),favorites:new Set(progress.favorites||[])};
 }
@@ -114,7 +114,7 @@ function loadGame(userId){return readJsonStorage(userId?gameStorageKey(userId):G
 function saveGame(userId,g){localStorage.setItem(userId?gameStorageKey(userId):GAME_KEY,JSON.stringify(g))}
 function useGameState(userId,cloudGame,onCloudChange){
  const[game,setGame]=useState(()=>loadGame(userId));
- useEffect(()=>{if(!userId)return;const local=loadGame(userId);setGame(cloudGame&&Object.keys(cloudGame).length?{...local,...cloudGame}:local)},[userId]);
+ useEffect(()=>{if(!userId)return;const local=loadGame(userId);setGame(cloudGame&&Object.keys(cloudGame).length?{...local,...cloudGame}:local)},[userId,cloudGame]);
  const updateGame=fn=>setGame(g=>{const n=typeof fn==='function'?fn(g):fn;saveGame(userId,n);onCloudChange?.(n);return n});
  const xp=game.xp||0,completed=new Set(game.completedLevels||[]),level=Math.min(50,Math.max(1,completed.size+1));return{game,updateGame,xp,level,levelXp:game.levelPoints?.[level]||0,daily:game.daily?.date===dayKey()?(game.daily.xp||0):0,goal:game.dailyGoal||80,kiteTickets:game.kiteTickets||0};
 }
@@ -172,10 +172,22 @@ function LoginScreen({onReady}){
  return <div className="auth-shell"><div className="auth-card"><Brand/><div className="auth-coach"><img src={COACH_IMAGES.welcome} alt="Farangis"/></div><small>WELKOM TERUG</small><h1>Salaam 👋</h1><p>Log in om je eigen woorden, VP en voortgang te laden.</p><form onSubmit={login}><label>Naam of e-mailadres<input type="text" autoComplete="username" value={email} onChange={e=>setEmail(e.target.value)} required/></label><label>Wachtwoord<input type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required/></label>{error&&<div className="auth-error">{error}</div>}<button className="auth-primary" disabled={busy}>{busy?'Even laden…':'Inloggen'}</button></form></div></div>
 }
 async function loadCloudState(session){
- const response=await fetch('/api/profile',{headers:{Authorization:`Bearer ${session.access_token}`},cache:'no-store'});
- const data=await response.json().catch(()=>({}));
- if(!response.ok)throw new Error(data?.error||'Profiel kon niet worden geladen.');
- return data;
+ const headers={Authorization:`Bearer ${session.access_token}`};
+ const [profileResponse,stateResponse]=await Promise.all([
+  fetch('/api/profile',{headers,cache:'no-store'}),
+  fetch(`/api/game-state?ts=${Date.now()}`,{headers,cache:'no-store'})
+ ]);
+ const profileData=await profileResponse.json().catch(()=>({}));
+ if(!profileResponse.ok)throw new Error(profileData?.error||'Profiel kon niet worden geladen.');
+ const stateData=await stateResponse.json().catch(()=>({}));
+ if(!stateResponse.ok)console.error('Cloudvoortgang laden mislukt',stateData?.error||stateResponse.statusText);
+ const cloud=stateResponse.ok?stateData?.state:null;
+ return{
+  ...profileData,
+  progress:cloud?.progress&&Object.keys(cloud.progress).length?cloud.progress:profileData.progress,
+  game:cloud?.game&&Object.keys(cloud.game).length?cloud.game:profileData.game,
+  hasFullCloudState:!!cloud
+ };
 }
 function AdminPanel({session,profile}){
  const[users,setUsers]=useState([]),[name,setName]=useState(''),[password,setPassword]=useState(''),[mode,setMode]=useState('adult'),[busy,setBusy]=useState(false),[msg,setMsg]=useState('');
@@ -305,12 +317,17 @@ function App(){
  const[session,setSession]=useState(null),[authReady,setAuthReady]=useState(false),[profile,setProfile]=useState(null),[cloudProgress,setCloudProgress]=useState({}),[cloudGame,setCloudGame]=useState({});
  const[tab,setTab]=useState('today'),[mode,setMode]=useState('family'),[selectedLesson,setSelectedLesson]=useState(null);
  const[contentStatus,setContentStatus]=useState(()=>readJsonStorage(CONTENT_STATUS_KEY,{state:cachedContent?'cached':'bundled',lastSync:cachedContent?.syncedAt||null,vocabularyCount:vocab.length,sentenceCount:sentences.length,source:cachedContent?'OneDrive cache':'Ingebouwde reservekopie'}));
- const syncTimer=useRef(null),gameTimer=useRef(null);
+ const cloudSyncTimer=useRef(null),latestCloudState=useRef({progress:null,game:null}),cloudStateLoaded=useRef(false);
  useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setAuthReady(true)});const{data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);setAuthReady(true)});return()=>subscription.unsubscribe()},[]);
  useEffect(()=>{
   if(!session?.user?.id){setProfile(null);return}
   let cancelled=false;
-  loadCloudState(session).then(s=>{if(cancelled)return;setProfile(s.profile);setCloudProgress(s.progress||{});setCloudGame(s.game||{});setMode(s.profile?.mode==='kids'?'kids':'family')}).catch(error=>{
+  cloudStateLoaded.current=false;
+  loadCloudState(session).then(s=>{if(cancelled)return;setProfile(s.profile);setCloudProgress(s.progress||{});setCloudGame(s.game||{});latestCloudState.current={progress:s.progress||{},game:s.game||{}};cloudStateLoaded.current=true;setMode(s.profile?.mode==='kids'?'kids':'family');
+   // Migratie: als er nog geen volledige cloud-state bestaat, zet de lokale
+   // voortgang van dit apparaat direct klaar om naar de cloud te schrijven.
+   if(!s.hasFullCloudState){latestCloudState.current={progress:{...s.progress,...loadProgress(session.user.id)},game:{...s.game,...loadGame(session.user.id)}};clearTimeout(cloudSyncTimer.current);cloudSyncTimer.current=setTimeout(()=>saveFullCloudState(latestCloudState.current),250)}
+  }).catch(error=>{
    console.error('Profiel laden mislukt',error);
    if(cancelled)return;
    const fallbackRole=session.user.app_metadata?.role==='admin'?'admin':'user';
@@ -318,8 +335,18 @@ function App(){
   });
   return()=>{cancelled=true};
  },[session?.user?.id]);
- const queueProgress=p=>{if(!session?.user?.id)return;clearTimeout(syncTimer.current);syncTimer.current=setTimeout(async()=>{const known=new Set((p.known||[]).map(String));await supabase.from('user_progress').upsert({user_id:session.user.id,streak:p.streak||0,last_active_date:p.lastOpen||dayKey(),updated_at:new Date().toISOString()});if(known.size){await supabase.from('word_progress').upsert([...known].map(id=>({user_id:session.user.id,word_id:Number(id),status:'mastered',updated_at:new Date().toISOString()})),{onConflict:'user_id,word_id'})}},450)};
- const queueGame=g=>{if(!session?.user?.id)return;clearTimeout(gameTimer.current);gameTimer.current=setTimeout(()=>supabase.from('user_progress').upsert({user_id:session.user.id,xp:g.xp||0,level:Math.min(50,Math.max(1,(g.completedLevels||[]).length+1)),updated_at:new Date().toISOString()}),450)};
+ const saveFullCloudState=async state=>{
+  if(!session?.user?.id||!cloudStateLoaded.current)return;
+  const payload={progress:state.progress||loadProgress(session.user.id),game:state.game||loadGame(session.user.id)};
+  try{
+   const response=await fetch('/api/game-state',{method:'PUT',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.access_token}`},body:JSON.stringify(payload)});
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(data?.error||'Cloud-sync mislukt.');
+  }catch(error){console.error('Voortgang opslaan in cloud mislukt',error)}
+ };
+ const scheduleCloudSave=()=>{if(!session?.user?.id||!cloudStateLoaded.current)return;clearTimeout(cloudSyncTimer.current);cloudSyncTimer.current=setTimeout(()=>saveFullCloudState(latestCloudState.current),500)};
+ const queueProgress=p=>{if(!session?.user?.id)return;latestCloudState.current={...latestCloudState.current,progress:p};scheduleCloudSave()};
+ const queueGame=g=>{if(!session?.user?.id)return;latestCloudState.current={...latestCloudState.current,game:g};scheduleCloudSave()};
  const app=useAppState(session?.user?.id,cloudProgress,queueProgress),game=useGameState(session?.user?.id,cloudGame,queueGame);
  const setModePersist=async m=>{setMode(m);if(session?.user?.id){await supabase.from('profiles').update({mode:m==='kids'?'kids':'adult',updated_at:new Date().toISOString()}).eq('id',session.user.id);setProfile(p=>p?{...p,mode:m==='kids'?'kids':'adult'}:p)}};
  const refreshContent=async()=>{setContentStatus(s=>({...s,state:'syncing',error:null}));try{const{changed,data}=await syncOneDriveContent();setContentStatus({state:'ready',lastSync:data.syncedAt,version:data.version,vocabularyCount:data.vocabulary.length,sentenceCount:data.sentences.length,source:'OneDrive Excel'});if(changed)setTimeout(()=>location.reload(),450)}catch(e){setContentStatus(s=>({...s,state:'error',error:e.message}))}};
