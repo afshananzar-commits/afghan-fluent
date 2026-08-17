@@ -64,27 +64,33 @@ function normalizeMissionConfig(raw){
  return MISSION_TYPES;
 }
 async function fetchMissionConfig(){
- // v47 ondersteunt zowel de nieuwe key-schema als de eerder gedeelde id-schema.
- try{
-  const{data,error}=await supabase.from('app_settings').select('value').eq('key','enabled_games').maybeSingle();
-  if(error)throw error;
-  if(data)return cacheMissionConfig(normalizeMissionConfig(data.value));
- }catch(error){console.warn('Nieuwe app_settings-schema niet beschikbaar; probeer compatibiliteitsmodus.',error)}
- try{
-  const{data,error}=await supabase.from('app_settings').select('value').eq('id','game_settings').maybeSingle();
-  if(error)throw error;
-  if(data)return cacheMissionConfig(normalizeMissionConfig(data.value));
- }catch(error){console.warn('Compatibele app_settings-schema niet beschikbaar; lokale veilige standaard wordt gebruikt.',error)}
- return readMissionConfig();
+ // Centrale configuratie: exact het app_settings-schema dat in Supabase is aangemaakt.
+ // id = 'game_settings', value = {pictures,listening,sentence,quick}
+ const{data,error}=await supabase.from('app_settings').select('value,updated_at').eq('id','game_settings').maybeSingle();
+ if(error)throw error;
+ if(!data){
+  const defaults={pictures:true,listening:true,sentence:true,quick:true};
+  const inserted=await supabase.from('app_settings').insert({id:'game_settings',value:defaults,updated_at:new Date().toISOString()}).select('value').single();
+  if(inserted.error)throw inserted.error;
+  return cacheMissionConfig(normalizeMissionConfig(inserted.data?.value));
+ }
+ return cacheMissionConfig(normalizeMissionConfig(data.value));
 }
 async function persistMissionConfig(list){
- const missions=cacheMissionConfig(list),updated_at=new Date().toISOString();
- const primary=await supabase.from('app_settings').upsert({key:'enabled_games',value:{missions},updated_at},{onConflict:'key'});
- if(!primary.error)return missions;
- const legacyValue={pictures:missions.includes('picture'),listening:missions.includes('listen'),sentence:missions.includes('sentence'),quick:missions.includes('speed')};
- const legacy=await supabase.from('app_settings').upsert({id:'game_settings',value:legacyValue,updated_at},{onConflict:'id'});
- if(legacy.error)throw primary.error;
- return missions;
+ const missions=MISSION_TYPES.filter(m=>list.includes(m));
+ const value={pictures:missions.includes('picture'),listening:missions.includes('listen'),sentence:missions.includes('sentence'),quick:missions.includes('speed')};
+ const updated_at=new Date().toISOString();
+ // Gebruik bewust update i.p.v. een optimistische lokale upsert. Zo weten we zeker
+ // dat de centrale rij echt is gewijzigd voordat andere telefoons hem overnemen.
+ let result=await supabase.from('app_settings').update({value,updated_at}).eq('id','game_settings').select('value').maybeSingle();
+ if(result.error)throw result.error;
+ if(!result.data){
+  result=await supabase.from('app_settings').insert({id:'game_settings',value,updated_at}).select('value').single();
+  if(result.error)throw result.error;
+ }
+ const saved=normalizeMissionConfig(result.data.value);
+ cacheMissionConfig(saved);
+ return saved;
 }
 const CURRICULUM_ORDER=['greetings','numbers','family','people','home','food','daily','questions','verbs','time','school','clothes','body','feelings','shopping','travel','work','nature','animals','colors','other'];
 const LEVEL_TITLES=['Eerste woorden','Hallo & kennismaken','Tellen & kiezen','Mijn familie','Mensen om je heen','Thuis','Eten & drinken','Elke dag','Vragen stellen','Doen & bewegen','Tijd & plannen','School & leren','Kleding','Lichaam & gezondheid','Gevoelens','Winkelen','Onderweg','Werk & afspraken','Buiten & natuur','Dieren','Kleuren & beschrijven','Meer dagelijkse woorden','Korte antwoorden','Korte zinnen','Luisteren in context','Zinnen combineren','Vraag en antwoord','Dagelijkse gesprekken','Thuis praten','Samen eten','Op pad','Plannen maken','Vertellen wat je doet','Vertellen wat je wilt','Mensen beschrijven','Plaatsen beschrijven','Meer luisteren','Sneller herkennen','Langere zinnen','Gesprekken volgen','Zonder vertaling denken','Tempo maken','Combineren & reageren','Praktische gesprekken','Vrijer spreken','Natuurlijk luisteren','Snel reageren','Alles door elkaar','Eindmissie','Afghan Fluent'];
@@ -405,7 +411,7 @@ function App(){
 
   // Fallback voor installaties waar Realtime voor app_settings niet aanstaat.
   // Hierdoor ziet een reeds geopende telefoon de adminwijziging alsnog snel.
-  const poll=setInterval(()=>{if(document.visibilityState==='visible')refreshMissionConfig({quiet:true})},15000);
+  const poll=setInterval(()=>{if(document.visibilityState==='visible')refreshMissionConfig({quiet:true})},5000);
 
   return()=>{
    cancelled=true;
@@ -445,11 +451,22 @@ function App(){
  const queueGame=g=>{if(!session?.user?.id)return;latestCloudState.current={...latestCloudState.current,game:g};scheduleCloudSave()};
  const app=useAppState(session?.user?.id,cloudProgress,queueProgress),game=useGameState(session?.user?.id,cloudGame,queueGame);
  const changeMissionAvailability=async(type,enabled)=>{
+  const previous=[...enabledMissions];
   const next=MISSION_TYPES.filter(m=>m!==type?enabledMissions.includes(m):enabled);
-  setEnabledMissions(cacheMissionConfig(next));setMissionConfigError('');
-  // Alleen na een bewuste adminwijziging herberekenen. Niet tijdens app-start.
-  game.updateGame(g=>{const completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0,changed=false;for(const l of CURRICULUM){if(completed.has(l.number))continue;const wordsDone=!!g.levelWordsCompleted?.[l.number],results=g.levelResults?.[l.number]||{};if(wordsDone&&next.every(m=>results[m]?.passed===true)){completed.add(l.number);tickets+=1;changed=true}}return changed?{...g,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}:g});
-  try{const saved=await persistMissionConfig(next);setEnabledMissions([...saved])}catch(error){console.error('Spelinstelling opslaan mislukt',error);setMissionConfigError('Cloudinstelling kon niet worden opgeslagen. De app blijft lokaal werken.')}
+  setMissionConfigError('Spelinstelling opslaan…');
+  try{
+   const saved=await persistMissionConfig(next);
+   setEnabledMissions([...saved]);
+   setMissionConfigError('Opgeslagen voor alle apparaten');
+   setTimeout(()=>setMissionConfigError(''),1800);
+   // Alleen na een bevestigde centrale adminwijziging herberekenen.
+   game.updateGame(g=>{const completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0,changed=false;for(const l of CURRICULUM){if(completed.has(l.number))continue;const wordsDone=!!g.levelWordsCompleted?.[l.number],results=g.levelResults?.[l.number]||{};if(wordsDone&&saved.every(m=>results[m]?.passed===true)){completed.add(l.number);tickets+=1;changed=true}}return changed?{...g,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}:g});
+  }catch(error){
+   console.error('Spelinstelling opslaan mislukt',error);
+   cacheMissionConfig(previous);
+   setEnabledMissions(previous);
+   setMissionConfigError(`Niet opgeslagen in Supabase: ${error?.message||'onbekende fout'}`);
+  }
  };
  const setModePersist=async m=>{setMode(m);if(session?.user?.id){await supabase.from('profiles').update({mode:m==='kids'?'kids':'adult',updated_at:new Date().toISOString()}).eq('id',session.user.id);setProfile(p=>p?{...p,mode:m==='kids'?'kids':'adult'}:p)}};
  const refreshContent=async()=>{setContentStatus(s=>({...s,state:'syncing',error:null}));try{const{changed,data}=await syncOneDriveContent();setContentStatus({state:'ready',lastSync:data.syncedAt,version:data.version,vocabularyCount:data.vocabulary.length,sentenceCount:data.sentences.length,source:'OneDrive Excel'});if(changed)setTimeout(()=>location.reload(),450)}catch(e){setContentStatus(s=>({...s,state:'error',error:e.message}))}};
