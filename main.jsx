@@ -46,6 +46,48 @@ function Coach({type='tip',text,compact=false,hero=false,placement='edge'}){cons
 const CATEGORY={home:{label:'Thuis',emoji:'🏡'},food:{label:'Eten & drinken',emoji:'🥣'},travel:{label:'Onderweg',emoji:'🚌'},daily:{label:'Dagelijks',emoji:'☀️'},verbs:{label:'Werkwoorden',emoji:'🏃'},family:{label:'Familie',emoji:'👨‍👩‍👧‍👦'},people:{label:'Mensen',emoji:'🧑'},body:{label:'Lichaam',emoji:'🫶'},clothes:{label:'Kleding',emoji:'🧥'},nature:{label:'Natuur',emoji:'🌿'},animals:{label:'Dieren',emoji:'🐾'},school:{label:'School',emoji:'🎒'},work:{label:'Werk',emoji:'💼'},shopping:{label:'Winkelen',emoji:'🛍️'},time:{label:'Tijd',emoji:'🕰️'},feelings:{label:'Gevoelens',emoji:'💛'},colors:{label:'Kleuren',emoji:'🎨'},numbers:{label:'Getallen',emoji:'🔢'},greetings:{label:'Kennismaking',emoji:'👋'},questions:{label:'Vragen',emoji:'❓'},other:{label:'Overig',emoji:'✨'}};
 const iconFor=c=>(CATEGORY[c]||CATEGORY.other).emoji, labelFor=c=>(CATEGORY[c]||{label:c||'Overig'}).label;
 const MISSION_TYPES=['picture','listen','sentence','speed'];
+const MISSION_LABELS={picture:'Plaatjes',listen:'Luisteren',sentence:'Bouw de zin',speed:'Snelle ronde'};
+const MISSION_CONFIG_KEY='afghanFluentEnabledGamesV1';
+function readMissionConfig(){const cached=readJsonStorage(MISSION_CONFIG_KEY,null);const list=Array.isArray(cached)?cached:MISSION_TYPES;return MISSION_TYPES.filter(m=>list.includes(m))}
+// Runtime config is the single source of truth while the app is open.
+// localStorage is only an offline/startup cache; Supabase remains authoritative.
+let runtimeMissionConfig=readMissionConfig();
+function cacheMissionConfig(list){const clean=MISSION_TYPES.filter(m=>list.includes(m));runtimeMissionConfig=clean;try{localStorage.setItem(MISSION_CONFIG_KEY,JSON.stringify(clean))}catch{}return clean}
+function activeMissionTypes(){return runtimeMissionConfig}
+function normalizeMissionConfig(raw){
+ if(Array.isArray(raw))return MISSION_TYPES.filter(m=>raw.includes(m));
+ if(raw&&typeof raw==='object'){
+  if(Array.isArray(raw.missions))return MISSION_TYPES.filter(m=>raw.missions.includes(m));
+  const legacy={picture:raw.picture??raw.pictures,listen:raw.listen??raw.listening,sentence:raw.sentence,speed:raw.speed??raw.quick};
+  if(Object.values(legacy).some(v=>typeof v==='boolean'))return MISSION_TYPES.filter(m=>legacy[m]!==false);
+ }
+ return MISSION_TYPES;
+}
+async function fetchMissionConfig(){
+ // Centrale configuratie: exact het app_settings-schema dat in Supabase is aangemaakt.
+ // id = 'game_settings', value = {pictures,listening,sentence,quick}
+ const{data,error}=await supabase.from('app_settings').select('value').eq('id','game_settings').maybeSingle();
+ if(error)throw error;
+ if(!data){
+  const defaults={pictures:true,listening:true,sentence:true,quick:true};
+  const inserted=await supabase.from('app_settings').upsert({id:'game_settings',value:defaults},{onConflict:'id'}).select('value').single();
+  if(inserted.error)throw inserted.error;
+  return cacheMissionConfig(normalizeMissionConfig(inserted.data?.value));
+ }
+ return cacheMissionConfig(normalizeMissionConfig(data.value));
+}
+async function persistMissionConfig(list){
+ const missions=MISSION_TYPES.filter(m=>list.includes(m));
+ const value={pictures:missions.includes('picture'),listening:missions.includes('listen'),sentence:missions.includes('sentence'),quick:missions.includes('speed')};
+ // Eén eenvoudige upsert op de rij die door de gedeelde SQL wordt aangemaakt.
+ // We schrijven bewust alleen id + value, zodat deze code ook werkt als een oudere
+ // app_settings-tabel geen updated_at-kolom heeft.
+ const result=await supabase.from('app_settings').upsert({id:'game_settings',value},{onConflict:'id'}).select('value').single();
+ if(result.error)throw result.error;
+ const saved=normalizeMissionConfig(result.data?.value||value);
+ cacheMissionConfig(saved);
+ return saved;
+}
 const CURRICULUM_ORDER=['greetings','numbers','family','people','home','food','daily','questions','verbs','time','school','clothes','body','feelings','shopping','travel','work','nature','animals','colors','other'];
 const LEVEL_TITLES=['Eerste woorden','Hallo & kennismaken','Tellen & kiezen','Mijn familie','Mensen om je heen','Thuis','Eten & drinken','Elke dag','Vragen stellen','Doen & bewegen','Tijd & plannen','School & leren','Kleding','Lichaam & gezondheid','Gevoelens','Winkelen','Onderweg','Werk & afspraken','Buiten & natuur','Dieren','Kleuren & beschrijven','Meer dagelijkse woorden','Korte antwoorden','Korte zinnen','Luisteren in context','Zinnen combineren','Vraag en antwoord','Dagelijkse gesprekken','Thuis praten','Samen eten','Op pad','Plannen maken','Vertellen wat je doet','Vertellen wat je wilt','Mensen beschrijven','Plaatsen beschrijven','Meer luisteren','Sneller herkennen','Langere zinnen','Gesprekken volgen','Zonder vertaling denken','Tempo maken','Combineren & reageren','Praktische gesprekken','Vrijer spreken','Natuurlijk luisteren','Snel reageren','Alles door elkaar','Eindmissie','Afghan Fluent'];
 function buildCurriculum(){
@@ -106,7 +148,7 @@ function loadProgress(userId){return readJsonStorage(userId?profileStorageKey(us
 function saveProgress(userId,p){localStorage.setItem(userId?profileStorageKey(userId):'afghanFluentProgress',JSON.stringify(p))}
 function useAppState(userId,cloudProgress,onCloudChange){
  const[progress,setProgress]=useState(()=>loadProgress(userId));
- useEffect(()=>{if(!userId)return;const local=loadProgress(userId);setProgress(cloudProgress&&Object.keys(cloudProgress).length?{...local,...cloudProgress}:local)},[userId]);
+ useEffect(()=>{if(!userId)return;const local=loadProgress(userId);setProgress(cloudProgress&&Object.keys(cloudProgress).length?{...local,...cloudProgress}:local)},[userId,cloudProgress]);
  const update=fn=>setProgress(p=>{const n=typeof fn==='function'?fn(p):fn;saveProgress(userId,n);onCloudChange?.(n);return n});
  return{progress,update,knownIds:new Set(progress.known||[]),favorites:new Set(progress.favorites||[])};
 }
@@ -114,26 +156,23 @@ function loadGame(userId){return readJsonStorage(userId?gameStorageKey(userId):G
 function saveGame(userId,g){localStorage.setItem(userId?gameStorageKey(userId):GAME_KEY,JSON.stringify(g))}
 function useGameState(userId,cloudGame,onCloudChange){
  const[game,setGame]=useState(()=>loadGame(userId));
- useEffect(()=>{if(!userId)return;const local=loadGame(userId);setGame(cloudGame&&Object.keys(cloudGame).length?{...local,...cloudGame}:local)},[userId]);
+ useEffect(()=>{if(!userId)return;const local=loadGame(userId);setGame(cloudGame&&Object.keys(cloudGame).length?{...local,...cloudGame}:local)},[userId,cloudGame]);
  const updateGame=fn=>setGame(g=>{const n=typeof fn==='function'?fn(g):fn;saveGame(userId,n);onCloudChange?.(n);return n});
  const xp=game.xp||0,completed=new Set(game.completedLevels||[]),level=Math.min(50,Math.max(1,completed.size+1));return{game,updateGame,xp,level,levelXp:game.levelPoints?.[level]||0,daily:game.daily?.date===dayKey()?(game.daily.xp||0):0,goal:game.dailyGoal||80,kiteTickets:game.kiteTickets||0};
 }
 function rewardFor(base,{hint=false,wrong=0,revealed=false}={}){let n=base;if(hint)n*=.75;if(wrong)n*=Math.max(.35,1-Math.min(3,wrong)*.15);if(revealed)n*=.5;return Math.max(1,Math.round(n))}
 function awardXP(gs,n,reason,level=null){gs.updateGame(g=>{const d=g.daily?.date===dayKey()?g.daily:{date:dayKey(),xp:0},lp={...(g.levelPoints||{})},after=(g.xp||0)+n;if(level)lp[level]=(lp[level]||0)+n;return{...g,xp:after,levelPoints:lp,daily:{date:dayKey(),xp:(d.xp||0)+n},lastActivity:{date:new Date().toISOString(),reason,amount:n}}})}
-function completeMission(gs,level,type){if(!level||!MISSION_TYPES.includes(type))return;gs.updateGame(g=>{const missions={...(g.levelMissions||{})},done=new Set(missions[level]||[]);done.add(type);missions[level]=[...done];const completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0;if(done.size===MISSION_TYPES.length&&!completed.has(level)){completed.add(level);tickets+=1}return{...g,levelMissions:missions,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}})}
-function saveMissionResult(gs,level,type,correct,total,minCorrect=0){const accuracy=total?Math.round(correct/total*100):0,passed=total>0&&correct>=minCorrect&&accuracy>80;gs.updateGame(g=>{const levelResult={...(g.levelResults?.[level]||{}),[type]:{correct,total,accuracy,passed,finishedAt:new Date().toISOString()}},levelResults={...(g.levelResults||{}),[level]:levelResult},missions={...(g.levelMissions||{})},done=new Set(missions[level]||[]);if(passed)done.add(type);else done.delete(type);missions[level]=[...done];const wordsDone=!!g.levelWordsCompleted?.[level],allPassed=MISSION_TYPES.every(m=>levelResult[m]?.passed===true),completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0;if(wordsDone&&allPassed&&!completed.has(level)){completed.add(level);tickets+=1}return{...g,levelResults,levelMissions:missions,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}});return{accuracy,passed}}
-function markLevelWordSeen(gs,level,wordId,totalWordIds=[]){if(!level||!wordId)return;gs.updateGame(g=>{const seenMap={...(g.levelWordSeen||{})},seen=new Set(seenMap[level]||[]);seen.add(Number(wordId));seenMap[level]=[...seen];const required=[...new Set((totalWordIds||[]).map(Number).filter(Number.isFinite))],wordsDone=required.length>0&&required.every(id=>seen.has(id)),completedMap={...(g.levelWordsCompleted||{})};if(wordsDone)completedMap[level]=true;const results=g.levelResults?.[level]||{},allPassed=MISSION_TYPES.every(m=>results[m]?.passed===true),completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0;if(wordsDone&&allPassed&&!completed.has(level)){completed.add(level);tickets+=1}return{...g,levelWordSeen:seenMap,levelWordsCompleted:completedMap,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}})}
+function completeMission(gs,level,type){if(!level||!MISSION_TYPES.includes(type))return;gs.updateGame(g=>{const missions={...(g.levelMissions||{})},done=new Set(missions[level]||[]);done.add(type);missions[level]=[...done];const required=activeMissionTypes(),completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0;if(required.every(m=>done.has(m))&&!completed.has(level)){completed.add(level);tickets+=1}return{...g,levelMissions:missions,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}})}
+function saveMissionResult(gs,level,type,correct,total,minCorrect=0){const accuracy=total?Math.round(correct/total*100):0,passed=total>0&&correct>=minCorrect&&accuracy>80;gs.updateGame(g=>{const levelResult={...(g.levelResults?.[level]||{}),[type]:{correct,total,accuracy,passed,finishedAt:new Date().toISOString()}},levelResults={...(g.levelResults||{}),[level]:levelResult},missions={...(g.levelMissions||{})},done=new Set(missions[level]||[]);if(passed)done.add(type);else done.delete(type);missions[level]=[...done];const wordsDone=!!g.levelWordsCompleted?.[level],allPassed=activeMissionTypes().every(m=>levelResult[m]?.passed===true),completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0;if(wordsDone&&allPassed&&!completed.has(level)){completed.add(level);tickets+=1}return{...g,levelResults,levelMissions:missions,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}});return{accuracy,passed}}
+function markLevelWordSeen(gs,level,wordId,totalWordIds=[]){if(!level||!wordId)return;gs.updateGame(g=>{const seenMap={...(g.levelWordSeen||{})},seen=new Set(seenMap[level]||[]);seen.add(Number(wordId));seenMap[level]=[...seen];const required=[...new Set((totalWordIds||[]).map(Number).filter(Number.isFinite))],wordsDone=required.length>0&&required.every(id=>seen.has(id)),completedMap={...(g.levelWordsCompleted||{})};if(wordsDone)completedMap[level]=true;const results=g.levelResults?.[level]||{},allPassed=activeMissionTypes().every(m=>results[m]?.passed===true),completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0;if(wordsDone&&allPassed&&!completed.has(level)){completed.add(level);tickets+=1}return{...g,levelWordSeen:seenMap,levelWordsCompleted:completedMap,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}})}
 function levelWordsDone(game,level){return !!game.game.levelWordsCompleted?.[level]}
 function remember(gs,k,v){gs.updateGame(g=>({...g,positions:{...(g.positions||{}),[k]:v}}))}
 function practice(gs,k,ok){gs.updateGame(g=>{const p={...(g.practice||{})},o=p[k]||{right:0,wrong:0,priority:0,streak:0};const streak=ok?(o.streak||0)+1:0,days=ok?(streak>=4?14:streak>=3?7:streak>=2?3:1):0;p[k]={right:o.right+(ok?1:0),wrong:o.wrong+(ok?0:1),priority:Math.max(0,(o.priority||0)+(ok?-1:3)),streak,due:new Date(Date.now()+days*86400000).toISOString(),last:new Date().toISOString(),mastered:streak>=4};return{...g,practice:p}})}
 function reviewItems(game,limit=20){const now=Date.now();return Object.entries(game.game.practice||{}).filter(([,v])=>!v.due||new Date(v.due).getTime()<=now||(v.priority||0)>0).sort((a,b)=>(b[1].priority||0)-(a[1].priority||0)).slice(0,limit)}
 function masteryCount(game){return Object.values(game.game.practice||{}).filter(v=>v.mastered).length}
 async function speak(text,rate=.86,itemType=null,itemId=null){
- // Hybride uitspraak:
- // 1) goedgekeurde opname van Farangis
- // 2) fa-AF / Dari-stem
- // 3) fa-IR / Perzische stem
- // 4) platform zelf fa-AF laten oplossen zodat de knop nooit stil blijft
+ // Hybride uitspraak: 1) opname van Farangis, 2) Dari/Afghanistan (fa-AF), 3) Perzisch/Iran (fa-IR).
+ // Bewust geen Nederlandse/default stem als fallback.
  if(itemType&&itemId){
   try{
    const{data}=await supabase.from('audio_recordings').select('storage_path').eq('item_type',itemType).eq('item_id',Number(itemId)).eq('approved',true).maybeSingle();
@@ -141,36 +180,29 @@ async function speak(text,rate=.86,itemType=null,itemId=null){
     const{data:urlData}=supabase.storage.from('farangis-audio').getPublicUrl(data.storage_path);
     if(urlData?.publicUrl){
      const audio=new Audio(urlData.publicUrl);
-     try{await audio.play();return}catch(e){console.warn('Farangis-opname kon niet afspelen; TTS fallback wordt gebruikt.',e)}
+     await audio.play();
+     return;
     }
    }
   }catch(e){console.warn('Farangis-audio niet beschikbaar; TTS fallback wordt gebruikt.',e)}
  }
  if(!text||!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window))return;
  const synth=window.speechSynthesis;
- const lang=v=>(v?.lang||'').toLowerCase();
- const name=v=>(v?.name||'').toLowerCase();
- let voices=synth.getVoices?.()||[];
+ const getVoices=()=>synth.getVoices?.()||[];
+ let voices=getVoices();
  if(!voices.length){
-  await new Promise(resolve=>{
-   let done=false;
-   const finish=()=>{if(done)return;done=true;resolve()};
-   const timer=setTimeout(finish,250);
-   synth.addEventListener?.('voiceschanged',()=>{clearTimeout(timer);finish()},{once:true});
-  });
-  voices=synth.getVoices?.()||[];
+  await new Promise(resolve=>{let done=false;const finish=()=>{if(done)return;done=true;resolve()};const timer=setTimeout(finish,350);synth.addEventListener?.('voiceschanged',()=>{clearTimeout(timer);finish()},{once:true})});
+  voices=getVoices();
  }
- const faAf=voices.find(v=>lang(v)==='fa-af')||voices.find(v=>lang(v).startsWith('fa-af'))||voices.find(v=>name(v).includes('dari'));
- const faIr=voices.find(v=>lang(v)==='fa-ir')||voices.find(v=>lang(v).startsWith('fa-ir'))||voices.find(v=>lang(v).startsWith('fa'))||voices.find(v=>name(v).includes('persian'))||voices.find(v=>name(v).includes('farsi'));
- const voice=faAf||faIr||null;
+ const lang=v=>(v?.lang||'').toLowerCase();
+ const voice=voices.find(v=>lang(v)==='fa-af')||voices.find(v=>lang(v).startsWith('fa-af'))||voices.find(v=>lang(v)==='fa-ir')||voices.find(v=>lang(v).startsWith('fa-ir'));
+ if(!voice){console.warn('Geen fa-AF of fa-IR stem beschikbaar op dit apparaat.');return}
  synth.cancel();
  const u=new SpeechSynthesisUtterance(text);
- if(voice)u.voice=voice;
- u.lang=faAf?'fa-AF':faIr?'fa-IR':'fa-AF';
+ u.voice=voice;
+ u.lang=lang(voice).startsWith('fa-af')?'fa-AF':'fa-IR';
  u.rate=rate;
  u.pitch=1;
- // Belangrijk op iPhone: ook zonder vooraf geladen fa-stem laten we iOS
- // zelf een fa-AF stem kiezen in plaats van stil te stoppen.
  synth.speak(u);
 }
 function shuffle(a){a=[...a];for(let i=a.length-1;i;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -182,12 +214,24 @@ function LoginScreen({onReady}){
  return <div className="auth-shell"><div className="auth-card"><Brand/><div className="auth-coach"><img src={COACH_IMAGES.welcome} alt="Farangis"/></div><small>WELKOM TERUG</small><h1>Salaam 👋</h1><p>Log in om je eigen woorden, VP en voortgang te laden.</p><form onSubmit={login}><label>Naam of e-mailadres<input type="text" autoComplete="username" value={email} onChange={e=>setEmail(e.target.value)} required/></label><label>Wachtwoord<input type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required/></label>{error&&<div className="auth-error">{error}</div>}<button className="auth-primary" disabled={busy}>{busy?'Even laden…':'Inloggen'}</button></form></div></div>
 }
 async function loadCloudState(session){
- const response=await fetch('/api/profile',{headers:{Authorization:`Bearer ${session.access_token}`},cache:'no-store'});
- const data=await response.json().catch(()=>({}));
- if(!response.ok)throw new Error(data?.error||'Profiel kon niet worden geladen.');
- return data;
+ const headers={Authorization:`Bearer ${session.access_token}`};
+ const [profileResponse,stateResponse]=await Promise.all([
+  fetch('/api/profile',{headers,cache:'no-store'}),
+  fetch(`/api/game-state?ts=${Date.now()}`,{headers,cache:'no-store'})
+ ]);
+ const profileData=await profileResponse.json().catch(()=>({}));
+ if(!profileResponse.ok)throw new Error(profileData?.error||'Profiel kon niet worden geladen.');
+ const stateData=await stateResponse.json().catch(()=>({}));
+ if(!stateResponse.ok)console.error('Cloudvoortgang laden mislukt',stateData?.error||stateResponse.statusText);
+ const cloud=stateResponse.ok?stateData?.state:null;
+ return{
+  ...profileData,
+  progress:cloud?.progress&&Object.keys(cloud.progress).length?cloud.progress:profileData.progress,
+  game:cloud?.game&&Object.keys(cloud.game).length?cloud.game:profileData.game,
+  hasFullCloudState:!!cloud
+ };
 }
-function AdminPanel({session,profile}){
+function AdminPanel({session,profile,enabledMissions=MISSION_TYPES,onMissionToggle,missionConfigStatus=''}){
  const[users,setUsers]=useState([]),[name,setName]=useState(''),[password,setPassword]=useState(''),[mode,setMode]=useState('adult'),[busy,setBusy]=useState(false),[msg,setMsg]=useState('');
  const[recordType,setRecordType]=useState('word'),[recordIndex,setRecordIndex]=useState(0),[recording,setRecording]=useState(false),[audioUrl,setAudioUrl]=useState(null);
  const[recordedMap,setRecordedMap]=useState({}),[currentAudio,setCurrentAudio]=useState(null),[searchAudio,setSearchAudio]=useState('');
@@ -294,6 +338,12 @@ function AdminPanel({session,profile}){
    <form className="admin-create" onSubmit={createUser}><h4>Nieuw account</h4><input placeholder="Naam, bijvoorbeeld Aeden" value={name} onChange={e=>setName(e.target.value)} required/><input placeholder="Tijdelijk wachtwoord" type="password" value={password} onChange={e=>setPassword(e.target.value)} minLength="6" required/><select value={mode} onChange={e=>setMode(e.target.value)}><option value="adult">Volwassen</option><option value="kids">Kids</option></select><button disabled={busy}><UserRound/> Account aanmaken</button></form>
   </section>
 
+  <section className="admin-card admin-games-card">
+   {missionConfigStatus&&<div className={`admin-game-sync-status ${missionConfigStatus.startsWith('Niet opgeslagen')?'error':''}`}>{missionConfigStatus}</div>}
+   <div className="admin-games-head"><div><small>SPELMODULES</small><h3>Spellen beschikbaar</h3><p>Zet modules tijdelijk uit als ze nog niet klaar zijn. Uitgeschakelde spellen verdwijnen voor leerlingen en tellen niet mee voor levelvoortgang of het Vlieger Avontuur.</p></div><span>{enabledMissions.length}/{MISSION_TYPES.length} actief</span></div>
+   <div className="admin-game-toggles">{MISSION_TYPES.map(type=>{const enabled=enabledMissions.includes(type);const I=type==='picture'?Layers3:type==='listen'?Headphones:type==='sentence'?BookText:Zap;return <div className={`admin-game-toggle ${enabled?'enabled':'disabled'}`} key={type}><span><I/></span><div><b>{MISSION_LABELS[type]}</b><small>{enabled?'Beschikbaar voor leerlingen':'Tijdelijk verborgen · telt niet mee'}</small></div><button type="button" role="switch" aria-checked={enabled} className={`admin-switch ${enabled?'on':''}`} onClick={()=>onMissionToggle?.(type,!enabled)}><i/></button></div>})}</div>
+  </section>
+
   <section className="admin-card audio-admin">
    <div className="audio-admin-head"><div><small>STEM VAN FARANGIS</small><h3>Audio opnemen</h3><p>Neem op, luister terug en vervang later zonder oude opnames kwijt te raken.</p></div><div className="audio-progress-badge"><b>{recordedCount}/{items.length}</b><span>{progressPct}% opgenomen</span></div></div>
    <div className="audio-progress-track"><i style={{width:`${progressPct}%`}}/></div>
@@ -311,16 +361,72 @@ function AdminPanel({session,profile}){
   </section>
  </div>
 }
+
+function Quick({title,sub,icon,onClick}){return <button className="quick-card" onClick={onClick}><span className="quick-icon">{icon}</span><div><b>{title}</b><small>{sub}</small></div></button>}
+function Today({app,game,go,displayName='Leerling'}){const known=app.knownIds.size;return <div className="screen today-screen home-v14 home-v16"><section className="welcome home-welcome-v2"><div className="welcome-copy"><p className="kicker">GOEDE DAG</p><h1>Salaam, {displayName}! <span>👋</span></h1><p className="welcome-line">Vandaag is een mooie dag om te leren.</p></div><div className="streak-pill"><Flame/><b>{app.progress.streak||1}</b><span>dagen</span></div><div className="home-coach-stage" aria-hidden="true"><img className="home-coach-character" src={COACH_IMAGES.welcome} alt=""/></div></section><div className="continue-card" onClick={()=>go(game.game.lastTab&&game.game.lastTab!=='today'?game.game.lastTab:'path')}><div className="continue-copy"><small>GA VERDER WAAR JE WAS</small><h2>Verder leren</h2><div className="mini-progress"><i style={{width:`${Math.min(100,game.daily)}%`}}/></div></div><button aria-label="Verder leren"><ChevronRight/></button></div><section className="quick-grid home-actions"><Quick title="Spelen" sub="Oefen je huidige level" icon={<Trophy/>} onClick={()=>go('games')}/><Quick title="Woorden" sub="Flashcards" icon={<Layers3/>} onClick={()=>go('words')}/><Quick title="Zinnen" sub="Oefen zinnen" icon={<MessageCircle/>} onClick={()=>go('sentences')}/><Quick title="Uitspraak" sub="Luister & spreek" icon={<Mic/>} onClick={()=>go('speak')}/></section><div className="review-banner home-review" onClick={()=>go('review')}><div className="seal"><Brain/></div><div><b>Nog oefenen</b><span>Korte challenge met wat extra aandacht nodig heeft.</span></div><ChevronRight/></div><section className="home-progress"><div className="home-progress-title"><span>JOUW VOORTGANG</span><b>Vandaag</b></div><GameSummary game={game}/><div className="profile-stats"><StatCard icon={<Layers3/>} value={known} label="Woorden"/><StatCard icon={<img className="vp-kite-icon stat-kite" src="/images/game/kite.png" alt=""/>} value={game.xp} label="VP"/><StatCard icon={<Flame/>} value={app.progress.streak||1} label="Streak"/></div></section></div>}
+
 function App(){
  const[session,setSession]=useState(null),[authReady,setAuthReady]=useState(false),[profile,setProfile]=useState(null),[cloudProgress,setCloudProgress]=useState({}),[cloudGame,setCloudGame]=useState({});
- const[tab,setTab]=useState('today'),[mode,setMode]=useState('family'),[selectedLesson,setSelectedLesson]=useState(null);
+ const[tab,setTab]=useState('today'),[mode,setMode]=useState('family'),[selectedLesson,setSelectedLesson]=useState(null),[enabledMissions,setEnabledMissions]=useState(()=>readMissionConfig()),[missionConfigError,setMissionConfigError]=useState('');
  const[contentStatus,setContentStatus]=useState(()=>readJsonStorage(CONTENT_STATUS_KEY,{state:cachedContent?'cached':'bundled',lastSync:cachedContent?.syncedAt||null,vocabularyCount:vocab.length,sentenceCount:sentences.length,source:cachedContent?'OneDrive cache':'Ingebouwde reservekopie'}));
- const syncTimer=useRef(null),gameTimer=useRef(null);
+ const cloudSyncTimer=useRef(null),latestCloudState=useRef({progress:null,game:null}),cloudStateLoaded=useRef(false),missionSaveInFlight=useRef(false);
  useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setAuthReady(true)});const{data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);setAuthReady(true)});return()=>subscription.unsubscribe()},[]);
+ useEffect(()=>{
+  if(!session?.user?.id)return;
+  let cancelled=false;
+  let refreshBusy=false;
+  const refreshMissionConfig=async({quiet=false}={})=>{
+   if(refreshBusy||missionSaveInFlight.current)return;
+   refreshBusy=true;
+   try{
+    const list=await fetchMissionConfig();
+    if(!cancelled){setEnabledMissions([...list]);setMissionConfigError('')}
+   }catch(error){
+    console.warn('Spelinstellingen konden niet uit Supabase worden geladen; lokale reserve wordt gebruikt.',error);
+    if(!cancelled&&!quiet){const fallback=cacheMissionConfig(readMissionConfig());setEnabledMissions([...fallback]);setMissionConfigError('Cloudinstelling niet beschikbaar')}
+   }finally{refreshBusy=false}
+  };
+
+  // Meteen bij aanmelden/starten de centrale instelling ophalen.
+  refreshMissionConfig();
+
+  // Als de app vanaf de achtergrond terugkomt, altijd opnieuw synchroniseren.
+  const onVisibility=()=>{if(document.visibilityState==='visible')refreshMissionConfig({quiet:true})};
+  const onFocus=()=>refreshMissionConfig({quiet:true});
+  document.addEventListener('visibilitychange',onVisibility);
+  window.addEventListener('focus',onFocus);
+
+  // Realtime als app_settings in Supabase Realtime is gepubliceerd. We luisteren
+  // naar iedere wijziging op deze kleine configtabel, zodat zowel het key- als
+  // het oudere id-schema wordt ondersteund.
+  let channel=null;
+  try{
+   channel=supabase.channel(`afghan-fluent-app-settings-${session.user.id}`)
+    .on('postgres_changes',{event:'*',schema:'public',table:'app_settings'},()=>refreshMissionConfig({quiet:true}))
+    .subscribe(status=>{if(status==='CHANNEL_ERROR')console.warn('Realtime game-config niet beschikbaar; polling blijft actief.')});
+  }catch(error){console.warn('Realtime game-config kon niet starten; polling blijft actief.',error)}
+
+  // Fallback voor installaties waar Realtime voor app_settings niet aanstaat.
+  // Hierdoor ziet een reeds geopende telefoon de adminwijziging alsnog snel.
+  const poll=setInterval(()=>{if(document.visibilityState==='visible')refreshMissionConfig({quiet:true})},5000);
+
+  return()=>{
+   cancelled=true;
+   clearInterval(poll);
+   document.removeEventListener('visibilitychange',onVisibility);
+   window.removeEventListener('focus',onFocus);
+   if(channel)supabase.removeChannel(channel);
+  };
+ },[session?.user?.id]);
  useEffect(()=>{
   if(!session?.user?.id){setProfile(null);return}
   let cancelled=false;
-  loadCloudState(session).then(s=>{if(cancelled)return;setProfile(s.profile);setCloudProgress(s.progress||{});setCloudGame(s.game||{});setMode(s.profile?.mode==='kids'?'kids':'family')}).catch(error=>{
+  cloudStateLoaded.current=false;
+  loadCloudState(session).then(s=>{if(cancelled)return;setProfile(s.profile);setCloudProgress(s.progress||{});setCloudGame(s.game||{});latestCloudState.current={progress:s.progress||{},game:s.game||{}};cloudStateLoaded.current=true;setMode(s.profile?.mode==='kids'?'kids':'family');
+   // Migratie: als er nog geen volledige cloud-state bestaat, zet de lokale
+   // voortgang van dit apparaat direct klaar om naar de cloud te schrijven.
+   if(!s.hasFullCloudState){latestCloudState.current={progress:{...s.progress,...loadProgress(session.user.id)},game:{...s.game,...loadGame(session.user.id)}};clearTimeout(cloudSyncTimer.current);cloudSyncTimer.current=setTimeout(()=>saveFullCloudState(latestCloudState.current),250)}
+  }).catch(error=>{
    console.error('Profiel laden mislukt',error);
    if(cancelled)return;
    const fallbackRole=session.user.app_metadata?.role==='admin'?'admin':'user';
@@ -328,9 +434,44 @@ function App(){
   });
   return()=>{cancelled=true};
  },[session?.user?.id]);
- const queueProgress=p=>{if(!session?.user?.id)return;clearTimeout(syncTimer.current);syncTimer.current=setTimeout(async()=>{const known=new Set((p.known||[]).map(String));await supabase.from('user_progress').upsert({user_id:session.user.id,streak:p.streak||0,last_active_date:p.lastOpen||dayKey(),updated_at:new Date().toISOString()});if(known.size){await supabase.from('word_progress').upsert([...known].map(id=>({user_id:session.user.id,word_id:Number(id),status:'mastered',updated_at:new Date().toISOString()})),{onConflict:'user_id,word_id'})}},450)};
- const queueGame=g=>{if(!session?.user?.id)return;clearTimeout(gameTimer.current);gameTimer.current=setTimeout(()=>supabase.from('user_progress').upsert({user_id:session.user.id,xp:g.xp||0,level:Math.min(50,Math.max(1,(g.completedLevels||[]).length+1)),updated_at:new Date().toISOString()}),450)};
+ const saveFullCloudState=async state=>{
+  if(!session?.user?.id||!cloudStateLoaded.current)return;
+  const payload={progress:state.progress||loadProgress(session.user.id),game:state.game||loadGame(session.user.id)};
+  try{
+   const response=await fetch('/api/game-state',{method:'PUT',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.access_token}`},body:JSON.stringify(payload)});
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(data?.error||'Cloud-sync mislukt.');
+  }catch(error){console.error('Voortgang opslaan in cloud mislukt',error)}
+ };
+ const scheduleCloudSave=()=>{if(!session?.user?.id||!cloudStateLoaded.current)return;clearTimeout(cloudSyncTimer.current);cloudSyncTimer.current=setTimeout(()=>saveFullCloudState(latestCloudState.current),500)};
+ const queueProgress=p=>{if(!session?.user?.id)return;latestCloudState.current={...latestCloudState.current,progress:p};scheduleCloudSave()};
+ const queueGame=g=>{if(!session?.user?.id)return;latestCloudState.current={...latestCloudState.current,game:g};scheduleCloudSave()};
  const app=useAppState(session?.user?.id,cloudProgress,queueProgress),game=useGameState(session?.user?.id,cloudGame,queueGame);
+ const changeMissionAvailability=async(type,enabled)=>{
+  if(missionSaveInFlight.current)return;
+  const previous=[...enabledMissions];
+  const next=MISSION_TYPES.filter(m=>m!==type?enabledMissions.includes(m):enabled);
+  // Direct visuele feedback: de schakelaar beweegt meteen. Tijdens de korte cloudwrite
+  // blokkeren we alleen een tweede klik, niet de hele adminpagina.
+  missionSaveInFlight.current=true;
+  cacheMissionConfig(next);
+  setEnabledMissions([...next]);
+  setMissionConfigError('Opslaan voor alle apparaten…');
+  try{
+   const saved=await persistMissionConfig(next);
+   setEnabledMissions([...saved]);
+   setMissionConfigError('Opgeslagen voor alle apparaten');
+   setTimeout(()=>setMissionConfigError(''),1800);
+   game.updateGame(g=>{const completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0,changed=false;for(const l of CURRICULUM){if(completed.has(l.number))continue;const wordsDone=!!g.levelWordsCompleted?.[l.number],results=g.levelResults?.[l.number]||{};if(wordsDone&&saved.every(m=>results[m]?.passed===true)){completed.add(l.number);tickets+=1;changed=true}}return changed?{...g,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}:g});
+  }catch(error){
+   console.error('Spelinstelling opslaan mislukt',error);
+   cacheMissionConfig(previous);
+   setEnabledMissions([...previous]);
+   setMissionConfigError(`Niet opgeslagen in Supabase: ${error?.message||'onbekende fout'}`);
+  }finally{
+   missionSaveInFlight.current=false;
+  }
+ };
  const setModePersist=async m=>{setMode(m);if(session?.user?.id){await supabase.from('profiles').update({mode:m==='kids'?'kids':'adult',updated_at:new Date().toISOString()}).eq('id',session.user.id);setProfile(p=>p?{...p,mode:m==='kids'?'kids':'adult'}:p)}};
  const refreshContent=async()=>{setContentStatus(s=>({...s,state:'syncing',error:null}));try{const{changed,data}=await syncOneDriveContent();setContentStatus({state:'ready',lastSync:data.syncedAt,version:data.version,vocabularyCount:data.vocabulary.length,sentenceCount:data.sentences.length,source:'OneDrive Excel'});if(changed)setTimeout(()=>location.reload(),450)}catch(e){setContentStatus(s=>({...s,state:'error',error:e.message}))}};
  useEffect(()=>{if(session)refreshContent()},[session?.user?.id]);
@@ -347,7 +488,7 @@ function App(){
   {tab==='words'&&<Words app={app} game={game} go={go} selectedLesson={selectedLesson} clearSelectedLesson={()=>setSelectedLesson(null)}/>} {tab==='review'&&<ReviewPractice game={game} go={go}/>} 
   {tab==='sentences'&&<Sentences/>}{tab==='grammar'&&<Grammar/>}{tab==='speak'&&<SpeakPractice/>}
   {tab==='profile'&&<Profile app={app} game={game} mode={mode} setMode={setModePersist} contentStatus={contentStatus} refreshContent={refreshContent} profile={profile} go={go} onLogout={()=>supabase.auth.signOut()}/>}
-  {tab==='admin'&&profile.role==='admin'&&<AdminPanel session={session} profile={profile}/>}
+  {tab==='admin'&&profile.role==='admin'&&<AdminPanel session={session} profile={profile} enabledMissions={enabledMissions} onMissionToggle={changeMissionAvailability} missionConfigStatus={missionConfigError}/>}
  </main><BottomNav tab={tab} go={go}/></div></div>
 }
 function Brand(){return <div className="brand"><div className="brand-arch">A</div><div><strong>Afghan Fluent</strong><span>Leer Afghaans op jouw manier</span></div></div>}
@@ -355,78 +496,8 @@ function DesktopRail({tab,go,streak,isAdmin=false}){let items=[['today',Home,'Va
 function TopChrome({mode,setMode,displayName}){return <header className="top-chrome"><div className="mobile-brand"><div className="mini-arch">A</div><span>Afghan Fluent</span></div><div className="mode-switch"><button className={mode==='family'?'active':''} onClick={()=>setMode('family')}>Volwassen</button><button className={mode==='kids'?'active':''} onClick={()=>setMode('kids')}>Kids</button></div></header>}
 function PageHead({eyebrow,title,sub,badge}){return <div className="page-head"><div><span>{eyebrow}</span><h1>{title}</h1>{sub&&<p>{sub}</p>}</div>{badge&&<div className="page-badge">{badge}</div>}</div>}
 function SectionTitle({title}){return <div className="section-title"><h2>{title}</h2></div>}
-function GameSummary({game}){const pct=Math.min(100,Math.round(game.daily/game.goal*100)),results=game.game.levelResults?.[game.level]||{},missions=new Set(MISSION_TYPES.filter(m=>results[m]?.passed===true)),wordsDone=levelWordsDone(game,game.level),parts=(wordsDone?1:0)+missions.size;return <section className="game-summary"><div className="game-stat"><span><Trophy/></span><div><small>LEVEL</small><b>{game.level}/50</b></div></div><div className="game-xp"><div><b className="vp-amount"><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</b><small>{parts}/5 onderdelen in level {game.level}</small></div><div className="game-bar"><i style={{width:`${parts*20}%`}}/></div></div><div className="game-stat"><span><Sparkles/></span><div><small>VLIEGERS</small><b>{game.kiteTickets}</b></div></div><div className="game-goal"><div className="game-bar"><i style={{width:`${pct}%`}}/></div><small>{game.daily}/{game.goal} vandaag</small></div></section>}
-function Quick({title,sub,icon,onClick}){return <button className="quick-card" onClick={onClick}><span className="quick-icon">{icon}</span><div><b>{title}</b><small>{sub}</small></div></button>}
-function Today({app,game,go,displayName='Leerling'}){
- const known=app.knownIds.size;
- const results=game.game.levelResults?.[game.level]||{};
- const missionsDone=MISSION_TYPES.filter(m=>results[m]?.passed===true).length;
- const wordsDone=levelWordsDone(game,game.level)?1:0;
- const parts=Math.min(5,wordsDone+missionsDone);
- const level=CURRICULUM[Math.max(0,game.level-1)]||CURRICULUM[0];
- const levelPct=parts*20;
- const reviewCount=reviewItems(game,20).length;
- const streak=app.progress.streak||1;
- return <div className="screen today-screen home-v17">
-  <section className="home17-hero">
-   <div className="home17-copy">
-    <div className="home17-eyebrow">GOEDE DAG</div>
-    <h1>Salaam,<br/>{displayName}! <span>👋</span></h1>
-    <p>Vandaag een klein stukje verder.</p>
-   </div>
-   <div className="home17-coach" aria-hidden="true">
-    <img src={COACH_IMAGES.welcome} alt=""/>
-   </div>
-   <div className="home17-streak"><Flame/><b>{streak}</b><span>{streak===1?'dag':'dagen'}</span></div>
-  </section>
-
-  <button className="home17-primary" onClick={()=>go('path')}>
-   <div className="home17-primary-top">
-    <span className="home17-level-mark">{game.level}</span>
-    <div>
-     <small>GA VERDER MET JE LEERPAD</small>
-     <h2>{level?.title||'Verder leren'}</h2>
-    </div>
-    <span className="home17-arrow"><ChevronRight/></span>
-   </div>
-   <div className="home17-primary-bottom">
-    <div className="home17-progress"><i style={{width:`${levelPct}%`}}/></div>
-    <span>{parts}/5 onderdelen</span>
-   </div>
-  </button>
-
-  <section className="home17-shortcuts" aria-label="Snel oefenen">
-   <button onClick={()=>go('words')}><span><Layers3/></span><b>Woorden</b><small>{known} geleerd</small></button>
-   <button onClick={()=>go('sentences')}><span><MessageCircle/></span><b>Zinnen</b><small>In context</small></button>
-   <button onClick={()=>go('speak')}><span><Mic/></span><b>Uitspraak</b><small>Luister & spreek</small></button>
-  </section>
-
-  <button className="home17-review" onClick={()=>go('review')}>
-   <span className="home17-review-icon"><Brain/></span>
-   <span className="home17-review-copy">
-    <small>SLIM HERHALEN</small>
-    <b>{reviewCount>0?`${reviewCount} ${reviewCount===1?'item':'items'} klaar om te oefenen`:'Nog even oefenen'}</b>
-    <em>{reviewCount>0?'Herhaal wat extra aandacht nodig heeft.':'Een korte ronde om scherp te blijven.'}</em>
-   </span>
-   <ChevronRight/>
-  </button>
-
-  <section className="home17-today">
-   <div className="home17-today-head">
-    <div><small>VANDAAG</small><h3>Jouw ritme</h3></div>
-    <span>{game.daily}/{game.goal} VP</span>
-   </div>
-   <div className="home17-daily-track"><i style={{width:`${Math.min(100,Math.round(game.daily/game.goal*100))}%`}}/></div>
-   <div className="home17-meta">
-    <span><img src="/images/game/kite.png" alt=""/><b>{game.xp}</b> vliegerpunten</span>
-    <span><Flame/><b>{streak}</b> {streak===1?'dag':'dagen'} op rij</span>
-   </div>
-  </section>
- </div>
-}
-
-
-function LearningPath({app,game,isAdmin=false,openLesson}){const completed=new Set(game.game.completedLevels||[]),current=Math.min(50,completed.size+1),adminOpen=isAdmin&&!!game.game.adminAllLevels;return <div className="screen curriculum-screen"><PageHead eyebrow="JOUW ROUTE" title="Van eerste woord tot gesprek" sub="50 levels. Eerst leer je de nieuwe woorden; daarna pas je ze toe in vier verschillende spellen." badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/><div className="curriculum-intro"><div><small>DOEL</small><b>Na level 50 kun je veel dagelijkse Afghaanse gesprekken begrijpen en zelf voeren.</b></div><span>{completed.size}/50</span></div>{adminOpen&&<div className="admin-unlock-banner"><ShieldCheck/> Admin testmodus: alle 50 levels zijn speelbaar.</div>}<div className="path-list curriculum-path">{CURRICULUM.map(l=>{const done=completed.has(l.number),locked=!adminOpen&&l.number>current,results=game.game.levelResults?.[l.number]||{},missions=new Set(MISSION_TYPES.filter(m=>results[m]?.passed===true)),wordsDone=levelWordsDone(game,l.number),parts=(wordsDone?1:0)+missions.size;return <div className={`path-item curriculum-level ${done?'done':''} ${locked?'locked':''}`} key={l.id}><span className={`path-node ${done?'complete':''}`}>{done?<Check/>:locked?<Lock/>:l.number}</span><button className="lesson-row" disabled={locked} onClick={()=>openLesson(l)}><span className="lesson-art">{l.emoji}</span><div className="lesson-main"><div className="level-title-row"><b>{l.number}. {l.title}</b><em>{l.difficulty}</em></div><small>{l.phase} · {l.words.length} woorden · {parts}/5 onderdelen voltooid</small><div className="level-five-dots"><i className={wordsDone?'done':''}/>{MISSION_TYPES.map(m=><i key={m} className={missions.has(m)?'done':''}/>)}</div><div className="tiny-bar"><i style={{width:`${done?100:parts*20}%`}}/></div></div>{!locked&&<ChevronRight/>}</button>{done&&<div className="kite-earned"><Sparkles/> Level voltooid · Vlieger vrijgespeeld</div>}</div>})}</div></div>}
+function GameSummary({game}){const enabled=activeMissionTypes(),totalParts=1+enabled.length,pct=Math.min(100,Math.round(game.daily/game.goal*100)),results=game.game.levelResults?.[game.level]||{},missions=new Set(enabled.filter(m=>results[m]?.passed===true)),wordsDone=levelWordsDone(game,game.level),parts=(wordsDone?1:0)+missions.size;return <section className="game-summary"><div className="game-stat"><span><Trophy/></span><div><small>LEVEL</small><b>{game.level}/50</b></div></div><div className="game-xp"><div><b className="vp-amount"><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</b><small>{parts}/{totalParts} onderdelen in level {game.level}</small></div><div className="game-bar"><i style={{width:`${totalParts?parts/totalParts*100:0}%`}}/></div></div><div className="game-stat"><span><Sparkles/></span><div><small>VLIEGERS</small><b>{game.kiteTickets}</b></div></div><div className="game-goal"><div className="game-bar"><i style={{width:`${pct}%`}}/></div><small>{game.daily}/{game.goal} vandaag</small></div></section>}
+function LearningPath({app,game,isAdmin=false,openLesson}){const enabled=activeMissionTypes(),totalParts=1+enabled.length,completed=new Set(game.game.completedLevels||[]),current=Math.min(50,completed.size+1),adminOpen=isAdmin&&!!game.game.adminAllLevels;return <div className="screen curriculum-screen"><PageHead eyebrow="JOUW ROUTE" title="Van eerste woord tot gesprek" sub={`50 levels. Eerst leer je de nieuwe woorden; daarna pas je ze toe in ${enabled.length} actieve ${enabled.length===1?'spel':'spellen'}.`} badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/><div className="curriculum-intro"><div><small>DOEL</small><b>Na level 50 kun je veel dagelijkse Afghaanse gesprekken begrijpen en zelf voeren.</b></div><span>{completed.size}/50</span></div>{adminOpen&&<div className="admin-unlock-banner"><ShieldCheck/> Admin testmodus: alle 50 levels zijn speelbaar.</div>}<div className="path-list curriculum-path">{CURRICULUM.map(l=>{const done=completed.has(l.number),locked=!adminOpen&&l.number>current,results=game.game.levelResults?.[l.number]||{},missions=new Set(enabled.filter(m=>results[m]?.passed===true)),wordsDone=levelWordsDone(game,l.number),parts=(wordsDone?1:0)+missions.size;return <div className={`path-item curriculum-level ${done?'done':''} ${locked?'locked':''}`} key={l.id}><span className={`path-node ${done?'complete':''}`}>{done?<Check/>:locked?<Lock/>:l.number}</span><button className="lesson-row" disabled={locked} onClick={()=>openLesson(l)}><span className="lesson-art">{l.emoji}</span><div className="lesson-main"><div className="level-title-row"><b>{l.number}. {l.title}</b><em>{l.difficulty}</em></div><small>{l.phase} · {l.words.length} woorden · {parts}/{totalParts} onderdelen voltooid</small><div className="level-five-dots"><i className={wordsDone?'done':''}/>{enabled.map(m=><i key={m} className={missions.has(m)?'done':''}/>)}</div><div className="tiny-bar"><i style={{width:`${done?100:(totalParts?parts/totalParts*100:0)}%`}}/></div></div>{!locked&&<ChevronRight/>}</button>{done&&<div className="kite-earned"><Sparkles/> Level voltooid · Vlieger vrijgespeeld</div>}</div>})}</div></div>}
 function SentenceBuilder({game,level,lesson,onSolved}){
  const pool=useMemo(()=>{const base=lesson?.sentences?.length?lesson.sentences:sentences;return base.filter(s=>(s.spoken||s.latin||'').trim().split(/\s+/).length>=3)},[lesson?.id]),[idx,setIdx]=useState(0),s=pool[idx%Math.max(1,pool.length)];
  const[bank,setBank]=useState([]),[answer,setAnswer]=useState([]),[result,setResult]=useState(null),[dragging,setDragging]=useState(null),[dragPos,setDragPos]=useState(null),[hoverSlot,setHoverSlot]=useState(null),[coachMessage,setCoachMessage]=useState(null),[help,setHelp]=useState({hint:false,revealed:false,wrong:0}),[finished,setFinished]=useState(null); const drag=useRef(null),sessionStats=useRef({correct:0,total:0});
@@ -748,11 +819,42 @@ function KiteAdventure({onExit,onComplete}){
 
 function Games({app,game,go,isAdmin=false,selectedLesson,clearSelectedLesson}){
  const[type,setType]=useState(null); const level=selectedLesson?.number||game.level; const lesson=selectedLesson||CURRICULUM[level-1]||CURRICULUM[0];
- const results=game.game.levelResults?.[level]||{},missions=new Set(MISSION_TYPES.filter(m=>results[m]?.passed===true)),adminOpen=isAdmin&&!!game.game.adminAllLevels,locked=!adminOpen&&level>game.level,wordsDone=levelWordsDone(game,level),parts=(wordsDone?1:0)+missions.size,allPassed=wordsDone&&MISSION_TYPES.every(m=>results[m]?.passed===true);
- const choose=t=>{if(locked)return;if(t==='words'){go('words');return}if(!adminOpen&&!wordsDone&&MISSION_TYPES.includes(t))return;if(t==='kite'&&!adminOpen){if(!allPassed||(game.game.kiteTickets||0)<=0)return;game.updateGame(g=>({...g,kiteTickets:Math.max(0,(g.kiteTickets||0)-1)}))}setType(t);game.updateGame(g=>({...g,lastGame:t}))};
+ const enabled=activeMissionTypes(),totalParts=1+enabled.length,results=game.game.levelResults?.[level]||{},missions=new Set(enabled.filter(m=>results[m]?.passed===true)),adminOpen=isAdmin&&!!game.game.adminAllLevels,locked=!adminOpen&&level>game.level,wordsDone=levelWordsDone(game,level),seenCount=game.game.levelWordSeen?.[level]?.length||0,parts=(wordsDone?1:0)+missions.size,allPassed=wordsDone&&enabled.every(m=>results[m]?.passed===true);
+ const choose=t=>{if(locked)return;if(t==='words'){go('words');return}if(!enabled.includes(t)&&MISSION_TYPES.includes(t))return;if(!adminOpen&&!wordsDone&&enabled.includes(t))return;if(t==='kite'&&!adminOpen){if(!allPassed||(game.game.kiteTickets||0)<=0)return;game.updateGame(g=>({...g,kiteTickets:Math.max(0,(g.kiteTickets||0)-1)}))}setType(t);game.updateGame(g=>({...g,lastGame:t}))};
  const reset=()=>setType(null);
- if(type){const solved=()=>{};const done=()=>reset();return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}><button className="focus-exit" onClick={reset}><ChevronLeft/> Level {level}</button>{type!=='kite'&&<PageHead eyebrow={`LEVEL ${level} · ${lesson.difficulty}`} title={type==='sentence'?'Bouw de zin':type==='listen'?'Luisteren':type==='picture'?'Plaatjes':'Snelle ronde'} sub={`${lesson.title} · hulp en fouten verlagen je vliegerpunten.`}/>}<ChallengeErrorBoundary key={`${type}-${level}`} onReset={reset}>{type==='sentence'?<SentenceBuilder game={game} level={level} lesson={lesson} onSolved={done}/>:type==='listen'?<ListeningQuiz game={game} level={level} lesson={lesson} onSolved={done}/>:type==='picture'?<PictureQuiz game={game} level={level} lesson={lesson} onSolved={done}/>:type==='speed'?<SpeedRound game={game} level={level} lesson={lesson} onSolved={done}/>:<KiteGameErrorBoundary onReset={reset}><KiteAdventure onExit={reset} onComplete={reset}/></KiteGameErrorBoundary>}</ChallengeErrorBoundary></div>}
- return <div className="screen games-home-safe level-hub"><button className="focus-exit" onClick={()=>{if(selectedLesson){clearSelectedLesson?.();go('path')}else go('today')}}><X/> Sluiten</button><PageHead eyebrow={`LEVEL ${level} VAN 50 · ${lesson.difficulty}`} title={lesson.title} sub={`${lesson.words.length} nieuwe woorden · leer ze eerst, gebruik ze daarna in de vier spellen.`} badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/><div className="level-mission-strip"><div><small>LEVELVOORTGANG</small><b>{parts}/5 onderdelen</b></div><div className="mission-dots mission-dots-five"><i className={wordsDone?'done':''}/>{MISSION_TYPES.map(m=><i key={m} className={missions.has(m)?'done':''}/>)}</div></div><div className="games-safe-grid games-safe-grid-five"><button className={`word-intro-choice ${wordsDone?'mission-done':''}`} onClick={()=>choose('words')}><span><BookOpen/></span><b>Nieuwe woorden</b><small>{wordsDone?'Alle woorden bekeken · herhalen mag altijd':`${game.game.levelWordSeen?.[level]?.length||0}/${lesson.words.length} bekeken · geen VP`}</small>{wordsDone&&<Check/>}</button><button className={missions.has('picture')?'mission-done':''} disabled={!adminOpen&&!wordsDone} onClick={()=>choose('picture')}><span>{!adminOpen&&!wordsDone?<Lock/>:<Layers3/>}</span><b>Plaatjes</b><small>{!adminOpen&&!wordsDone?'Eerst Nieuwe woorden afronden':'Herken betekenis en beeld · max 10 🪁'}</small>{missions.has('picture')&&<Check/>}</button><button className={missions.has('listen')?'mission-done':''} disabled={!adminOpen&&!wordsDone} onClick={()=>choose('listen')}><span>{!adminOpen&&!wordsDone?<Lock/>:<Headphones/>}</span><b>Luisteren</b><small>{!adminOpen&&!wordsDone?'Eerst Nieuwe woorden afronden':'Begrijp wat je hoort · max 15 🪁'}</small>{missions.has('listen')&&<Check/>}</button><button className={missions.has('sentence')?'mission-done':''} disabled={!adminOpen&&!wordsDone} onClick={()=>choose('sentence')}><span>{!adminOpen&&!wordsDone?<Lock/>:<BookText/>}</span><b>Bouw de zin</b><small>{!adminOpen&&!wordsDone?'Eerst Nieuwe woorden afronden':'Zet taal actief in elkaar · max 20 🪁'}</small>{missions.has('sentence')&&<Check/>}</button><button className={missions.has('speed')?'mission-done':''} disabled={!adminOpen&&!wordsDone} onClick={()=>choose('speed')}><span>{!adminOpen&&!wordsDone?<Lock/>:<Zap/>}</span><b>Snelle ronde</b><small>{!adminOpen&&!wordsDone?'Eerst Nieuwe woorden afronden':'Automatiseer wat je kent'}</small>{missions.has('speed')&&<Check/>}</button><button className={`kite-choice ${adminOpen?'kite-admin-open':((!allPassed||(game.game.kiteTickets||0)<=0)?'kite-locked':'')}`} disabled={!adminOpen&&(!allPassed||(game.game.kiteTickets||0)<=0)} onClick={()=>choose('kite')}><span>{adminOpen?<ShieldCheck/>:(game.game.kiteTickets||0)>0&&allPassed?<Sparkles/>:<Lock/>}</span><b>Vlieger Avontuur</b><small>{adminOpen?'Admin testmodus · altijd speelbaar':allPassed&&(game.game.kiteTickets||0)>0?`${game.game.kiteTickets} verdiend · speel nu`:'Voltooi Nieuwe woorden + alle 4 spellen met meer dan 80%'}</small></button></div><div className="level-hub-summary"><GameSummary game={game}/></div></div>
+ if(type){const done=()=>reset();return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}><button className="focus-exit" onClick={reset}><ChevronLeft/> Level {level}</button>{type!=='kite'&&<PageHead eyebrow={`LEVEL ${level} · ${lesson.difficulty}`} title={type==='sentence'?'Bouw de zin':type==='listen'?'Luisteren':type==='picture'?'Plaatjes':'Snelle ronde'} sub={`${lesson.title} · hulp en fouten verlagen je vliegerpunten.`}/>}<ChallengeErrorBoundary key={`${type}-${level}`} onReset={reset}>{type==='sentence'?<SentenceBuilder game={game} level={level} lesson={lesson} onSolved={done}/>:type==='listen'?<ListeningQuiz game={game} level={level} lesson={lesson} onSolved={done}/>:type==='picture'?<PictureQuiz game={game} level={level} lesson={lesson} onSolved={done}/>:type==='speed'?<SpeedRound game={game} level={level} lesson={lesson} onSolved={done}/>:<KiteGameErrorBoundary onReset={reset}><KiteAdventure onExit={reset} onComplete={reset}/></KiteGameErrorBoundary>}</ChallengeErrorBoundary></div>}
+ const tile=(m,Icon,title,accent,reward)=>{if(!enabled.includes(m))return null;const r=results[m],done=missions.has(m),blocked=!adminOpen&&!wordsDone;return <button key={m} className={`game-tile-v45 game-tile-v46 ${accent} ${done?'mission-done':''}`} disabled={blocked} onClick={()=>choose(m)}><span className="game-icon-chip">{blocked?<Lock/>:<Icon/>}</span><div className="game-tile-copy"><b>{title}</b><em>{blocked?'Eerst woorden leren':r?.total?`${r.accuracy}% goed`:reward}</em></div>{done&&<Check className="game-done-check"/>}</button>};
+ return <div className="screen games-home-safe level-hub level-hub-v45 level-hub-v46 level-hub-v52">
+  <button className="focus-exit" onClick={()=>{if(selectedLesson){clearSelectedLesson?.();go('path')}else go('today')}}><X/> Sluiten</button>
+  <div className="level-hero-v52">
+    <PageHead eyebrow={`LEVEL ${level} VAN 50 · ${lesson.difficulty}`} title={lesson.title} sub={`${lesson.words.length} nieuwe woorden · leer ze eerst, gebruik ze daarna in de spellen.`} badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/>
+    <div className="level-coach-v52 level-coach-v53" aria-hidden="true"><img className="level-coach-character-v53" src={COACH_IMAGES.welcome} alt=""/></div>
+  </div>
+  <div className="level-mission-strip level-mission-strip-v52"><div><small>LEVELVOORTGANG</small><b>{parts}/{totalParts} onderdelen</b></div><div className="mission-dots">{Array.from({length:totalParts},(_,i)=><i key={i} className={i<parts?'done':''}/>)}</div></div>
+  <button className={`word-intro-choice word-intro-v45 word-intro-v46 ${wordsDone?'mission-done':''}`} onClick={()=>choose('words')}>
+    <span><BookOpen/></span><div><b>{lesson.words.length} nieuwe woorden</b><small>{wordsDone?`${lesson.words.length}/${lesson.words.length} woorden bekeken`:`${seenCount}/${lesson.words.length} woorden bekeken`}</small></div>{wordsDone?<Check/>:<ChevronRight/>}
+  </button>
+  <div className="game-picker-label game-picker-label-v46"><span>KIES EEN SPEL</span></div>
+  <div className={`games-safe-grid games-grid-v45 games-grid-v46 game-count-${enabled.length}`}>
+    {tile('picture',Layers3,'Plaatjes','game-accent-clay','tot 10 🪁')}
+    {tile('listen',Headphones,'Luisteren','game-accent-blue','tot 15 🪁')}
+    {tile('sentence',BookText,'Bouw de zin','game-accent-sand','tot 20 🪁')}
+    {tile('speed',Zap,'Snelle ronde','game-accent-sage','snelle test')}
+  </div>
+  <button className={`kite-choice kite-choice-v45 kite-choice-v46 ${adminOpen?'kite-admin-open':((!allPassed||(game.game.kiteTickets||0)<=0)?'kite-locked':'')}`} disabled={!adminOpen&&(!allPassed||(game.game.kiteTickets||0)<=0)} onClick={()=>choose('kite')}><span>{adminOpen?<ShieldCheck/>:(game.game.kiteTickets||0)>0&&allPassed?<Sparkles/>:<Lock/>}</span><div><b>Vlieger Avontuur</b><small>{adminOpen?'Admin testmodus · altijd speelbaar':allPassed&&(game.game.kiteTickets||0)>0?`${game.game.kiteTickets} verdiend · speel nu`:`Voltooi ${enabled.length===1?'het actieve spel':`de ${enabled.length} actieve spellen`} met 80%+`}</small></div><ChevronRight/></button>
+  <div className="level-hub-summary level-hub-summary-v52 level-hub-summary-v53">
+    <section className="level-summary-card-v53">
+      <div className="level-summary-main-v53">
+        <span className="level-summary-icon-v53"><Trophy/></span>
+        <div className="level-summary-level-v53"><small>LEVEL</small><b>{level}/50</b></div>
+        <div className="level-summary-vp-v53"><b><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</b><div className="level-summary-track-v53"><i style={{width:`${totalParts?parts/totalParts*100:0}%`}}/></div></div>
+        <small className="level-summary-parts-v53">{parts}/{totalParts} onderdelen<br/>in level {level}</small>
+      </div>
+      <div className="level-summary-divider-v53"/>
+      <div className="level-summary-kites-v53"><span><Sparkles/></span><div><small>VLIEGERS</small><b>{game.kiteTickets||0}</b></div></div>
+    </section>
+  </div>
+ </div>
 }
 class ChallengeErrorBoundary extends React.Component{
  constructor(props){super(props);this.state={error:null}}
@@ -808,4 +910,5 @@ function SpeakPractice(){
 function StatCard({icon,value,label}){return <div className="stat-card"><span>{icon}</span><b>{value}</b><small>{label}</small></div>}
 function Profile({app,game,mode,setMode,contentStatus,refreshContent,profile,go,onLogout}){return <div className="screen"><PageHead eyebrow="JOUW VOORTGANG" title="Profiel"/><div className="profile-hero"><div className="big-avatar">{(profile?.display_name||"A")[0]}</div><div><h2>{profile?.display_name||"Leerling"}</h2><p>{profile?.role==="admin"?"Administrator":"Afghan Fluent learner"}</p><span><Flame/> {app.progress.streak||1} dagen streak</span></div></div><GameSummary game={game}/><div className="profile-stats"><StatCard icon={<Layers3/>} value={app.knownIds.size} label="Woorden beheerst"/><StatCard icon={<img className="vp-kite-icon stat-kite" src="/images/game/kite.png" alt=""/>} value={game.xp} label="VP"/><StatCard icon={<MessageCircle/>} value={contentStatus?.sentenceCount||sentences.length} label="Zinnen"/><StatCard icon={<Star/>} value={masteryCount(game)} label="Langdurig beheerst"/></div><SectionTitle title="Leerinstellingen"/>{profile?.role==="admin"&&<div className="settings-card admin-entry" onClick={()=>go("admin")}><div><div className="setting-icon"><ShieldCheck/></div><div><b>Gebruikersbeheer</b><span>Accounts aanmaken en voortgang beheren.</span></div></div><ChevronRight/></div>}{profile?.role==="admin"&&<div className="settings-card admin-level-toggle"><div><div className="setting-icon"><Lock/></div><div><b>Alle levels testen</b><span>Alleen voor admin. Zet tijdelijk level 1 t/m 50 open.</span></div></div><div className="segmented admin-toggle"><button className={!game.game.adminAllLevels?'active':''} onClick={()=>game.updateGame(g=>({...g,adminAllLevels:false}))}>Uit</button><button className={game.game.adminAllLevels?'active':''} onClick={()=>game.updateGame(g=>({...g,adminAllLevels:true}))}>Aan</button></div></div>}<div className="settings-card"><div><div className="setting-icon"><UserRound/></div><div><b>Weergave</b><span>Volwassen of extra speels voor kinderen.</span></div></div><div className="segmented"><button className={mode==='family'?'active':''} onClick={()=>setMode('family')}>Volwassen</button><button className={mode==='kids'?'active':''} onClick={()=>setMode('kids')}>Kids</button></div></div><div className="settings-card"><div><div className="setting-icon"><RefreshCw/></div><div><b>OneDrive Excel</b><span>{contentStatus?.vocabularyCount||vocab.length} woorden · {contentStatus?.sentenceCount||sentences.length} zinnen</span></div></div><button className="sync-now" onClick={refreshContent}>Nu synchroniseren</button></div><div className="sync-note"><ShieldCheck/> OneDrive blijft de masterbron voor je woorden en zinnen.</div><button className="logout-button" onClick={onLogout}>Uitloggen</button></div>}
 function BottomNav({tab,go}){const x=[['today',Home,'Vandaag'],['path',BookOpen,'Leerpad'],['words',Layers3,'Woorden'],['sentences',MessageCircle,'Zinnen'],['profile',UserRound,'Profiel']];return <nav className="bottom-nav">{x.map(([id,I,l])=><button key={id} className={tab===id?'active':''} onClick={()=>go(id)}><I/><span>{l}</span></button>)}</nav>}
-createRoot(document.getElementById('root')).render(<App/>);
+class AppCrashBoundary extends React.Component{constructor(props){super(props);this.state={error:null}}static getDerivedStateFromError(error){return{error}}componentDidCatch(error,info){console.error('APP_RENDER_ERROR',error,info)}render(){if(this.state.error)return <div className="app-crash-screen"><div><small>AFGHAN FLUENT</small><h1>De app kon niet starten</h1><p>{String(this.state.error?.message||this.state.error)}</p><button onClick={()=>location.reload()}>Opnieuw laden</button></div></div>;return this.props.children}}
+createRoot(document.getElementById('root')).render(<AppCrashBoundary><App/></AppCrashBoundary>);
