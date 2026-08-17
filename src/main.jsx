@@ -49,8 +49,11 @@ const MISSION_TYPES=['picture','listen','sentence','speed'];
 const MISSION_LABELS={picture:'Plaatjes',listen:'Luisteren',sentence:'Bouw de zin',speed:'Snelle ronde'};
 const MISSION_CONFIG_KEY='afghanFluentEnabledGamesV1';
 function readMissionConfig(){const cached=readJsonStorage(MISSION_CONFIG_KEY,null);const list=Array.isArray(cached)?cached:MISSION_TYPES;return MISSION_TYPES.filter(m=>list.includes(m))}
-function cacheMissionConfig(list){const clean=MISSION_TYPES.filter(m=>list.includes(m));try{localStorage.setItem(MISSION_CONFIG_KEY,JSON.stringify(clean))}catch{}return clean}
-function activeMissionTypes(){return readMissionConfig()}
+// Runtime config is the single source of truth while the app is open.
+// localStorage is only an offline/startup cache; Supabase remains authoritative.
+let runtimeMissionConfig=readMissionConfig();
+function cacheMissionConfig(list){const clean=MISSION_TYPES.filter(m=>list.includes(m));runtimeMissionConfig=clean;try{localStorage.setItem(MISSION_CONFIG_KEY,JSON.stringify(clean))}catch{}return clean}
+function activeMissionTypes(){return runtimeMissionConfig}
 function normalizeMissionConfig(raw){
  if(Array.isArray(raw))return MISSION_TYPES.filter(m=>raw.includes(m));
  if(raw&&typeof raw==='object'){
@@ -365,7 +368,53 @@ function App(){
  const[contentStatus,setContentStatus]=useState(()=>readJsonStorage(CONTENT_STATUS_KEY,{state:cachedContent?'cached':'bundled',lastSync:cachedContent?.syncedAt||null,vocabularyCount:vocab.length,sentenceCount:sentences.length,source:cachedContent?'OneDrive cache':'Ingebouwde reservekopie'}));
  const cloudSyncTimer=useRef(null),latestCloudState=useRef({progress:null,game:null}),cloudStateLoaded=useRef(false);
  useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setAuthReady(true)});const{data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);setAuthReady(true)});return()=>subscription.unsubscribe()},[]);
- useEffect(()=>{if(!session?.user?.id)return;let cancelled=false;fetchMissionConfig().then(list=>{if(!cancelled){setEnabledMissions(list);setMissionConfigError('')}}).catch(error=>{console.warn('Spelinstellingen konden niet uit Supabase worden geladen; lokale reserve wordt gebruikt.',error);if(!cancelled){setEnabledMissions(readMissionConfig());setMissionConfigError('Cloudinstelling niet beschikbaar')}});return()=>{cancelled=true}},[session?.user?.id]);
+ useEffect(()=>{
+  if(!session?.user?.id)return;
+  let cancelled=false;
+  let refreshBusy=false;
+  const refreshMissionConfig=async({quiet=false}={})=>{
+   if(refreshBusy)return;
+   refreshBusy=true;
+   try{
+    const list=await fetchMissionConfig();
+    if(!cancelled){setEnabledMissions([...list]);setMissionConfigError('')}
+   }catch(error){
+    console.warn('Spelinstellingen konden niet uit Supabase worden geladen; lokale reserve wordt gebruikt.',error);
+    if(!cancelled&&!quiet){const fallback=cacheMissionConfig(readMissionConfig());setEnabledMissions([...fallback]);setMissionConfigError('Cloudinstelling niet beschikbaar')}
+   }finally{refreshBusy=false}
+  };
+
+  // Meteen bij aanmelden/starten de centrale instelling ophalen.
+  refreshMissionConfig();
+
+  // Als de app vanaf de achtergrond terugkomt, altijd opnieuw synchroniseren.
+  const onVisibility=()=>{if(document.visibilityState==='visible')refreshMissionConfig({quiet:true})};
+  const onFocus=()=>refreshMissionConfig({quiet:true});
+  document.addEventListener('visibilitychange',onVisibility);
+  window.addEventListener('focus',onFocus);
+
+  // Realtime als app_settings in Supabase Realtime is gepubliceerd. We luisteren
+  // naar iedere wijziging op deze kleine configtabel, zodat zowel het key- als
+  // het oudere id-schema wordt ondersteund.
+  let channel=null;
+  try{
+   channel=supabase.channel(`afghan-fluent-app-settings-${session.user.id}`)
+    .on('postgres_changes',{event:'*',schema:'public',table:'app_settings'},()=>refreshMissionConfig({quiet:true}))
+    .subscribe(status=>{if(status==='CHANNEL_ERROR')console.warn('Realtime game-config niet beschikbaar; polling blijft actief.')});
+  }catch(error){console.warn('Realtime game-config kon niet starten; polling blijft actief.',error)}
+
+  // Fallback voor installaties waar Realtime voor app_settings niet aanstaat.
+  // Hierdoor ziet een reeds geopende telefoon de adminwijziging alsnog snel.
+  const poll=setInterval(()=>{if(document.visibilityState==='visible')refreshMissionConfig({quiet:true})},15000);
+
+  return()=>{
+   cancelled=true;
+   clearInterval(poll);
+   document.removeEventListener('visibilitychange',onVisibility);
+   window.removeEventListener('focus',onFocus);
+   if(channel)supabase.removeChannel(channel);
+  };
+ },[session?.user?.id]);
  useEffect(()=>{
   if(!session?.user?.id){setProfile(null);return}
   let cancelled=false;
@@ -400,7 +449,7 @@ function App(){
   setEnabledMissions(cacheMissionConfig(next));setMissionConfigError('');
   // Alleen na een bewuste adminwijziging herberekenen. Niet tijdens app-start.
   game.updateGame(g=>{const completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0,changed=false;for(const l of CURRICULUM){if(completed.has(l.number))continue;const wordsDone=!!g.levelWordsCompleted?.[l.number],results=g.levelResults?.[l.number]||{};if(wordsDone&&next.every(m=>results[m]?.passed===true)){completed.add(l.number);tickets+=1;changed=true}}return changed?{...g,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}:g});
-  try{await persistMissionConfig(next)}catch(error){console.error('Spelinstelling opslaan mislukt',error);setMissionConfigError('Cloudinstelling kon niet worden opgeslagen. De app blijft lokaal werken.')}
+  try{const saved=await persistMissionConfig(next);setEnabledMissions([...saved])}catch(error){console.error('Spelinstelling opslaan mislukt',error);setMissionConfigError('Cloudinstelling kon niet worden opgeslagen. De app blijft lokaal werken.')}
  };
  const setModePersist=async m=>{setMode(m);if(session?.user?.id){await supabase.from('profiles').update({mode:m==='kids'?'kids':'adult',updated_at:new Date().toISOString()}).eq('id',session.user.id);setProfile(p=>p?{...p,mode:m==='kids'?'kids':'adult'}:p)}};
  const refreshContent=async()=>{setContentStatus(s=>({...s,state:'syncing',error:null}));try{const{changed,data}=await syncOneDriveContent();setContentStatus({state:'ready',lastSync:data.syncedAt,version:data.version,vocabularyCount:data.vocabulary.length,sentenceCount:data.sentences.length,source:'OneDrive Excel'});if(changed)setTimeout(()=>location.reload(),450)}catch(e){setContentStatus(s=>({...s,state:'error',error:e.message}))}};
