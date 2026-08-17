@@ -49,18 +49,38 @@ const MISSION_TYPES=['picture','listen','sentence','speed'];
 const MISSION_LABELS={picture:'Plaatjes',listen:'Luisteren',sentence:'Bouw de zin',speed:'Snelle ronde'};
 const MISSION_CONFIG_KEY='afghanFluentEnabledGamesV1';
 function readMissionConfig(){const cached=readJsonStorage(MISSION_CONFIG_KEY,null);const list=Array.isArray(cached)?cached:MISSION_TYPES;return MISSION_TYPES.filter(m=>list.includes(m))}
-function cacheMissionConfig(list){const clean=MISSION_TYPES.filter(m=>list.includes(m));localStorage.setItem(MISSION_CONFIG_KEY,JSON.stringify(clean));return clean}
+function cacheMissionConfig(list){const clean=MISSION_TYPES.filter(m=>list.includes(m));try{localStorage.setItem(MISSION_CONFIG_KEY,JSON.stringify(clean))}catch{}return clean}
 function activeMissionTypes(){return readMissionConfig()}
+function normalizeMissionConfig(raw){
+ if(Array.isArray(raw))return MISSION_TYPES.filter(m=>raw.includes(m));
+ if(raw&&typeof raw==='object'){
+  if(Array.isArray(raw.missions))return MISSION_TYPES.filter(m=>raw.missions.includes(m));
+  const legacy={picture:raw.picture??raw.pictures,listen:raw.listen??raw.listening,sentence:raw.sentence,speed:raw.speed??raw.quick};
+  if(Object.values(legacy).some(v=>typeof v==='boolean'))return MISSION_TYPES.filter(m=>legacy[m]!==false);
+ }
+ return MISSION_TYPES;
+}
 async function fetchMissionConfig(){
- const{data,error}=await supabase.from('app_settings').select('value').eq('key','enabled_games').maybeSingle();
- if(error)throw error;
- const raw=data?.value?.missions||data?.value;
- return cacheMissionConfig(Array.isArray(raw)?raw:MISSION_TYPES);
+ // v47 ondersteunt zowel de nieuwe key-schema als de eerder gedeelde id-schema.
+ try{
+  const{data,error}=await supabase.from('app_settings').select('value').eq('key','enabled_games').maybeSingle();
+  if(error)throw error;
+  if(data)return cacheMissionConfig(normalizeMissionConfig(data.value));
+ }catch(error){console.warn('Nieuwe app_settings-schema niet beschikbaar; probeer compatibiliteitsmodus.',error)}
+ try{
+  const{data,error}=await supabase.from('app_settings').select('value').eq('id','game_settings').maybeSingle();
+  if(error)throw error;
+  if(data)return cacheMissionConfig(normalizeMissionConfig(data.value));
+ }catch(error){console.warn('Compatibele app_settings-schema niet beschikbaar; lokale veilige standaard wordt gebruikt.',error)}
+ return readMissionConfig();
 }
 async function persistMissionConfig(list){
- const missions=cacheMissionConfig(list);
- const{error}=await supabase.from('app_settings').upsert({key:'enabled_games',value:{missions},updated_at:new Date().toISOString()},{onConflict:'key'});
- if(error)throw error;
+ const missions=cacheMissionConfig(list),updated_at=new Date().toISOString();
+ const primary=await supabase.from('app_settings').upsert({key:'enabled_games',value:{missions},updated_at},{onConflict:'key'});
+ if(!primary.error)return missions;
+ const legacyValue={pictures:missions.includes('picture'),listening:missions.includes('listen'),sentence:missions.includes('sentence'),quick:missions.includes('speed')};
+ const legacy=await supabase.from('app_settings').upsert({id:'game_settings',value:legacyValue,updated_at},{onConflict:'id'});
+ if(legacy.error)throw primary.error;
  return missions;
 }
 const CURRICULUM_ORDER=['greetings','numbers','family','people','home','food','daily','questions','verbs','time','school','clothes','body','feelings','shopping','travel','work','nature','animals','colors','other'];
@@ -371,8 +391,13 @@ function App(){
  const queueProgress=p=>{if(!session?.user?.id)return;latestCloudState.current={...latestCloudState.current,progress:p};scheduleCloudSave()};
  const queueGame=g=>{if(!session?.user?.id)return;latestCloudState.current={...latestCloudState.current,game:g};scheduleCloudSave()};
  const app=useAppState(session?.user?.id,cloudProgress,queueProgress),game=useGameState(session?.user?.id,cloudGame,queueGame);
- const changeMissionAvailability=async(type,enabled)=>{const next=MISSION_TYPES.filter(m=>m!==type?enabledMissions.includes(m):enabled);setEnabledMissions(cacheMissionConfig(next));setMissionConfigError('');try{await persistMissionConfig(next)}catch(error){console.error('Spelinstelling opslaan mislukt',error);setMissionConfigError('Opslaan in Supabase mislukt. Voer de meegeleverde app_settings SQL één keer uit.')}};
- useEffect(()=>{if(!game?.game)return;game.updateGame(g=>{const required=enabledMissions,completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0,changed=false;for(const l of CURRICULUM){if(completed.has(l.number))continue;const wordsDone=!!g.levelWordsCompleted?.[l.number],results=g.levelResults?.[l.number]||{};if(wordsDone&&required.every(m=>results[m]?.passed===true)){completed.add(l.number);tickets+=1;changed=true}}return changed?{...g,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}:g})},[enabledMissions.join('|')]);
+ const changeMissionAvailability=async(type,enabled)=>{
+  const next=MISSION_TYPES.filter(m=>m!==type?enabledMissions.includes(m):enabled);
+  setEnabledMissions(cacheMissionConfig(next));setMissionConfigError('');
+  // Alleen na een bewuste adminwijziging herberekenen. Niet tijdens app-start.
+  game.updateGame(g=>{const completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0,changed=false;for(const l of CURRICULUM){if(completed.has(l.number))continue;const wordsDone=!!g.levelWordsCompleted?.[l.number],results=g.levelResults?.[l.number]||{};if(wordsDone&&next.every(m=>results[m]?.passed===true)){completed.add(l.number);tickets+=1;changed=true}}return changed?{...g,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}:g});
+  try{await persistMissionConfig(next)}catch(error){console.error('Spelinstelling opslaan mislukt',error);setMissionConfigError('Cloudinstelling kon niet worden opgeslagen. De app blijft lokaal werken.')}
+ };
  const setModePersist=async m=>{setMode(m);if(session?.user?.id){await supabase.from('profiles').update({mode:m==='kids'?'kids':'adult',updated_at:new Date().toISOString()}).eq('id',session.user.id);setProfile(p=>p?{...p,mode:m==='kids'?'kids':'adult'}:p)}};
  const refreshContent=async()=>{setContentStatus(s=>({...s,state:'syncing',error:null}));try{const{changed,data}=await syncOneDriveContent();setContentStatus({state:'ready',lastSync:data.syncedAt,version:data.version,vocabularyCount:data.vocabulary.length,sentenceCount:data.sentences.length,source:'OneDrive Excel'});if(changed)setTimeout(()=>location.reload(),450)}catch(e){setContentStatus(s=>({...s,state:'error',error:e.message}))}};
  useEffect(()=>{if(session)refreshContent()},[session?.user?.id]);
@@ -795,4 +820,5 @@ function SpeakPractice(){
 function StatCard({icon,value,label}){return <div className="stat-card"><span>{icon}</span><b>{value}</b><small>{label}</small></div>}
 function Profile({app,game,mode,setMode,contentStatus,refreshContent,profile,go,onLogout}){return <div className="screen"><PageHead eyebrow="JOUW VOORTGANG" title="Profiel"/><div className="profile-hero"><div className="big-avatar">{(profile?.display_name||"A")[0]}</div><div><h2>{profile?.display_name||"Leerling"}</h2><p>{profile?.role==="admin"?"Administrator":"Afghan Fluent learner"}</p><span><Flame/> {app.progress.streak||1} dagen streak</span></div></div><GameSummary game={game}/><div className="profile-stats"><StatCard icon={<Layers3/>} value={app.knownIds.size} label="Woorden beheerst"/><StatCard icon={<img className="vp-kite-icon stat-kite" src="/images/game/kite.png" alt=""/>} value={game.xp} label="VP"/><StatCard icon={<MessageCircle/>} value={contentStatus?.sentenceCount||sentences.length} label="Zinnen"/><StatCard icon={<Star/>} value={masteryCount(game)} label="Langdurig beheerst"/></div><SectionTitle title="Leerinstellingen"/>{profile?.role==="admin"&&<div className="settings-card admin-entry" onClick={()=>go("admin")}><div><div className="setting-icon"><ShieldCheck/></div><div><b>Gebruikersbeheer</b><span>Accounts aanmaken en voortgang beheren.</span></div></div><ChevronRight/></div>}{profile?.role==="admin"&&<div className="settings-card admin-level-toggle"><div><div className="setting-icon"><Lock/></div><div><b>Alle levels testen</b><span>Alleen voor admin. Zet tijdelijk level 1 t/m 50 open.</span></div></div><div className="segmented admin-toggle"><button className={!game.game.adminAllLevels?'active':''} onClick={()=>game.updateGame(g=>({...g,adminAllLevels:false}))}>Uit</button><button className={game.game.adminAllLevels?'active':''} onClick={()=>game.updateGame(g=>({...g,adminAllLevels:true}))}>Aan</button></div></div>}<div className="settings-card"><div><div className="setting-icon"><UserRound/></div><div><b>Weergave</b><span>Volwassen of extra speels voor kinderen.</span></div></div><div className="segmented"><button className={mode==='family'?'active':''} onClick={()=>setMode('family')}>Volwassen</button><button className={mode==='kids'?'active':''} onClick={()=>setMode('kids')}>Kids</button></div></div><div className="settings-card"><div><div className="setting-icon"><RefreshCw/></div><div><b>OneDrive Excel</b><span>{contentStatus?.vocabularyCount||vocab.length} woorden · {contentStatus?.sentenceCount||sentences.length} zinnen</span></div></div><button className="sync-now" onClick={refreshContent}>Nu synchroniseren</button></div><div className="sync-note"><ShieldCheck/> OneDrive blijft de masterbron voor je woorden en zinnen.</div><button className="logout-button" onClick={onLogout}>Uitloggen</button></div>}
 function BottomNav({tab,go}){const x=[['today',Home,'Vandaag'],['path',BookOpen,'Leerpad'],['words',Layers3,'Woorden'],['sentences',MessageCircle,'Zinnen'],['profile',UserRound,'Profiel']];return <nav className="bottom-nav">{x.map(([id,I,l])=><button key={id} className={tab===id?'active':''} onClick={()=>go(id)}><I/><span>{l}</span></button>)}</nav>}
-createRoot(document.getElementById('root')).render(<App/>);
+class AppCrashBoundary extends React.Component{constructor(props){super(props);this.state={error:null}}static getDerivedStateFromError(error){return{error}}componentDidCatch(error,info){console.error('APP_RENDER_ERROR',error,info)}render(){if(this.state.error)return <div className="app-crash-screen"><div><small>AFGHAN FLUENT</small><h1>De app kon niet starten</h1><p>{String(this.state.error?.message||this.state.error)}</p><button onClick={()=>location.reload()}>Opnieuw laden</button></div></div>;return this.props.children}}
+createRoot(document.getElementById('root')).render(<AppCrashBoundary><App/></AppCrashBoundary>);
