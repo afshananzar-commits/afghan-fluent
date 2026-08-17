@@ -828,7 +828,7 @@ function Games({app,game,go,isAdmin=false,selectedLesson,clearSelectedLesson}){
   <button className="focus-exit" onClick={()=>{if(selectedLesson){clearSelectedLesson?.();go('path')}else go('today')}}><X/> Sluiten</button>
   <div className="level-hero-v52">
     <PageHead eyebrow={`LEVEL ${level} VAN 50 · ${lesson.difficulty}`} title={lesson.title} sub={`${lesson.words.length} nieuwe woorden · leer ze eerst, gebruik ze daarna in de spellen.`} badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/>
-    <div className="level-coach-v52" aria-hidden="true"><img src={COACH_IMAGES.welcome} alt=""/></div>
+    <div className="level-coach-v52 level-coach-v53" aria-hidden="true"><img className="level-coach-character-v53" src={COACH_IMAGES.welcome} alt=""/></div>
   </div>
   <div className="level-mission-strip level-mission-strip-v52"><div><small>LEVELVOORTGANG</small><b>{parts}/{totalParts} onderdelen</b></div><div className="mission-dots">{Array.from({length:totalParts},(_,i)=><i key={i} className={i<parts?'done':''}/>)}</div></div>
   <button className={`word-intro-choice word-intro-v45 word-intro-v46 ${wordsDone?'mission-done':''}`} onClick={()=>choose('words')}>
@@ -842,7 +842,18 @@ function Games({app,game,go,isAdmin=false,selectedLesson,clearSelectedLesson}){
     {tile('speed',Zap,'Snelle ronde','game-accent-sage','snelle test')}
   </div>
   <button className={`kite-choice kite-choice-v45 kite-choice-v46 ${adminOpen?'kite-admin-open':((!allPassed||(game.game.kiteTickets||0)<=0)?'kite-locked':'')}`} disabled={!adminOpen&&(!allPassed||(game.game.kiteTickets||0)<=0)} onClick={()=>choose('kite')}><span>{adminOpen?<ShieldCheck/>:(game.game.kiteTickets||0)>0&&allPassed?<Sparkles/>:<Lock/>}</span><div><b>Vlieger Avontuur</b><small>{adminOpen?'Admin testmodus · altijd speelbaar':allPassed&&(game.game.kiteTickets||0)>0?`${game.game.kiteTickets} verdiend · speel nu`:`Voltooi ${enabled.length===1?'het actieve spel':`de ${enabled.length} actieve spellen`} met 80%+`}</small></div><ChevronRight/></button>
-  <div className="level-hub-summary level-hub-summary-v52"><GameSummary game={game}/></div>
+  <div className="level-hub-summary level-hub-summary-v52 level-hub-summary-v53">
+    <section className="level-summary-card-v53">
+      <div className="level-summary-main-v53">
+        <span className="level-summary-icon-v53"><Trophy/></span>
+        <div className="level-summary-level-v53"><small>LEVEL</small><b>{level}/50</b></div>
+        <div className="level-summary-vp-v53"><b><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</b><div className="level-summary-track-v53"><i style={{width:`${totalParts?parts/totalParts*100:0}%`}}/></div></div>
+        <small className="level-summary-parts-v53">{parts}/{totalParts} onderdelen<br/>in level {level}</small>
+      </div>
+      <div className="level-summary-divider-v53"/>
+      <div className="level-summary-kites-v53"><span><Sparkles/></span><div><small>VLIEGERS</small><b>{game.kiteTickets||0}</b></div></div>
+    </section>
+  </div>
  </div>
 }
 class ChallengeErrorBoundary extends React.Component{
