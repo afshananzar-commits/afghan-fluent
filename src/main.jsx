@@ -824,9 +824,13 @@ function Games({app,game,go,isAdmin=false,selectedLesson,clearSelectedLesson}){
  const reset=()=>setType(null);
  if(type){const done=()=>reset();return <div className={`screen focus-screen games-focus ${type==='kite'?'kite-game-active':''}`}><button className="focus-exit" onClick={reset}><ChevronLeft/> Level {level}</button>{type!=='kite'&&<PageHead eyebrow={`LEVEL ${level} · ${lesson.difficulty}`} title={type==='sentence'?'Bouw de zin':type==='listen'?'Luisteren':type==='picture'?'Plaatjes':'Snelle ronde'} sub={`${lesson.title} · hulp en fouten verlagen je vliegerpunten.`}/>}<ChallengeErrorBoundary key={`${type}-${level}`} onReset={reset}>{type==='sentence'?<SentenceBuilder game={game} level={level} lesson={lesson} onSolved={done}/>:type==='listen'?<ListeningQuiz game={game} level={level} lesson={lesson} onSolved={done}/>:type==='picture'?<PictureQuiz game={game} level={level} lesson={lesson} onSolved={done}/>:type==='speed'?<SpeedRound game={game} level={level} lesson={lesson} onSolved={done}/>:<KiteGameErrorBoundary onReset={reset}><KiteAdventure onExit={reset} onComplete={reset}/></KiteGameErrorBoundary>}</ChallengeErrorBoundary></div>}
  const tile=(m,Icon,title,accent,reward)=>{if(!enabled.includes(m))return null;const r=results[m],done=missions.has(m),blocked=!adminOpen&&!wordsDone;return <button key={m} className={`game-tile-v45 game-tile-v46 ${accent} ${done?'mission-done':''}`} disabled={blocked} onClick={()=>choose(m)}><span className="game-icon-chip">{blocked?<Lock/>:<Icon/>}</span><div className="game-tile-copy"><b>{title}</b><em>{blocked?'Eerst woorden leren':r?.total?`${r.accuracy}% goed`:reward}</em></div>{done&&<Check className="game-done-check"/>}</button>};
- return <div className="screen games-home-safe level-hub level-hub-v45 level-hub-v46">
+ return <div className="screen games-home-safe level-hub level-hub-v45 level-hub-v46 level-hub-v52">
   <button className="focus-exit" onClick={()=>{if(selectedLesson){clearSelectedLesson?.();go('path')}else go('today')}}><X/> Sluiten</button>
-  <PageHead eyebrow={`LEVEL ${level} VAN 50 · ${lesson.difficulty}`} title={lesson.title} sub={`${lesson.words.length} nieuwe woorden · ${parts}/${totalParts} voltooid`} badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/>
+  <div className="level-hero-v52">
+    <PageHead eyebrow={`LEVEL ${level} VAN 50 · ${lesson.difficulty}`} title={lesson.title} sub={`${lesson.words.length} nieuwe woorden · leer ze eerst, gebruik ze daarna in de spellen.`} badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/>
+    <div className="level-coach-v52" aria-hidden="true"><img src={COACH_IMAGES.welcome} alt=""/></div>
+  </div>
+  <div className="level-mission-strip level-mission-strip-v52"><div><small>LEVELVOORTGANG</small><b>{parts}/{totalParts} onderdelen</b></div><div className="mission-dots">{Array.from({length:totalParts},(_,i)=><i key={i} className={i<parts?'done':''}/>)}</div></div>
   <button className={`word-intro-choice word-intro-v45 word-intro-v46 ${wordsDone?'mission-done':''}`} onClick={()=>choose('words')}>
     <span><BookOpen/></span><div><b>{lesson.words.length} nieuwe woorden</b><small>{wordsDone?`${lesson.words.length}/${lesson.words.length} woorden bekeken`:`${seenCount}/${lesson.words.length} woorden bekeken`}</small></div>{wordsDone?<Check/>:<ChevronRight/>}
   </button>
@@ -838,6 +842,7 @@ function Games({app,game,go,isAdmin=false,selectedLesson,clearSelectedLesson}){
     {tile('speed',Zap,'Snelle ronde','game-accent-sage','snelle test')}
   </div>
   <button className={`kite-choice kite-choice-v45 kite-choice-v46 ${adminOpen?'kite-admin-open':((!allPassed||(game.game.kiteTickets||0)<=0)?'kite-locked':'')}`} disabled={!adminOpen&&(!allPassed||(game.game.kiteTickets||0)<=0)} onClick={()=>choose('kite')}><span>{adminOpen?<ShieldCheck/>:(game.game.kiteTickets||0)>0&&allPassed?<Sparkles/>:<Lock/>}</span><div><b>Vlieger Avontuur</b><small>{adminOpen?'Admin testmodus · altijd speelbaar':allPassed&&(game.game.kiteTickets||0)>0?`${game.game.kiteTickets} verdiend · speel nu`:`Voltooi ${enabled.length===1?'het actieve spel':`de ${enabled.length} actieve spellen`} met 80%+`}</small></div><ChevronRight/></button>
+  <div className="level-hub-summary level-hub-summary-v52"><GameSummary game={game}/></div>
  </div>
 }
 class ChallengeErrorBoundary extends React.Component{
