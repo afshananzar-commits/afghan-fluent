@@ -66,11 +66,11 @@ function normalizeMissionConfig(raw){
 async function fetchMissionConfig(){
  // Centrale configuratie: exact het app_settings-schema dat in Supabase is aangemaakt.
  // id = 'game_settings', value = {pictures,listening,sentence,quick}
- const{data,error}=await supabase.from('app_settings').select('value,updated_at').eq('id','game_settings').maybeSingle();
+ const{data,error}=await supabase.from('app_settings').select('value').eq('id','game_settings').maybeSingle();
  if(error)throw error;
  if(!data){
   const defaults={pictures:true,listening:true,sentence:true,quick:true};
-  const inserted=await supabase.from('app_settings').insert({id:'game_settings',value:defaults,updated_at:new Date().toISOString()}).select('value').single();
+  const inserted=await supabase.from('app_settings').upsert({id:'game_settings',value:defaults},{onConflict:'id'}).select('value').single();
   if(inserted.error)throw inserted.error;
   return cacheMissionConfig(normalizeMissionConfig(inserted.data?.value));
  }
@@ -79,16 +79,12 @@ async function fetchMissionConfig(){
 async function persistMissionConfig(list){
  const missions=MISSION_TYPES.filter(m=>list.includes(m));
  const value={pictures:missions.includes('picture'),listening:missions.includes('listen'),sentence:missions.includes('sentence'),quick:missions.includes('speed')};
- const updated_at=new Date().toISOString();
- // Gebruik bewust update i.p.v. een optimistische lokale upsert. Zo weten we zeker
- // dat de centrale rij echt is gewijzigd voordat andere telefoons hem overnemen.
- let result=await supabase.from('app_settings').update({value,updated_at}).eq('id','game_settings').select('value').maybeSingle();
+ // Eén eenvoudige upsert op de rij die door de gedeelde SQL wordt aangemaakt.
+ // We schrijven bewust alleen id + value, zodat deze code ook werkt als een oudere
+ // app_settings-tabel geen updated_at-kolom heeft.
+ const result=await supabase.from('app_settings').upsert({id:'game_settings',value},{onConflict:'id'}).select('value').single();
  if(result.error)throw result.error;
- if(!result.data){
-  result=await supabase.from('app_settings').insert({id:'game_settings',value,updated_at}).select('value').single();
-  if(result.error)throw result.error;
- }
- const saved=normalizeMissionConfig(result.data.value);
+ const saved=normalizeMissionConfig(result.data?.value||value);
  cacheMissionConfig(saved);
  return saved;
 }
@@ -235,7 +231,7 @@ async function loadCloudState(session){
   hasFullCloudState:!!cloud
  };
 }
-function AdminPanel({session,profile,enabledMissions=MISSION_TYPES,onMissionToggle}){
+function AdminPanel({session,profile,enabledMissions=MISSION_TYPES,onMissionToggle,missionConfigStatus=''}){
  const[users,setUsers]=useState([]),[name,setName]=useState(''),[password,setPassword]=useState(''),[mode,setMode]=useState('adult'),[busy,setBusy]=useState(false),[msg,setMsg]=useState('');
  const[recordType,setRecordType]=useState('word'),[recordIndex,setRecordIndex]=useState(0),[recording,setRecording]=useState(false),[audioUrl,setAudioUrl]=useState(null);
  const[recordedMap,setRecordedMap]=useState({}),[currentAudio,setCurrentAudio]=useState(null),[searchAudio,setSearchAudio]=useState('');
@@ -343,6 +339,7 @@ function AdminPanel({session,profile,enabledMissions=MISSION_TYPES,onMissionTogg
   </section>
 
   <section className="admin-card admin-games-card">
+   {missionConfigStatus&&<div className={`admin-game-sync-status ${missionConfigStatus.startsWith('Niet opgeslagen')?'error':''}`}>{missionConfigStatus}</div>}
    <div className="admin-games-head"><div><small>SPELMODULES</small><h3>Spellen beschikbaar</h3><p>Zet modules tijdelijk uit als ze nog niet klaar zijn. Uitgeschakelde spellen verdwijnen voor leerlingen en tellen niet mee voor levelvoortgang of het Vlieger Avontuur.</p></div><span>{enabledMissions.length}/{MISSION_TYPES.length} actief</span></div>
    <div className="admin-game-toggles">{MISSION_TYPES.map(type=>{const enabled=enabledMissions.includes(type);const I=type==='picture'?Layers3:type==='listen'?Headphones:type==='sentence'?BookText:Zap;return <div className={`admin-game-toggle ${enabled?'enabled':'disabled'}`} key={type}><span><I/></span><div><b>{MISSION_LABELS[type]}</b><small>{enabled?'Beschikbaar voor leerlingen':'Tijdelijk verborgen · telt niet mee'}</small></div><button type="button" role="switch" aria-checked={enabled} className={`admin-switch ${enabled?'on':''}`} onClick={()=>onMissionToggle?.(type,!enabled)}><i/></button></div>})}</div>
   </section>
@@ -372,14 +369,14 @@ function App(){
  const[session,setSession]=useState(null),[authReady,setAuthReady]=useState(false),[profile,setProfile]=useState(null),[cloudProgress,setCloudProgress]=useState({}),[cloudGame,setCloudGame]=useState({});
  const[tab,setTab]=useState('today'),[mode,setMode]=useState('family'),[selectedLesson,setSelectedLesson]=useState(null),[enabledMissions,setEnabledMissions]=useState(()=>readMissionConfig()),[missionConfigError,setMissionConfigError]=useState('');
  const[contentStatus,setContentStatus]=useState(()=>readJsonStorage(CONTENT_STATUS_KEY,{state:cachedContent?'cached':'bundled',lastSync:cachedContent?.syncedAt||null,vocabularyCount:vocab.length,sentenceCount:sentences.length,source:cachedContent?'OneDrive cache':'Ingebouwde reservekopie'}));
- const cloudSyncTimer=useRef(null),latestCloudState=useRef({progress:null,game:null}),cloudStateLoaded=useRef(false);
+ const cloudSyncTimer=useRef(null),latestCloudState=useRef({progress:null,game:null}),cloudStateLoaded=useRef(false),missionSaveInFlight=useRef(false);
  useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setAuthReady(true)});const{data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);setAuthReady(true)});return()=>subscription.unsubscribe()},[]);
  useEffect(()=>{
   if(!session?.user?.id)return;
   let cancelled=false;
   let refreshBusy=false;
   const refreshMissionConfig=async({quiet=false}={})=>{
-   if(refreshBusy)return;
+   if(refreshBusy||missionSaveInFlight.current)return;
    refreshBusy=true;
    try{
     const list=await fetchMissionConfig();
@@ -451,21 +448,28 @@ function App(){
  const queueGame=g=>{if(!session?.user?.id)return;latestCloudState.current={...latestCloudState.current,game:g};scheduleCloudSave()};
  const app=useAppState(session?.user?.id,cloudProgress,queueProgress),game=useGameState(session?.user?.id,cloudGame,queueGame);
  const changeMissionAvailability=async(type,enabled)=>{
+  if(missionSaveInFlight.current)return;
   const previous=[...enabledMissions];
   const next=MISSION_TYPES.filter(m=>m!==type?enabledMissions.includes(m):enabled);
-  setMissionConfigError('Spelinstelling opslaan…');
+  // Direct visuele feedback: de schakelaar beweegt meteen. Tijdens de korte cloudwrite
+  // blokkeren we alleen een tweede klik, niet de hele adminpagina.
+  missionSaveInFlight.current=true;
+  cacheMissionConfig(next);
+  setEnabledMissions([...next]);
+  setMissionConfigError('Opslaan voor alle apparaten…');
   try{
    const saved=await persistMissionConfig(next);
    setEnabledMissions([...saved]);
    setMissionConfigError('Opgeslagen voor alle apparaten');
    setTimeout(()=>setMissionConfigError(''),1800);
-   // Alleen na een bevestigde centrale adminwijziging herberekenen.
    game.updateGame(g=>{const completed=new Set(g.completedLevels||[]);let tickets=g.kiteTickets||0,changed=false;for(const l of CURRICULUM){if(completed.has(l.number))continue;const wordsDone=!!g.levelWordsCompleted?.[l.number],results=g.levelResults?.[l.number]||{};if(wordsDone&&saved.every(m=>results[m]?.passed===true)){completed.add(l.number);tickets+=1;changed=true}}return changed?{...g,completedLevels:[...completed].sort((a,b)=>a-b),kiteTickets:tickets}:g});
   }catch(error){
    console.error('Spelinstelling opslaan mislukt',error);
    cacheMissionConfig(previous);
-   setEnabledMissions(previous);
+   setEnabledMissions([...previous]);
    setMissionConfigError(`Niet opgeslagen in Supabase: ${error?.message||'onbekende fout'}`);
+  }finally{
+   missionSaveInFlight.current=false;
   }
  };
  const setModePersist=async m=>{setMode(m);if(session?.user?.id){await supabase.from('profiles').update({mode:m==='kids'?'kids':'adult',updated_at:new Date().toISOString()}).eq('id',session.user.id);setProfile(p=>p?{...p,mode:m==='kids'?'kids':'adult'}:p)}};
@@ -484,7 +488,7 @@ function App(){
   {tab==='words'&&<Words app={app} game={game} go={go} selectedLesson={selectedLesson} clearSelectedLesson={()=>setSelectedLesson(null)}/>} {tab==='review'&&<ReviewPractice game={game} go={go}/>} 
   {tab==='sentences'&&<Sentences/>}{tab==='grammar'&&<Grammar/>}{tab==='speak'&&<SpeakPractice/>}
   {tab==='profile'&&<Profile app={app} game={game} mode={mode} setMode={setModePersist} contentStatus={contentStatus} refreshContent={refreshContent} profile={profile} go={go} onLogout={()=>supabase.auth.signOut()}/>}
-  {tab==='admin'&&profile.role==='admin'&&<AdminPanel session={session} profile={profile} enabledMissions={enabledMissions} onMissionToggle={changeMissionAvailability}/>}
+  {tab==='admin'&&profile.role==='admin'&&<AdminPanel session={session} profile={profile} enabledMissions={enabledMissions} onMissionToggle={changeMissionAvailability} missionConfigStatus={missionConfigError}/>}
  </main><BottomNav tab={tab} go={go}/></div></div>
 }
 function Brand(){return <div className="brand"><div className="brand-arch">A</div><div><strong>Afghan Fluent</strong><span>Leer Afghaans op jouw manier</span></div></div>}
