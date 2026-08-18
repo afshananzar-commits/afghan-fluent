@@ -4783,3 +4783,39 @@
   .level-hub-v55 .games-grid-v46>button.game-tile-v46 .game-icon-chip{width:37px!important;height:37px!important;min-width:37px!important}
   .level-hub-v55 .games-grid-v46>button.game-tile-v46 b{font-size:13px!important}
 }
+
+/* =========================================================
+   GAME ICON CHIPS v56 — hard visual fill
+   Uses per-tile CSS variables from main.jsx and an inset fill as
+   a fallback, so older button/span rules cannot make chips white.
+   ========================================================= */
+.level-hub-v55 .games-grid-v46 > button.game-tile-v46 > .game-icon-chip-v56{
+  display:grid!important;
+  place-items:center!important;
+  width:40px!important;
+  height:40px!important;
+  min-width:40px!important;
+  flex:0 0 40px!important;
+  border-radius:12px!important;
+  background-color:var(--chip-bg)!important;
+  background-image:linear-gradient(var(--chip-bg),var(--chip-bg))!important;
+  box-shadow:inset 0 0 0 999px var(--chip-bg)!important;
+  color:var(--chip-ink)!important;
+  opacity:1!important;
+  overflow:hidden!important;
+}
+.level-hub-v55 .games-grid-v46 > button.game-tile-v46 > .game-icon-chip-v56 svg{
+  width:22px!important;
+  height:22px!important;
+  color:var(--chip-ink)!important;
+  stroke:var(--chip-ink)!important;
+  stroke-width:2!important;
+  position:relative!important;
+  z-index:2!important;
+}
+@media(max-width:390px){
+  .level-hub-v55 .games-grid-v46 > button.game-tile-v46 > .game-icon-chip-v56{
+    width:37px!important;height:37px!important;min-width:37px!important;flex-basis:37px!important;
+  }
+  .level-hub-v55 .games-grid-v46 > button.game-tile-v46 > .game-icon-chip-v56 svg{width:20px!important;height:20px!important}
+}
