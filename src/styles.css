@@ -4653,3 +4653,60 @@
 .home-v14 .wod-mark{width:44px;height:44px;border-radius:14px;background:#efe3cf;color:#9b6842;display:grid;place-items:center;font-family:Fraunces;font-weight:700;font-size:17px}.home-v14 .wod-copy b,.home-v14 .wod-copy span{display:block}.home-v14 .wod-copy b{font-family:Fraunces;font-size:19px;line-height:1.05;margin-top:2px}.home-v14 .wod-copy span{font-size:10px;color:var(--muted);margin-top:2px}.home-v14 .wod-sound{width:36px;height:36px;border-radius:50%;background:#e5eee4;color:#46664f;display:grid;place-items:center}.home-v14 .wod-sound svg{width:17px}
 .home-v14 .home-review{margin-top:0 !important}
 @media(max-width:620px){.home-v14 .today-dashboard{margin-top:14px;padding:14px 13px 12px}.home-v14 .today-metrics{gap:4px}.home-v14 .today-metrics>div{gap:5px}.home-v14 .today-metric-icon{width:31px;height:31px;flex-basis:31px;border-radius:10px}.home-v14 .today-metrics b{font-size:13px}.home-v14 .today-dashboard-head{margin-bottom:10px}.home-v14 .word-of-day{padding:11px 13px}}
+
+/* =========================================================
+   SURFACE HARMONY v26 — warm cards like "Woord van vandaag"
+   The app background stays cream; neutral raised surfaces use
+   one warm, translucent paper tone instead of near-white.
+   ========================================================= */
+:root{
+  --paper:rgba(255,250,242,.72);
+  --paper-solid:#fbf4e8;
+  --paper-border:rgba(213,196,169,.72);
+}
+
+/* Learning path: make every level card match the warm home surface. */
+.curriculum-screen .lesson-row{
+  background:var(--paper)!important;
+  border-color:var(--paper-border)!important;
+  box-shadow:0 4px 13px rgba(61,47,32,.035)!important;
+}
+.curriculum-screen .curriculum-intro{
+  background:rgba(244,239,228,.72)!important;
+}
+
+/* Level hub: remove the almost-white paper cards and use the same warm surface. */
+.level-hub-v54 .level-mission-strip-v52,
+.level-hub-v54 .word-intro-v46,
+.level-hub-v54 .games-grid-v46>button.game-tile-v46,
+.level-hub-v54 .kite-choice-v46,
+.level-hub-v54 .level-summary-card-v53,
+.level-hub-v46 .level-mission-strip-v52,
+.level-hub-v46 .word-intro-v46,
+.level-hub-v46 .games-grid-v46>button.game-tile-v46,
+.level-hub-v46 .kite-choice-v46,
+.level-summary-card-v53{
+  background:var(--paper)!important;
+  border-color:var(--paper-border)!important;
+}
+
+/* A completed game should be indicated by its border/check, not by becoming white. */
+.level-hub .games-safe-grid-five>button.mission-done,
+.level-hub-v54 .games-grid-v46>button.game-tile-v46.mission-done,
+.level-hub-v46 .games-grid-v46>button.game-tile-v46.mission-done{
+  background:var(--paper)!important;
+}
+
+/* Other common neutral cards now share the same surface language. */
+.quick-card,
+.stat-card,
+.settings-card,
+.word-toolbar label,
+.premium-flashcard,
+.card-nav button:not(:last-child),
+.sentence-card,
+.word-bank .sentence-tile,
+.answer-slot.filled,
+.word-finish-card{
+  background:var(--paper)!important;
+}
