@@ -4808,3 +4808,20 @@
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
 }
+
+/* 2026-08-19 — Level hub Farangis iets hoger
+   Behoud de volledige farangis-explain afbeelding, maar trek haar omhoog zodat
+   gezicht, boek en hand duidelijker boven de levelvoortgang zichtbaar blijven. */
+.level-hub-v46 .level-coach-v52.level-coach-v53{
+  bottom:12px!important;
+}
+@media (max-width:430px){
+  .level-hub-v46 .level-coach-v52.level-coach-v53{
+    bottom:12px!important;
+  }
+}
+@media (max-width:380px){
+  .level-hub-v46 .level-coach-v52.level-coach-v53{
+    bottom:10px!important;
+  }
+}
