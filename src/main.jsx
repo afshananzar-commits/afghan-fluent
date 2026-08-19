@@ -838,7 +838,7 @@ function Games({app,game,go,isAdmin=false,selectedLesson,clearSelectedLesson}){
  return <div className="screen games-home-safe level-hub level-hub-v45 level-hub-v46 level-hub-v52 level-hub-v54 level-hub-v55">
   <button className="focus-exit" onClick={()=>{if(selectedLesson){clearSelectedLesson?.();go('path')}else go('today')}}><X/> Sluiten</button>
   <div className="level-hero-v52">
-    <PageHead eyebrow={`LEVEL ${level} VAN 50 · ${lesson.difficulty}`} title={lesson.title} sub={`${lesson.words.length} nieuwe woorden · leer ze eerst, gebruik ze daarna in de spellen.`} badge={<><img className="vp-kite-icon" src="/images/game/kite.png" alt=""/>{game.xp}</>}/>
+    <PageHead eyebrow={`LEVEL ${level} VAN 50 · ${lesson.difficulty}`} title={lesson.title} sub={`${lesson.words.length} nieuwe woorden · leer ze eerst, gebruik ze daarna in de spellen.`}/>
     <div className="level-coach-v52 level-coach-v53" aria-hidden="true"><img className="level-coach-character-v53" src={COACH_IMAGES.welcome} alt=""/></div>
   </div>
   <div className="level-mission-strip level-mission-strip-v52"><div><small>LEVELVOORTGANG</small><b>{parts}/{totalParts} onderdelen</b></div><div className="mission-dots">{Array.from({length:totalParts},(_,i)=><i key={i} className={i<parts?'done':''}/>)}</div></div>

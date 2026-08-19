@@ -4710,3 +4710,36 @@
 .word-finish-card{
   background:var(--paper)!important;
 }
+
+
+/* 2026-08-19 — Level hub coach alignment
+   Match the Today-screen Farangis placement: anchored to the right,
+   slightly pulled inward, and visually tucked behind the progress card. */
+.level-hub-v46 .level-hero-v52{
+  min-height:172px!important;
+  margin-bottom:-12px!important;
+}
+.level-hub-v46 .level-hero-v52 .page-head{
+  min-height:164px!important;
+  padding-right:43%!important;
+}
+.level-hub-v46 .level-coach-v52.level-coach-v53{
+  right:18px!important;
+  bottom:-12px!important;
+  width:43%!important;
+  height:196px!important;
+  overflow:hidden!important;
+  z-index:1!important;
+}
+.level-hub-v46 .level-coach-v53 .level-coach-character-v53{
+  right:2%!important;
+  bottom:-18px!important;
+  width:108%!important;
+  max-width:none!important;
+}
+.level-hub-v46 .level-mission-strip-v52{
+  position:relative!important;
+  z-index:5!important;
+}
+/* The level score is already available in the summary below; avoid a duplicate kite-point pill in the hero. */
+.level-hub-v46 .level-hero-v52 .page-badge{display:none!important}
