@@ -13,6 +13,28 @@ import JSZip from 'jszip';
 import { createClient } from '@supabase/supabase-js';
 import './styles.css';
 
+// PWA/offline: registreer de service worker en laat hem na iedere online start
+// de lokale afbeeldingen alvast downloaden. Dit is met name op iOS betrouwbaarder
+// dan ervan uitgaan dat alle afbeeldingen tijdens de install-event zijn gecachet.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
+      const registration = await navigator.serviceWorker.ready;
+      const worker = registration.active || registration.waiting || registration.installing;
+      if (navigator.onLine && worker) {
+        worker.postMessage({ type: 'CACHE_OFFLINE_ASSETS' });
+      }
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        const next = navigator.serviceWorker.controller;
+        if (navigator.onLine && next) next.postMessage({ type: 'CACHE_OFFLINE_ASSETS' });
+      }, { once: true });
+    } catch (error) {
+      console.warn('Offline service worker kon niet worden geregistreerd.', error);
+    }
+  });
+}
+
 const vocabHeaders=['id','dutch','english','category','spoken','latin','script','type','confidence','status','exampleNl','exampleSpoken','notes','source'];
 const sentenceHeaders=['id','dutch','spoken','latin','status','grammar','notes','source'];
 const CONTENT_CACHE_KEY='afghanFluentOneDriveContentV1', CONTENT_STATUS_KEY='afghanFluentOneDriveStatusV1';
