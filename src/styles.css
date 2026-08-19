@@ -1167,6 +1167,7 @@
   color:var(--ink)
 }
 .sentence-builder-v29 .builder-v29-title p{margin:0;color:#7b746b;font-size:14px}
+.sentence-builder-v29 .builder-v29-title .builder-progress{margin-top:8px}
 
 .builder-v29-tools{position:absolute;right:0;top:16px;width:170px;height:140px}
 .builder-v29-tools button{

@@ -544,6 +544,7 @@ function SentenceBuilder({game,level,lesson,onSolved}){
        <small>🧩 BOUW DE ZIN <span className="builder-xp-inline">max 20 VP</span></small>
        <h2>Zet de zin in<br/>goede volgorde</h2>
        <p>Sleep de woorden naar de juiste plek.</p>
+       <p className="builder-progress">{(idx%pool.length)+1} van {pool.length}</p>
      </div>
      <div className="builder-v29-tools" aria-label="Hulpmiddelen">
        <span className="spark s1">✦</span><span className="spark s2">✦</span><span className="spark s3">✦</span>
