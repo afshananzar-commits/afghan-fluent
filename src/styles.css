@@ -596,8 +596,8 @@
 .home-v14 .welcome h1{font-size:clamp(38px,6vw,54px);line-height:1.02;letter-spacing:-.025em;margin:7px 0 10px}
 .home-v14 .welcome h1 span{display:inline-block;font-family:'DM Sans',sans-serif;font-size:.72em;vertical-align:.08em}
 .home-v14 .welcome>div>p:last-child{font-size:16px;line-height:1.45;max-width:390px}
-.home-v14 .streak-pill{flex:0 0 auto;padding:11px 15px;background:rgba(255,250,239,.72);box-shadow:none}
-.home-v14 .streak-pill svg{width:18px}
+
+
 
 .home-v14 .continue-card{min-height:190px;border-radius:30px;padding:26px 28px;background:linear-gradient(135deg,#45694f 0%,#6f8a70 100%);box-shadow:0 16px 38px rgba(54,75,58,.13);border:1px solid rgba(255,255,255,.12)}
 .home-v14 .continue-copy{position:relative;z-index:6;align-self:center}
@@ -647,7 +647,7 @@
   .home-v14 .welcome{margin:12px 0 24px;align-items:flex-start}
   .home-v14 .welcome h1{font-size:39px;max-width:260px}
   .home-v14 .welcome>div>p:last-child{font-size:15px;max-width:265px}
-  .home-v14 .streak-pill{margin-top:12px;padding:9px 11px;font-size:11px}
+  
   .home-v14 .continue-card{min-height:184px;padding:23px 20px;border-radius:28px}
   .home-v14 .continue-copy h2{font-size:31px;margin:12px 0 27px;max-width:130px}
   .home-v14 .mini-progress{width:145px}
@@ -1047,10 +1047,7 @@
 .home-v14 .welcome>div:first-child>p:last-child{
   max-width:330px;
 }
-.home-v14 .streak-pill{
-  position:relative;
-  z-index:4;
-}
+
 
 /* The coach layer is behind the green card, but above the page. */
 .home-v14 .home-coach-stage{
@@ -3380,12 +3377,7 @@
   margin:0!important;
   line-height:1.4!important;
 }
-.home-v14 .home-welcome-v2 .streak-pill{
-  position:absolute!important;
-  right:0!important;
-  top:10px!important;
-  z-index:7!important;
-}
+
 .home-v14 .home-welcome-v2 .home-coach-stage{
   position:absolute!important;
   z-index:3!important;
@@ -3542,10 +3534,7 @@
     font-size:13px!important;
     line-height:1.35!important;
   }
-  .home-v14 .home-welcome-v2 .streak-pill{
-    top:5px!important;
-    padding:8px 10px!important;
-  }
+  
   .home-v14 .home-welcome-v2 .home-coach-stage{
     width:51%!important;
     height:185px!important;
@@ -3923,12 +3912,8 @@
     line-height:1.28!important;
     max-width:195px!important;
   }
-  .home-v16 .home-welcome-v2 .streak-pill{
-    top:5px!important;
-    padding:6px 9px!important;
-    font-size:10px!important;
-  }
-  .home-v16 .home-welcome-v2 .streak-pill svg{width:15px!important;height:15px!important}
+  
+  
   .home-v16 .home-welcome-v2 .home-coach-stage{
     height:100%!important;
     bottom:-15px!important;
