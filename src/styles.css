@@ -4852,3 +4852,66 @@
  .home-v16 .fod-copy span{font-size:8px;line-height:1.22;-webkit-line-clamp:2}
 }
 @media(max-width:370px){.home-v16 .daily-discoveries{grid-template-columns:1fr}.home-v16 .fact-of-day{min-height:64px}}
+
+/* =========================================================
+   HOME v17 — stacked daily discovery cards + unified warm paper
+   2026-08-23
+   ========================================================= */
+.home-v16 .daily-discoveries{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+  margin:0 0 10px!important;
+}
+.home-v16 .daily-discoveries .word-of-day,
+.home-v16 .fact-of-day,
+.home-v16 .today-dashboard,
+.home-v16 .home-review{
+  background:var(--paper)!important;
+  border:1px solid var(--paper-border)!important;
+  box-shadow:0 4px 13px rgba(61,47,32,.035)!important;
+}
+.home-v16 .daily-discoveries .word-of-day{
+  min-height:78px!important;
+  height:auto!important;
+  margin:0!important;
+}
+.home-v16 .fact-of-day{
+  min-height:92px!important;
+  grid-template-columns:44px minmax(0,1fr)!important;
+  gap:12px!important;
+  padding:13px 15px!important;
+  border-radius:22px!important;
+  align-items:center!important;
+}
+.home-v16 .fod-mark{width:44px!important;height:44px!important;border-radius:14px!important}
+.home-v16 .fod-copy small{font-size:9px!important;letter-spacing:.14em!important}
+.home-v16 .fod-copy b{font-size:16px!important;line-height:1.12!important;margin-bottom:3px!important}
+.home-v16 .fod-copy span{
+  display:block!important;
+  overflow:visible!important;
+  -webkit-line-clamp:unset!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+}
+@media(max-width:620px){
+  .home-v16 .daily-discoveries{grid-template-columns:1fr!important;gap:8px!important}
+  .home-v16 .daily-discoveries .word-of-day{
+    grid-template-columns:38px minmax(0,1fr)!important;
+    gap:10px!important;
+    min-height:70px!important;
+    padding:10px 12px!important;
+  }
+  .home-v16 .daily-discoveries .wod-mark{width:38px!important;height:38px!important;border-radius:12px!important;font-size:15px!important}
+  .home-v16 .fact-of-day{
+    grid-template-columns:38px minmax(0,1fr)!important;
+    gap:10px!important;
+    min-height:82px!important;
+    padding:10px 12px!important;
+    border-radius:18px!important;
+  }
+  .home-v16 .fod-mark{width:38px!important;height:38px!important;border-radius:12px!important}
+  .home-v16 .fod-copy small{font-size:8px!important;letter-spacing:.11em!important}
+  .home-v16 .fod-copy b{font-size:14px!important;line-height:1.12!important}
+  .home-v16 .fod-copy span{font-size:9px!important;line-height:1.3!important}
+}
