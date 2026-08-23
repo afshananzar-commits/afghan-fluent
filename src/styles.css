@@ -4825,3 +4825,30 @@
     bottom:10px!important;
   }
 }
+
+
+/* === Dagontdekking: woord + Afghaans weetje === */
+.home-v16 .daily-discoveries{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:10px;margin:0 0 10px}
+.home-v16 .daily-discoveries .word-of-day{height:100%;margin:0!important}
+.home-v16 .fact-of-day{min-width:0;border:1px solid rgba(82,112,88,.16);background:linear-gradient(145deg,rgba(239,245,235,.94),rgba(248,243,231,.9));border-radius:22px;padding:13px 15px;display:grid;grid-template-columns:44px 1fr;align-items:center;gap:12px;color:var(--ink);box-shadow:0 5px 16px rgba(68,77,57,.045)}
+.home-v16 .fod-mark{width:44px;height:44px;border-radius:14px;background:#dfeadf;color:#46664f;display:grid;place-items:center}
+.home-v16 .fod-mark svg{width:19px;height:19px}
+.home-v16 .fod-copy{min-width:0}
+.home-v16 .fod-copy small{display:block;font-size:9px;letter-spacing:.14em;color:#66816d;font-weight:800;margin-bottom:2px}
+.home-v16 .fod-copy b{display:block;font-family:Fraunces;font-size:15px;line-height:1.08;margin-bottom:3px}
+.home-v16 .fod-copy span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:9.5px;line-height:1.3;color:var(--muted)}
+@media(max-width:620px){
+ .home-v16 .daily-discoveries{grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+ .home-v16 .daily-discoveries .word-of-day{grid-template-columns:34px minmax(0,1fr);gap:8px;padding:9px 10px!important;min-height:72px}
+ .home-v16 .daily-discoveries .wod-mark{width:34px;height:34px;border-radius:11px;font-size:14px}
+ .home-v16 .daily-discoveries .wod-sound{display:none}
+ .home-v16 .daily-discoveries .wod-copy small,.home-v16 .fod-copy small{font-size:7.5px;letter-spacing:.1em}
+ .home-v16 .daily-discoveries .wod-copy b{font-size:15px}
+ .home-v16 .daily-discoveries .wod-copy span{font-size:8.5px}
+ .home-v16 .fact-of-day{grid-template-columns:32px minmax(0,1fr);gap:7px;padding:9px;min-height:72px;border-radius:18px}
+ .home-v16 .fod-mark{width:32px;height:32px;border-radius:10px}
+ .home-v16 .fod-mark svg{width:16px;height:16px}
+ .home-v16 .fod-copy b{font-size:12px;line-height:1.05;margin-bottom:2px}
+ .home-v16 .fod-copy span{font-size:8px;line-height:1.22;-webkit-line-clamp:2}
+}
+@media(max-width:370px){.home-v16 .daily-discoveries{grid-template-columns:1fr}.home-v16 .fact-of-day{min-height:64px}}

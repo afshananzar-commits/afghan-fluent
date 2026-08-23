@@ -387,14 +387,21 @@ function AdminPanel({session,profile,enabledMissions=MISSION_TYPES,onMissionTogg
 function Quick({title,sub,icon,onClick}){return <button className="quick-card" onClick={onClick}><span className="quick-icon">{icon}</span><div><b>{title}</b><small>{sub}</small></div></button>}
 function Today({app,game,go,displayName='Leerling'}){
   const reviewCount=reviewItems(game,30).length;
-  const todayWord=vocab[(new Date().getDate()-1)%Math.max(1,vocab.length)]||vocab[0];
+  const now=new Date();
+  const startOfYear=new Date(now.getFullYear(),0,0);
+  const dayOfYear=Math.floor((now-startOfYear)/86400000);
+  const todayWord=vocab[(dayOfYear-1)%Math.max(1,vocab.length)]||vocab[0];
+  const todayFact=AFGHAN_FACTS[(dayOfYear-1)%AFGHAN_FACTS.length];
   const dailyDone=Math.min(game.daily||0,game.goal||5);
   const dailyGoal=game.goal||5;
   return <div className="screen today-screen home-v14 home-v16">
     <section className="welcome home-welcome-v2"><div className="welcome-copy"><p className="kicker">GOEDE DAG</p><h1>Salaam, {displayName}! <span>👋</span></h1><p className="welcome-line">Vandaag is een mooie dag om te leren.</p></div><div className="streak-pill"><Flame/><b>{app.progress.streak||1}</b><span>dagen</span></div><div className="home-coach-stage" aria-hidden="true"><img className="home-coach-character" src={COACH_IMAGES.welcome} alt=""/></div></section>
     <div className="continue-card" onClick={()=>go(game.game.lastTab&&game.game.lastTab!=='today'?game.game.lastTab:'path')}><div className="continue-copy"><small>GA VERDER WAAR JE WAS</small><h2>Verder leren</h2><div className="mini-progress"><i style={{width:`${Math.min(100,game.daily)}%`}}/></div></div><button aria-label="Verder leren"><ChevronRight/></button></div>
     <section className="today-dashboard"><div className="today-dashboard-head"><span>VANDAAG</span><b>Jouw ritme</b></div><div className="today-metrics"><div><span className="today-metric-icon"><Trophy/></span><p><small>DAGDOEL</small><b>{dailyDone}/{dailyGoal}</b></p></div><div><span className="today-metric-icon kite"><img src="/images/game/kite.png" alt=""/></span><p><small>VLIEGERS</small><b>{game.xp}</b></p></div><div><span className="today-metric-icon"><Flame/></span><p><small>STREAK</small><b>{app.progress.streak||1} dag</b></p></div></div><div className="today-goal-bar"><i style={{width:`${Math.min(100,dailyDone/dailyGoal*100)}%`}}/></div></section>
-    {todayWord&&<button className="word-of-day" onClick={()=>go('words')}><div className="wod-mark">Aa</div><div className="wod-copy"><small>WOORD VAN VANDAAG</small><b>{todayWord.spoken||todayWord.latin||'—'}</b><span>{todayWord.dutch}</span></div><span className="wod-sound" onClick={e=>{e.stopPropagation();speak(todayWord.spoken||todayWord.latin,.8)}}><Volume2/></span></button>}
+    <section className="daily-discoveries">
+      {todayWord&&<button className="word-of-day" onClick={()=>go('words')}><div className="wod-mark">Aa</div><div className="wod-copy"><small>WOORD VAN VANDAAG</small><b>{todayWord.spoken||todayWord.latin||'—'}</b><span>{todayWord.dutch}</span></div><span className="wod-sound" onClick={e=>{e.stopPropagation();speak(todayWord.spoken||todayWord.latin,.8)}}><Volume2/></span></button>}
+      {todayFact&&<article className="fact-of-day"><div className="fod-mark"><Sparkles/></div><div className="fod-copy"><small>WEETJE VAN VANDAAG</small><b>{todayFact.title}</b><span>{todayFact.text}</span></div></article>}
+    </section>
     <div className="review-banner home-review" onClick={()=>go('review')}><div className="seal"><Brain/></div><div><b>Nog oefenen</b><span>{reviewCount?`${reviewCount} ${reviewCount===1?'woord heeft':'woorden hebben'} wat extra aandacht nodig.`:'Alles is bijgewerkt. Lekker bezig.'}</span></div><ChevronRight/></div>
   </div>
 }
@@ -680,14 +687,56 @@ function SpeedRound({game,level,lesson,onSolved}){
 
 
 const AFGHAN_FACTS=[
- {title:'Hoge bergen',text:'De Hindu Kush loopt door een groot deel van Afghanistan. Veel toppen zijn duizenden meters hoog.'},
- {title:'Vliegers in de lucht',text:'Vliegeren is al generaties lang een geliefde activiteit in Afghanistan, vooral op heldere dagen.'},
- {title:'Granaatappels',text:'Afghanistan staat bekend om zoete granaatappels. In verschillende regio’s worden ze al eeuwen geteeld.'},
- {title:'Blauwe steen',text:'Lapis lazuli uit Afghanistan werd duizenden jaren geleden al gebruikt voor sieraden en kunst.'},
- {title:'Lente vieren',text:'Veel Afghaanse families vieren Nowruz aan het begin van de lente met bezoek, eten en tijd samen.'},
- {title:'Veel talen',text:'In Afghanistan worden verschillende talen gesproken. Dari en Pashto behoren tot de meest gebruikte.'},
- {title:'Gastvrijheid',text:'Gasten ontvangen met thee, eten en tijd voor elkaar is in veel Afghaanse families heel belangrijk.'},
- {title:'Steden en bergen',text:'Moderne steden, oude bazaars, dorpen en hoge bergen liggen in Afghanistan soms verrassend dicht bij elkaar.'}
+ {title:'Land van hoge bergen',text:'De Hindu Kush loopt dwars door Afghanistan. Sommige bergtoppen zijn hoger dan 7.000 meter.'},
+ {title:'Vliegers horen erbij',text:'Vliegeren is al generaties lang geliefd in Afghanistan. Op heldere dagen zie je vaak kleurrijke vliegers in de lucht.'},
+ {title:'Beroemde granaatappels',text:'Afghaanse granaatappels staan bekend om hun zoete smaak. Vooral Kandahar is er beroemd om.'},
+ {title:'Een steen zo blauw als de lucht',text:'Lapis lazuli uit Badakhshan wordt al duizenden jaren gebruikt voor sieraden, verf en kunst.'},
+ {title:'Nowruz = nieuw begin',text:'Nowruz markeert het begin van de lente. Families bezoeken elkaar, eten samen en vieren een nieuw begin.'},
+ {title:'Meer dan twee talen',text:'Dari en Pashto zijn de officiële talen, maar in Afghanistan worden nog veel meer talen gesproken.'},
+ {title:'Thee staat bijna altijd klaar',text:'Thee aanbieden aan bezoek is een belangrijk gebaar van gastvrijheid in veel Afghaanse gezinnen.'},
+ {title:'Kabul ligt heel hoog',text:'Kabul ligt op ongeveer 1.800 meter boven zeeniveau. Dat is hoger dan veel bekende Europese steden.'},
+ {title:'Bamiyan had reuzenbeelden',text:'In de rotswanden van Bamiyan stonden ooit twee enorme Boeddhabeelden, uitgehouwen in de 6e eeuw.'},
+ {title:'Brood op de wand van de oven',text:'Afghaans naan wordt vaak in een hete tandoor gebakken en tegen de binnenwand van de oven geplakt.'},
+ {title:'Rijst voor feestdagen',text:'Kabuli palaw is een beroemd rijstgerecht met onder andere wortel, rozijnen en vaak vlees.'},
+ {title:'Mantu komt uit de stoompan',text:'Mantu zijn kleine gevulde deegpakketjes die worden gestoomd en vaak met saus en yoghurt worden gegeten.'},
+ {title:'Bolani is lekker uit de pan',text:'Bolani is dun gevuld platbrood, bijvoorbeeld met aardappel, prei of pompoen.'},
+ {title:'Een land vol fruit',text:'Afghanistan is bekend om druiven, meloenen, abrikozen, moerbeien, granaatappels en noten.'},
+ {title:'Druiven worden ook gedroogd',text:'Rozijnen zijn al lange tijd een belangrijk Afghaans product. Druiven worden in sommige gebieden traditioneel in speciale drooghuizen gedroogd.'},
+ {title:'Meloenen met reputatie',text:'Afghaanse meloenen zijn beroemd om hun zoete smaak en worden in de zomer veel gegeten.'},
+ {title:'Saffraan uit Herat',text:'In de provincie Herat wordt saffraan verbouwd. De rode draadjes worden met de hand uit krokusbloemen gehaald.'},
+ {title:'Buzkashi te paard',text:'Buzkashi is een traditionele ruitersport waarbij ruiters kracht, snelheid en controle over hun paard laten zien.'},
+ {title:'Cricket groeide razendsnel',text:'Cricket werd in Afghanistan in korte tijd enorm populair en het nationale team speelt internationaal op hoog niveau.'},
+ {title:'Voetbal is overal te vinden',text:'Ook voetbal is populair: kinderen spelen het op pleintjes, velden en soms gewoon op straat.'},
+ {title:'Het eerste nationale park',text:'Band-e Amir werd in 2009 het eerste nationale park van Afghanistan.'},
+ {title:'Meren tussen de bergen',text:'Band-e Amir bestaat uit felblauwe bergmeren die door natuurlijke dammen van mineraal gesteente van elkaar zijn gescheiden.'},
+ {title:'Een oude handelsroute',text:'Afghanistan lag eeuwenlang op belangrijke routes tussen Centraal-Azië, Zuid-Azië, China en het Midden-Oosten.'},
+ {title:'Alexander kwam er ook',text:'Alexander de Grote trok in de 4e eeuw voor Christus door gebieden die nu bij Afghanistan horen.'},
+ {title:'Herat als kunststad',text:'Herat was eeuwenlang een belangrijk centrum voor poëzie, miniatuurschilderkunst, wetenschap en architectuur.'},
+ {title:'De Blauwe Moskee',text:'In Mazar-e Sharif staat een beroemd heiligdom dat bekendstaat om zijn opvallende blauwe tegelwerk.'},
+ {title:'Tegels vertellen een verhaal',text:'Veel historische Afghaanse gebouwen zijn versierd met geometrische patronen, kalligrafie en blauw-turquoise tegels.'},
+ {title:'Tapijten met een eigen taal',text:'Afghaanse tapijten hebben vaak herkenbare patronen die per streek, stam of weeftraditie kunnen verschillen.'},
+ {title:'Knoop voor knoop',text:'Traditionele tapijten worden knoop voor knoop gemaakt. Een groot exemplaar kan maanden werk kosten.'},
+ {title:'Poëzie wordt onthouden',text:'Poëzie speelt een grote rol in de Afghaanse cultuur. Verzen worden vaak uit het hoofd geleerd en gedeeld.'},
+ {title:'Rumi werd in Balkh geboren',text:'De beroemde dichter Rumi werd in 1207 geboren in Balkh, in het gebied van het huidige Afghanistan.'},
+ {title:'Vrijdag is bijzonder',text:'Vrijdag is in Afghanistan traditioneel de belangrijkste wekelijkse rust- en gebedsdag.'},
+ {title:'Samen eten',text:'Bij traditionele maaltijden zitten familie en gasten vaak dicht bij elkaar en worden gerechten gedeeld.'},
+ {title:'De rechterhand aan tafel',text:'Bij eten zonder bestek wordt traditioneel vaak de rechterhand gebruikt.'},
+ {title:'Yoghurt bij warme gerechten',text:'Yoghurt en yoghurtsauzen worden vaak gecombineerd met warme of kruidige Afghaanse gerechten.'},
+ {title:'Doogh is hartig',text:'Doogh is een koude yoghurtdrank die vaak licht zout is en soms munt bevat.'},
+ {title:'Naan hoort erbij',text:'Brood hoort bij veel Afghaanse maaltijden en wordt ook gebruikt om eten mee op te pakken.'},
+ {title:'Winters kunnen ijskoud zijn',text:'Afghanistan heeft niet alleen hete zomers: in berggebieden kunnen winters zeer koud en sneeuwrijk zijn.'},
+ {title:'Vier duidelijke seizoenen',text:'Veel delen van Afghanistan kennen lente, zomer, herfst en winter heel duidelijk.'},
+ {title:'Een land zonder zee',text:'Afghanistan is volledig door land omringd en heeft dus geen eigen kustlijn.'},
+ {title:'Zes buurlanden',text:'Afghanistan grenst aan Iran, Pakistan, Turkmenistan, Oezbekistan, Tadzjikistan en China.'},
+ {title:'Een piepkleine grens met China',text:'De grens tussen Afghanistan en China ligt hoog in de Wakhan-corridor en is maar enkele tientallen kilometers lang.'},
+ {title:'De Wakhan-corridor',text:'In het noordoosten loopt een lange smalle strook land tussen hoge bergketens: de Wakhan-corridor.'},
+ {title:'Sneeuw wordt rivierwater',text:'Smeltwater uit de bergen is belangrijk voor rivieren, landbouw en drinkwater in Afghanistan.'},
+ {title:'Kabul heeft eeuwen geschiedenis',text:'Kabul is al meer dan duizend jaar een belangrijke stad op handels- en reisroutes door de regio.'},
+ {title:'Kandahar is zeer oud',text:'Kandahar behoort tot de oudste grote steden van de regio en speelde door de eeuwen heen een belangrijke politieke rol.'},
+ {title:'Herat aan de zijderoutes',text:'Door zijn ligging was Herat een belangrijk knooppunt voor handel en cultuur langs oude zijderoutes.'},
+ {title:'Op bezoek neem je de tijd',text:'Op bezoek gaan draait vaak niet om snel even langskomen: tijd maken voor praten, thee en eten hoort er echt bij.'},
+ {title:'Noten als traktatie',text:'Amandelen, pistachenoten en walnoten worden veel gebruikt in zoete gerechten, rijst en als snack voor gasten.'},
+ {title:'Zomerfruit voor de winter',text:'Gedroogde abrikozen, rozijnen, moerbeien en andere vruchten maken het mogelijk om zomers fruit ook later te eten.'}
 ];
 
 
